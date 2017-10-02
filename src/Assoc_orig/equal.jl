@@ -2,7 +2,8 @@ import Base.(==)
 #=
 == : get a new Assoc where all of the elements of input Assoc mataches the given Element.
 =#
-function ==(A::Assoc, E::Union{AbstractString,Number})
+(==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
+function equal(A::Assoc, E::Union{AbstractString,Number})
     tarIndex = searchsortedfirst(A.val,E)
     if (isa(E,Number) & (size(Val(A),1)==1) & (Val(A)[1] == 1.0)  ) 
         tarIndex = E

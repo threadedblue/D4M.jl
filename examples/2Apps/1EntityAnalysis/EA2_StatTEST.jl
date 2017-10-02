@@ -2,7 +2,8 @@ file_dir = "./Entity.csv"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Enti
 
 using JLD
 
-E = load(file_dir)["E"]
+#E = load(file_dir)["E"]
+E = ReadCSV(file_dir);
 
 sum(logical(col2type(E,"/")),1);
 
