@@ -37,7 +37,7 @@ print(Fn)
 
 AtA = sqIn(A)
 
-d = diag(adj(AtA))
+d = diag(Adj(AtA))
 
 AtA.A = AtA.A - sparse(diagm(d))
 

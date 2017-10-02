@@ -2,7 +2,7 @@
 #=
 deepCondense : remove empty mapping of row, column, and value, and return the condensed of the input Assoc.
 =#
-function deepcondense(A::Assoc)
+function deepCondense(A::Assoc)
     Anew = condense(A)
     row,col,val = findnz(Anew.A)
     uniVal = sort!(unique(val))
