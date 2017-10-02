@@ -1,6 +1,6 @@
 
 
-file_dir = Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.csv";
+file_dir ="./Entity.csv"; # Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.csv";
 E = ReadCSV(file_dir);
 print(E[1:5,:]);
 
