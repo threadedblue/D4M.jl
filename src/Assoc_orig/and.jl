@@ -5,7 +5,7 @@ import Base.&
 =#
 
 (&)(A::Assoc,B::Assoc) = and(A::Assoc,B::Assoc)
-function Base.&(A::Assoc, B::Assoc)
+function and(A::Assoc, B::Assoc)
     #First, create the row and col of the intersection
     ABrow = intersect(A.row,B.row)
     ABcol = intersect(A.col,B.col)
