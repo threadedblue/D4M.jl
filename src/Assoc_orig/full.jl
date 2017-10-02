@@ -15,7 +15,7 @@ function full(A::Assoc)
                 for x = 1:length(A.row), y = 1:length(A.col)
         ])
     end
-    output = vcat(A.col',output)
+    output = vcat(reshape(A.col,1,:),output)
     output = hcat(vcat("",A.row),output)
     return output
 end
