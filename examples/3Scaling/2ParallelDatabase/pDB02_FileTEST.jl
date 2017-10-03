@@ -11,7 +11,9 @@ Nfile = 8
 myFiles = 1:Nfile
 
 data_dir = "data/"
-mkdir(data_dir)
+if ~ispath(data_dir)
+   mkdir(data_dir)
+end
 
 for i = myFiles
     tic()
@@ -29,7 +31,7 @@ for i = myFiles
     fidRow = open(fname * "r.txt","w")
     fidCol = open(fname * "c.txt","w")
     fidVal = open(fname * "v.txt","w")
-    
+
     write(fidRow,rowStr * ",")
     close(fidRow)
 
