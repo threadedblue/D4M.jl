@@ -11,7 +11,7 @@ Nfile = 8
 myFiles = 1:Nfile
 
 data_dir = "data/"
-if ~ispath(data_dir)
+if !ispath(data_dir)
    mkdir(data_dir)
 end
 
