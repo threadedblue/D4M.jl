@@ -9,7 +9,6 @@ function >(A::Assoc, E::Union{AbstractString,Number})
         
     end
     if (isa(E,Number) & (A.val ==[1.0])  )
-        print("Hello!")
         tarIndex = E
     end
     ~, ~, valkey = findnz(A.A)
