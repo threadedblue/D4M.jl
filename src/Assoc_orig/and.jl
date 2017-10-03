@@ -23,7 +23,7 @@ function and(A::Assoc, B::Assoc)
     BB = spones(B.A[rowMapping,colMapping])
     BB = round.(Int64,BB)
 
-    ABA = AA & BB 
+    ABA = AA .& BB 
     ABA = ABA * 1.0
 
     return Assoc(ABrow,ABcol,promote([1.0],A.val)[1],ABA) 
