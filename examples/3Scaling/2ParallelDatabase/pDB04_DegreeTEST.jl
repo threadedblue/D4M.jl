@@ -2,8 +2,8 @@ Nfile = 8
 
 myFiles = 1:Nfile
 
-Aout = emptyAssoc()
-Ain = emptyAssoc()
+Aout = Assoc("","","")
+Ain = Assoc("","","")
 
 for i = myFiles
     tic()

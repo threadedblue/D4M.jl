@@ -15,7 +15,7 @@ function KronGraph500NoPerm(SCALE,EdgePerVertex)
 
     for ib = 1:SCALE
         ii_bit = rand(1,M) .> ab
-        jj_bit = rand(1,M) .> (c_norm * ii_bit + a_norm * !(ii_bit))
+        jj_bit = rand(1,M) .> (c_norm * ii_bit + a_norm * .!(ii_bit))
         ij = ij + 2^(ib-1) * [ii_bit;jj_bit]
     end
     return reshape(ij[1,:]',size(ij,2)), reshape(ij[2,:]',size(ij,2))

@@ -15,12 +15,12 @@ assoc_time = zeros(1,length(n))
 
 for i = 1:length(n)
     
-    ii = round(Int, floor(rand(m[i]) .* n[i]) +1) 
-    jj = round(Int, floor(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
     A = Assoc(ii,jj,1.0)
 
-    ii = round(Int, floor(rand(m[i]) .* n[i]) +1) 
-    jj = round(Int, floor(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
     B = Assoc(ii,jj,1.0)
 
     tic()
