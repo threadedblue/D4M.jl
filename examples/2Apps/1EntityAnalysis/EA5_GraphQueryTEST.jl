@@ -1,4 +1,4 @@
-file_dir = "./Entity.csv"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
+file_dir = "./Entity.jld”; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
 
 using JLD
 
