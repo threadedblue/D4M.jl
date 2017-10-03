@@ -1,6 +1,6 @@
 import Base.(==)
 #=
-== : get a new Assoc where all of the elements of input Assoc mataches the given Element.
+== : get a new Assoc where all of the elements of input Assoc matches the given Element.
 =#
 (==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
 function equal(A::Assoc, E::Union{AbstractString,Number})
