@@ -165,6 +165,7 @@ include("./Assoc_orig/jld.jl")
 include("./Assoc_orig/put.jl")
 include("./Assoc_orig/full.jl")
 include("./Assoc_orig/equal.jl")
+include("./Assoc_orig/minus.jl")
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)
