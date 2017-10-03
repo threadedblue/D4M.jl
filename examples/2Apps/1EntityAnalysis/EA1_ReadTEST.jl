@@ -1,7 +1,7 @@
 
 
 file_dir = "./Entity.csv"; # Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.csv";
-save_dir = "./Entity.jld”; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld”;
+save_dir = "./Entity.jld"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
 E = ReadCSV(file_dir);
 print(E[1:5,:]);
 
