@@ -15,7 +15,7 @@ function and(A::Assoc, B::Assoc)
     rowMapping = searchsortedmapping(ABrow,A.row)
     colMapping = searchsortedmapping(ABcol,A.col)
     AA = spones(A.A[rowMapping,colMapping])
-    AA = round(Int64,AA)
+    AA = round.(Int64,AA)
 
     BB = spzeros(size(ABrow,1), size(ABcol,1))
     rowMapping = searchsortedmapping(ABrow,B.row)
