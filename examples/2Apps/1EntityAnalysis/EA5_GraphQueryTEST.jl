@@ -17,7 +17,7 @@ A = putAdj(A,Adj(A)-diagm(d));
 
 i,j,v = findnz(Adj(A));
 
-An = putAdj(A, sparse(i,j,v ./ min(d[i],d[j])));
+An = putAdj(A, sparse(i,j,v ./ min.(d[i],d[j])));
 
 ####
 
