@@ -8,9 +8,18 @@ import Base.+
 
 +(A::Assoc,B::Assoc) = plus(A::Assoc,B::Assoc)
 function plus(A::Assoc,B::Assoc)
+    # Check if A or B is empty
+    if isempty(A)
+       return B;
+    end
+    if isempty(B)
+       return A;
+    end
+    
     #Check A,B, if string => Logical
     At = A
     Bt = B
+    
     if(A.val != [1.0])
         At = logical(A)
     end
