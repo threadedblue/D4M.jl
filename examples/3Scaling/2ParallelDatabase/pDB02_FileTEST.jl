@@ -10,9 +10,12 @@ Nfile = 8
 
 myFiles = 1:Nfile
 
+data_dir = "data/"
+mkdir(data_dir)
+
 for i = myFiles
     tic()
-    fname = "data/" * string(i)
+    fname = data_dir * string(i)
     
     srand(i)#Reset Rand Seed
 
