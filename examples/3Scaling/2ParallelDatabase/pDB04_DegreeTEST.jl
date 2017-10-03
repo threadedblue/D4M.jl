@@ -2,8 +2,8 @@ Nfile = 8
 
 myFiles = 1:Nfile
 
-Aout = EmptyAssoc()
-Ain = EmptyAssoc()
+Aout = emptyAssoc()
+Ain = emptyAssoc()
 
 for i = myFiles
     tic()
