@@ -4,7 +4,7 @@ import Base.print
 print : print Assoc in tabular form.
 =#
 function print(A::Assoc)
-    dump(full(A))
+    display(full(A))
 end
 
 ########################################################
