@@ -1,10 +1,10 @@
-import Base.(./)
+import Base./
 
 #=
  ./ : Elementwise divide for Assoc
 =#
-(./)(A::Assoc,B::Assoc) = divide(A::Assoc,B::Assoc)
-function rdivide(A::Assoc,B::Assoc)
+#(./)(A::Assoc,B::Assoc) = divide(A::Assoc,B::Assoc)
+function Base.broadcast(::typeof(/),A::Assoc,B::Assoc)
 #First, create the row and col of the intersection
 ABrow = sortedintersect(A.row,B.row)
 ABcol = sortedintersect(A.col,B.col)
