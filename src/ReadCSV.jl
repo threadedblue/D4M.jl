@@ -4,7 +4,7 @@ function ReadCSV(fname)
     row = [];
     col = [];
     val = [];
-    if colN >2
+    if colN >=2
         for x = 2:colN
             for y = 2:rowN
                 push!(row, inDim[y,1])
