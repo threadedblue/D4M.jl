@@ -6,7 +6,7 @@ function printTriple(A::Assoc)
 
     r,c,v = find(A)
 
-    "(" .* string.(r) .* "," .* string.(c) .* ")\t".* string.(v)
+    output = "(" .* string.(r) .* "," .* string.(c) .* ")\t".* string.(v)
 
     println.(output)
 
