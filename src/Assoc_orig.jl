@@ -168,6 +168,7 @@ include("./Assoc_orig/equal.jl")
 include("./Assoc_orig/minus.jl")
 include("./Assoc_orig/emptyAssoc.jl")
 include("./Assoc_orig/size.jl")
+include("./Assoc_orig/printTriple.jl")
 include("./Assoc_orig/nnz.jl")
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
