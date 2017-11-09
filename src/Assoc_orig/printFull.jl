@@ -1,17 +1,13 @@
-import Base.print
-
 #=
-print : print Assoc in a way that mimics the Sparse Array print.
+printFull : print Assoc in tabular form.
 =#
-function print(A::Assoc)
-    r,c,v = find(A)
-    [size(A)...; length.(A.col)]
+function printFull(A::Assoc)
+    if !isempty(A)
+        display(full(A))
+    else
+        show(A)
+    end
 
-    padR = max(ndigits(size(A)[1]), length.(A.row)...)
-    padC = max(ndigits(size(A)[2]), length.(A.col)...)
-
-    println.("  [", rpad.(r, padR), ", ", rpad.(c , padC), "]  =  ", v)
-    
     return nothing
 end
 
