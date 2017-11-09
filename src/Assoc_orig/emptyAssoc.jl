@@ -3,7 +3,7 @@
 Returns an empty Associative Array
 =#
 function emptyAssoc()
-    Assoc()
+    Assoc([],[],[])
 end
 
 ########################################################

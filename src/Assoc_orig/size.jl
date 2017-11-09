@@ -1,11 +1,7 @@
-#=
-Return the dimensions of the Associative Array
-=#
-
 import Base.size
 
 #=
- transpose : return the transpose of Given Assoc
+size: Return the dimensions of the Associative Array
 =#
 
 function size(A::Assoc)
