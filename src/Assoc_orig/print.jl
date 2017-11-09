@@ -4,14 +4,17 @@ import Base.print
 print : print Assoc in a way that mimics the Sparse Array print.
 =#
 function print(A::Assoc)
-    r,c,v = find(A)
-    [size(A)...; length.(A.col)]
+    if !isempty(A)
+        r,c,v = find(A)
+        [size(A)...; length.(A.col)]
 
-    padR = max(ndigits(size(A)[1]), length.(A.row)...)
-    padC = max(ndigits(size(A)[2]), length.(A.col)...)
+        padR = max(ndigits(size(A)[1]), length.(A.row)...)
+        padC = max(ndigits(size(A)[2]), length.(A.col)...)
 
-    println.("  [", rpad.(r, padR), ", ", rpad.(c , padC), "]  =  ", v)
-    
+        println.("  [", rpad.(r, padR), ", ", rpad.(c , padC), "]  =  ", v)
+    else
+        show(A)
+    end
     return nothing
 end
 
