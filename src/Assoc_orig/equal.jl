@@ -4,16 +4,26 @@ import Base.(==)
 =#
 (==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
 function equal(A::Assoc, E::Union{AbstractString,Number})
-    tarIndex = searchsortedfirst(A.val,E)
-    if (isa(E,Number) & (size(Val(A),1)==1) & (Val(A)[1] == 1.0)  ) 
+    if (isa(E,Number) && (Val(A) == [1.0])  ) 
         tarIndex = E
+    else
+        tarIndex = searchsortedfirst(A.val,E)
+        if !(E == Val(A)[tarIndex])
+            tarIndex = 0
+        end
     end
+    
     rowkey, colkey, valkey = findnz(A.A)
     mapping = find( x-> x == tarIndex, valkey)
-#    rowkey , colkey = unique(rowkey[mapping]), unique(colkey[mapping])
-#    sort!(rowkey)
-#    sort!(colkey)
-    return A[rowkey[mapping],colkey[mapping]]
+    rows,cols,vals = find(A)
+
+    Aout = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    if A.val==[1.0]
+        Aout = putVal(Aout,A.val)
+    end
+    
+    return Aout
 end
 
 ==(E::Union{AbstractString,Number},A::Assoc) = (A == E)

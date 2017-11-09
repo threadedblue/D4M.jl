@@ -3,13 +3,23 @@ import Base.(<)
 == : get a new Assoc where all of the elements of input Assoc mataches the given Element.
 =#
 function <(A::Assoc, E::Union{AbstractString,Number})
-    tarIndex = searchsortedfirst(A.val,E)
+    if (isa(E,Number) & (A.val ==[1.0])  )
+        tarIndex = E
+    else
+        tarIndex = searchsortedfirst(A.val,E)
+    end
+
     rowkey, colkey, valkey = findnz(A.A)
     mapping = find( x-> x < tarIndex, valkey)
-    rowkey , colkey = unique(rowkey[mapping]), unique(colkey[mapping])
-    sort!(rowkey)
-    sort!(colkey)
-    return A[rowkey,colkey]
+    rows, cols, vals = find(A)
+
+    outA = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    if A.val==[1.0]
+        outA = putVal(outA,A.val)
+    end
+    
+    return outA
 end
 
 <(E::Union{AbstractString,Number},A::Assoc) = (A > E)
