@@ -51,6 +51,7 @@ include("CatValMul.jl") #CatValMultiply
 include("CatStr.jl")    #Cat String
 include("SplitStr.jl")
 include("col2type.jl")
+include("val2col.jl")
 
 #Operation that gain performance benefit on sorted inputs
 include("sortedintersect.jl")
