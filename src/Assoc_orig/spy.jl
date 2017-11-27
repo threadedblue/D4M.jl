@@ -1,6 +1,6 @@
 import PyPlot.spy,PyPlot.xticks,PyPlot.yticks
 function spy(A::Assoc)
-   spy(Adj(logical(A)) );
+   im = spy(Adj(logical(A)) );
    X = Col(A);
    Y = Row(A);
 
