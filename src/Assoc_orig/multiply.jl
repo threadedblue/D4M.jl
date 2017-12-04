@@ -47,6 +47,40 @@ function *(A::Assoc,B::Assoc)
     return condense(AB)
 end
 
+function Base.broadcast(::typeof(*),A::Assoc,B::Assoc)
+
+    #Check A,B, if string => Logical
+    At = A
+    Bt = B
+    if(!isa(A.val[1],Number))
+        At = logical(A)
+    end
+    if(!isa(B.val[1],Number))
+        Bt = logical(B)
+    end
+
+    #First, create the row and col of the intersection
+    ABrow = sortedintersect(At.row,Bt.row)
+    ABcol = sortedintersect(At.col,Bt.col)
+    #Filling the sparse matrix with 
+    
+    AA = spzeros(size(ABrow,1), size(ABcol,1))
+    rowMapping = searchsortedmapping(ABrow,At.row)
+    colMapping = searchsortedmapping(ABcol,At.col)
+    AA = At.A[rowMapping,colMapping]
+    #AA = round(Int64,AA)
+    
+    BB = spzeros(size(ABrow,1), size(ABcol,1))
+    rowMapping = searchsortedmapping(ABrow,Bt.row)
+    colMapping = searchsortedmapping(ABcol,Bt.col)
+    BB = Bt.A[rowMapping,colMapping]
+    #BB = round(Int64,BB)
+    
+    ABA = AA .* BB
+    ABA = sparse(ABA)
+    return Assoc(ABrow,ABcol,promote([1.0],At.val)[1],ABA)
+end
+
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)
