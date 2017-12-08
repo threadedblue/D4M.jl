@@ -7,22 +7,34 @@ function Adj(A::Assoc)
 end
 
 function Col(A::Assoc)
-    if isa(A.col[1], AbstractString) || ~(size(A.A,2) == A.col[end])
-        return copy(A.col)
+    if isempty(A)
+        return Union{AbstractString, Number}[]
+    else
+        if isa(A.col[1], AbstractString) || ~(size(A.A,2) == A.col[end])
+            return copy(A.col)
+        end
+        return 1:size(A.A,2)
     end
-    return 1:size(A.A,2)
 end
 
 function Row(A::Assoc)
-    if isa(A.row[1], AbstractString) || ~(size(A.A,1) == A.row[end])
-        return copy(A.row)
+    if isempty(A)
+        return Union{AbstractString, Number}[]
+    else
+        if isa(A.row[1], AbstractString) || ~(size(A.A,1) == A.row[end])
+            return copy(A.row)
+        end
+        return 1:size(A.A,1)
     end
-    return 1:size(A.A,1)
 end
 
 function Val(A::Assoc)
-    if isa(A.col[1], AbstractString)
-        return copy(A.val)
+    if isempty(A)
+        return Union{AbstractString, Number}[]
+    else
+        if isa(A.col[1], AbstractString)
+            return copy(A.val)
+        end
+        return sort(unique(nonzeros(A.A)))
     end
-    return sort(unique(nonzeros(A.A)))
 end
