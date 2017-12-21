@@ -22,9 +22,13 @@ colMapping = searchsortedmapping(ABcol,B.col)
 BB = B.A[rowMapping,colMapping]
 #BB = round(Int64,BB)
 
-ABA = AA ./ BB
-ABA = sparse(ABA)
-return Assoc(ABrow,ABcol,promote([1.0],A.val)[1],ABA)
+# Because of division by zero, sparse arrays fill with NaN's and Infs.
+AB = AA ./ BB
+nzvals = nonzeros(AB)
+nzvals[.~isfinite.(nzvals)] = 0
+AB = dropzeros!(AB)
+
+return Assoc(ABrow,ABcol,promote([1.0],A.val)[1],AB)
 end
 
 ########################################################
