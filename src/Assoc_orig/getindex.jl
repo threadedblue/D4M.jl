@@ -49,7 +49,23 @@ getindex(A::Assoc,i::Range,j::Range)                 = getindex(A,collect(i),col
 
 PreviousTypes = Union{PreviousTypes,Range}
 
-
+function convertrange(Akeys,r::AbstractString)
+    sep = r[end]
+    idx = 1
+    while contains(r[idx:end],":") 
+        idx = search(r,':',idx)
+        from = rsearch(r,sep,idx-2)+1:idx-2
+        to = idx+2:search(r,sep,idx+2)-1
+        newKeys = join(Akeys[searchsortedfirst(Akeys,r[from]):searchsortedlast(Akeys,r[to])],sep)
+        if !isempty(newKeys)
+            r = r[1:from[1]-1]*newKeys*r[to[end]+1:end]
+        else
+            r = r[1:from[end]+1]*r[to[1]:end]
+        end
+            idx = from[end]+length(newKeys)
+    end
+    return r
+end
 
 #Variations of Single Sequence Strings that is separated by a single character separator.
 getindex(A::Assoc, i::AbstractString, j::PreviousTypes)   = getindex(A, find( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row), j)
@@ -71,24 +87,6 @@ PreviousTypes = Union{PreviousTypes,Regex}
 #Variation with StartsWith
 struct StartsWith
     inputString::AbstractString
-end
-
-function convertrange(Akeys,r::AbstractString)
-    sep = r[end]
-    idx = 1
-    while contains(r[idx:end],":") 
-        idx = search(r,':',idx)
-        from = rsearch(r,sep,idx-2)+1:idx-2
-        to = idx+2:search(r,sep,idx+2)-1
-        newKeys = join(Akeys[searchsortedfirst(Akeys,r[from]):searchsortedlast(Akeys,r[to])],sep)
-        if !isempty(newKeys)
-            r = r[1:from[1]-1]*newKeys*r[to[end]+1:end]
-        else
-            r = r[1:from[end]+1]*r[to[1]:end]
-        end
-            idx = from[end]+length(newKeys)
-    end
-    return r
 end
 
 function StartsWithHelper(Ar::Array{Union{AbstractString,Number}},S::StartsWith)
