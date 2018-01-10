@@ -1,17 +1,23 @@
-file_dir = "./Entity.jld"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
+# Compute graphs from entity edge data.
 
-using JLD
+using JLD, PyPlot
 
-E = load(file_dir)["E"]
+E = load("./Entity.jld")["E"]
+E = logical(E)
 
+# Computing adjacency matrix for the Entity-Entity graph.
+Ae = sqIn(E)
+spy(Ae)
 
-Es = E;
-E = logical(E);
+# Entity-entity graphs that preserve original values.
+# Limit to people with names starting with j
+p = StartsWith("PERSON/j,")
+Ep = E[:,p]
 
-Ae = sqIn(E);
-Ae
-using PyPlot
-figure;
-spy(Ae);
+# Correlate while preserving pedigree
+Ap = CatKeyMul(Ep',Ep)
+spy(Ap)
 
-
+# Create document-document graph: documents that contain the same entities.
+Ad = sqOut(Ep)
+spy(Ad)

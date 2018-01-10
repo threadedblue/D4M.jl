@@ -1,16 +1,16 @@
-file_dir = "./Entity.jld"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
+# Compute statistics on entity data
 
-using JLD
+using JLD,PyPlot
 
+# Load the data file
+file_dir = "./Entity.jld"
 E = load(file_dir)["E"]
 
-sum(logical(col2type(E,"/")),1);
+# Calculate number of entities in each category, then count the number of times each entity occurs.
+print(sum(logical(col2type(E,"/")),1))
+En = sum(logical(E),1)
 
-En = sum(logical(E),1);
-
-~,entity,count = find(En);
-
-An = Assoc(count,entity,1);
-
-using PyPlot
-loglog(full(sum(Adj(An[:,StartsWith("LOCATION/,")]),2)) ,"o"); 
+# Plot the log-log plot of location frequencies. Notice the power-law distribution.
+row,entity,count = find(En)
+An = Assoc(count,entity,1)
+loglog(full(sum(Adj(An[:,StartsWith("LOCATION/,")]),2)) ,"o")

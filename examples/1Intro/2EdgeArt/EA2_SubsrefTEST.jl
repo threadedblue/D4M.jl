@@ -1,11 +1,13 @@
-csv_dir = "Edge.csv"  #Pkg.dir("D4M") * "/examples/1Intro/2EdgeArt/Edge.csv"
-print(csv_dir)
+# Show different wasy to index associative arrays.
 
-E = ReadCSV(csv_dir);                       # Read CSV file into associative array.
-print(E);                                # Show in tabular form.
+# Read CSV file into associative array.
+E = ReadCSV("Edge.csv")
+printFull(E)
 
-Eo = E[(E[:,"Color,"] == "Orange" ).row,:];   # Get orange edges.
-print(Eo);                               # Show in tabular form.
+# Get orange edges.
+Eo = E[(E[:,"Color,"] == "Orange" ).row,:]
+printFull(Eo)
 
-Eog = E[ StartsWith("O,G,") ,:];               # Get orange and green edges.
-print(Eog);
+# Get orange and green edges.
+Eog = E[ StartsWith("O,G,") ,:]
+printFull(Eog)

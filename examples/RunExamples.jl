@@ -18,6 +18,11 @@ include("2Apps/1EntityAnalysis/EA2_StatTEST.jl")
 include("2Apps/1EntityAnalysis/EA3_FacetTEST.jl")
 include("2Apps/1EntityAnalysis/EA4_GraphTEST.jl")
 include("2Apps/1EntityAnalysis/EA5_GraphQueryTEST.jl")
+include("2Apps/2TrackAnalysis/findtrackgraph.jl")
+include("2Apps/2TrackAnalysis/findtracks.jl")
+include("2Apps/2TrackAnalysis/TA1_BuildTEST.jl")
+include("2Apps/2TrackAnalysis/TA2_QueryTEST.jl")
+include("2Apps/2TrackAnalysis/TA3_GraphTEST.jl")
 
 # Run Parallel Database Example
 include("3Scaling/2ParallelDatabase/pDB01_DataTEST.jl")

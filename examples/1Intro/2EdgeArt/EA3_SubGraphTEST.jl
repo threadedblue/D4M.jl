@@ -1,17 +1,21 @@
-csv_dir = "Edge.csv" #Pkg.dir("D4M") * "/examples/1Intro/2EdgeArt/Edge.csv"
-print(csv_dir)
+# Show some associative array math.
 
-E = ReadCSV(csv_dir);                       # Read CSV file into associative array.
-Ev = logical( E[:, StartsWith("V,")] );        # Get vertices and convert to numbers.
+# Read CSV file into associative array, get vertices and convert to numbers.
+E = ReadCSV("Edge.csv")
+Ev = logical( E[:, StartsWith("V,")] )
 
-EvO = Ev[StartsWith("O,"),:];                  # Get orange edges.
-EvG = Ev[StartsWith("G,"),:];                  # Get green edges.
+# Get orange and green edges
+EvO = Ev[StartsWith("O,"),:]
+EvG = Ev[StartsWith("G,"),:]
 
-AvOG = transpose(EvO) * EvG;                   # Compute vertex adjacency graph.
-       print(AvOG);                             # Show empty structure.
+# Compute (empty) vertex adjacency graph.
+AvOG = transpose(EvO) * EvG
+printFull(AvOG)
 
-       AeOG = EvO * transpose(EvG);                   # Compute edge adjacency graph.
-       print(AeOG);                             # Show in tabular form.
+# Compute edge adjacency graph.
+AeOG = EvO * transpose(EvG)
+printFull(AeOG)
 
-       AeOG = CatKeyMul(EvO,transpose(EvG));          # Compute edge adjacency graph preserving pedigree.
-       print(AeOG); 
+# Compute edge adjacency graph preserving keys.
+AeOG = CatKeyMul(EvO,transpose(EvG))
+printFull(AeOG)

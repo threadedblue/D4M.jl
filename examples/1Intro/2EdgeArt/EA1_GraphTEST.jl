@@ -1,12 +1,15 @@
-csv_dir = "Edge.csv" #Pkg.dir("D4M") * "/examples/1Intro/2EdgeArt/Edge.csv" 
-print(csv_dir)
+# Forming adjacency graphs.
 
-E = ReadCSV(csv_dir);                       # Read CSV file into associative array.
+# Read CSV file into associative array.
+E = ReadCSV("Edge.csv")
 
-Ev = logical( E[:, StartsWith("V,")] );        # Get vertices and convert to numbers.
+# Get vertices and convert to numbers.
+Ev = logical( E[:, StartsWith("V,")] )
 
-Av = sqIn(Ev);                                 # Compute vertex adjacency graph.
-print(Av);                               # Show in tabular form.
+# Compute vertex adjacency graph.
+Av = sqIn(Ev)
+printFull(Av)
 
-Ae = sqOut(Ev);                                # Compute edge adjacency graph.
-print(Ae);                               # Show in tabular form.
+# Compute edge adjacency graph.
+Ae = sqOut(Ev)
+printFull(Ae)

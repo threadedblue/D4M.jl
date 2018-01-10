@@ -1,42 +1,31 @@
-file_dir = "./Entity.jld"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
+# Various ways to query subgraphs.
 
-using JLD
+using JLD,PyPlot
 
-E = load(file_dir)["E"]
+# Load data
+E = load("./Entity.jld")["E"]
+E = logical(E)
 
-E = logical(E);
-
-A = sqIn(E);
-
+# Compute entity (all facet pairs).
+A = sqIn(E)
 d = diag(Adj(A))
+A = putAdj(A,Adj(A)-diagm(d))
 
-A = putAdj(A,Adj(A)-diagm(d));
 
+# Compute normalized correlation.
+i,j,v = findnz(Adj(A))
+An = putAdj(A, sparse(i,j,v ./ min.(d[i],d[j])))
 
-####
+# Multi-facet queries.
+x = "LOCATION/new york,"
+p = StartsWith("PERSON/,")
+printFull( (A[p,x] > 4) & (An[p,x] > 0.3))
 
-i,j,v = findnz(Adj(A));
+# Triangles.
+p0 = "PERSON/john kennedy,"
 
-An = putAdj(A, sparse(i,j,v ./ min.(d[i],d[j])));
-
-####
-
-x = "LOCATION/new york,";
-
-p = StartsWith("PERSON/,");
-
-print( (A[p,x] > 4) & (An[p,x] > 0.3));
-
-####
-
-p0 = "PERSON/john kennedy,";
-
-p1 = Row(A[p,p0] + A[p0,p]);
-
-using PyPlot
-
+p1 = Row(A[p,p0] + A[p0,p])
 spy(A[p1,p1])
 
-p2 = Row( A[p1,p1] - (A[p,p0]+ A[p0,p]));
-
+p2 = Row( A[p1,p1] - (A[p,p0]+ A[p0,p]))
 A[p2,p2] > 1

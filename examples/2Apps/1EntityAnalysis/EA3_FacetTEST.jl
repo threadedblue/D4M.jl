@@ -1,17 +1,16 @@
-file_dir = "./Entity.jld"; #Pkg.dir("D4M")*"/examples/2Apps/1EntityAnalysis/Entity.jld";
-
+# Entity facet search. Shows next most common terms.
 using JLD
 
-E = load(file_dir)["E"]
-
+# Load data
+E = load("./Entity.jld")["E"]
 E = logical(E)
 
-x = "LOCATION/new york,";
-p = "PERSON/michael chang,";
-F = ( nocol(E[:,x]) & nocol(E[:,p]))' * E;
-#print(F' > 1 )
-F' > 1
+# Facet search: Finding entities that occur commonly with LOCATION/new york and PERSON/michael chang.
+x = "LOCATION/new york,"
+p = "PERSON/michael chang,"
+F = ( nocol(E[:,x]) & nocol(E[:,p]))' * E
+print(F' > 1 )
 
-Fn = F./ sum(E,1)
-#print((Fn' > 0.02))
-Fn' > 0.02
+# Normalize the previous result.
+Fn = F ./ sum(E,1)
+print((Fn' > 0.02))
