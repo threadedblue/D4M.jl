@@ -1,5 +1,5 @@
 function CatValMul(A::Assoc,B::Assoc)
-    if isa(Val(A)[1],String) && isa(Val(B)[1],String)
+    if isa(Val(A)[1],AbstractString) && isa(Val(B)[1],AbstractString)
         AB = sortedintersect(A.col,B.row)
         A = A[:,AB]
         B = B[AB,:]
@@ -9,7 +9,7 @@ function CatValMul(A::Assoc,B::Assoc)
             r = rrr[i]
             c = ccc[i]
             ABIntersect = sortedintersect(Col(A[r,:]),Row(B[:,c]))
-            ABValList = Array{Union{AbstractString,Number},1}()
+            ABValList = Array{Union{AbstractString,Number}}(1)
             print(ABIntersect)
             for x in ABIntersect
                 print(x)
