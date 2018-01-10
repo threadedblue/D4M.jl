@@ -17,6 +17,8 @@ Support a
 
 
 type Assoc
+# TODO: "type" being depreciated, should change to struct or mutable struct
+# Should be struct- operations on A return a new Assoc, not a changed A.
     row::Array{Union{AbstractString,Number}}
     col::Array{Union{AbstractString,Number}}
     val::Array{Union{AbstractString,Number}}
@@ -29,13 +31,13 @@ type Assoc
 
     function Assoc(rowIn::Array{Union{AbstractString,Number}}, colIn::Array{Union{AbstractString,Number}}, valIn::Array{Union{AbstractString,Number}}, AIn::AbstractSparseMatrix)
         return new(rowIn,colIn,valIn,AIn)
-        end
+    end
 
     function Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray,funcIn::Function)
         if isempty(rowIn) || isempty(colIn) || isempty(valIn)  #testing needed for isemtpy, for Matlab isemtpy is always possible TODO  Seems to work okay with String or NumArray type hard defined, Union type untested.  Should keep an eye.
             x = Array{Union{AbstractString,Number}}()
             return Assoc(x,x,x,spzeros(1,1));
-            end
+        end
         if isa(rowIn,Number)
             rowIn = Array{Union{AbstractString,Number},1}([rowIn])
         end
@@ -78,7 +80,7 @@ type Assoc
 
         if isa(valIn,AbstractString)
             val, v_out2in, v = StrUnique(valIn);           
-            else
+        else
             val = unique(v)
             sort!(val)
             if (isa(valIn[1],AbstractString))
@@ -92,7 +94,7 @@ type Assoc
                     val = val[2:end]
                 end
             end
-           end 
+        end 
 
         NMax = maximum([length(i) length(j) length(v)]);
         if length(i) == 1
@@ -101,7 +103,7 @@ type Assoc
             for n = 1:NMax
                 i[n] = x
             end
-            end
+        end
 
         if length(j) == 1
             x = j[1]
@@ -109,7 +111,7 @@ type Assoc
             for n = 1:NMax
                 j[n] = x
             end
-            end
+        end
 
         if length(v) == 1
             x = v[1]
@@ -117,10 +119,7 @@ type Assoc
             for n = 1:NMax
                 v[n] = x
             end
-            end
-
-
-        
+        end
 
         #i = convert(AbstractArray{Int64},i)
         if isa(val[1],AbstractString) #If the values are string, assume that there are duplicates and take the earliest one ( the numbers should be the same)
@@ -130,11 +129,13 @@ type Assoc
         end
         #Accumarray isn't in Julia, use "push" for a more rapid array generation (acccumarray is too slow and cumbersome for Julia)  Sparse matrix generation condition with summation combine seem would do the trick.
 
-        
         #End bit with val string.  Unknown purpose.
-        return new(row,col,val,A)
+        if isa(val[1],Number) #if numeric, val should be [1.0]
+            val = convert(Array{Union{AbstractString,Number}},[1.0])
         end
+        return new(row,col,val,A)
     end
+end
 
 
 #=

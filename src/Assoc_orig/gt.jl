@@ -9,7 +9,7 @@ function >(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = searchsortedlast(Val(A),E)
     end
 
-    ~, ~, valkey = findnz(A.A)
+    rowkey, colkey, valkey = findnz(A.A)
     mapping = find( x-> x > tarIndex, valkey)
     rows, cols, vals = find(A)
 

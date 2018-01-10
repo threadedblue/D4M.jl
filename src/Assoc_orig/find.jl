@@ -15,7 +15,7 @@ function find(A::Assoc)
             col = [ A.col[col[i]] for i in 1:n]
         end
         
-        if isa(A.val[1],AbstractString)
+        if isa(A.val[1],AbstractString) || A.val != [1.0]
             val = [ A.val[val[i]] for i in 1:n]
         end
     end

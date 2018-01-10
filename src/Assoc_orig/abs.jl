@@ -1,4 +1,4 @@
-function abs(A:Assoc)
+function abs(A::Assoc)
     #abs: Absolutee value of an inputted numerical associative array.
 
     if isa(A.val[1],AbstractString)
