@@ -9,8 +9,8 @@ Current Status: Many of the functionalities of core D4M have been implemented. D
 
 Documentation
 -------------
-- See below for installation brief use instructions
-- For examples of more extensive use, see the examples
+- See below for installation brief use instructions.
+- For examples of more extensive use, see the examples.
 - The Matlab D4M distribution contains an eight lecture course in its documentation (https://github.com/Accla/d4m in d4m/docs). Many of the examples from this course have been translated to Julia and the concepts are relevant to both the Matlab and Julia versions, and so this course could serve as an introduction to D4M.jl as well.
 - When citing D4M in publications, please use:
     - [Kepner et al, ICASSP 2012] Dynamic Distributed Dimensional Data Model (D4M) 
