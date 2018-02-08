@@ -112,6 +112,7 @@ ValidQueryTypes = Union{Colon,AbstractString,UnionArray,StartsWith}
 
 getindex(table::DBtableType,i::ValidQueryTypes,j::ValidQueryTypes) = getindex(table,toDBstring(i),toDBstring(j))
 
+# Helper function for ingest
 function searchall(str::String,c::Char)
     idx = search(str,c)
     allIdx = idx
