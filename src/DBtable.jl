@@ -55,7 +55,7 @@ function delete(table::DBtable)
     elseif isa(input,Colon)
         output = ":"
     elseif isa(input,StartsWith)
-        str = S.inputString
+        str = input.inputString
         output = ""
         del = str[end]
         idx1 = 1
