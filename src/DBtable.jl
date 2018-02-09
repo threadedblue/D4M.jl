@@ -112,6 +112,46 @@ ValidQueryTypes = Union{Colon,AbstractString,UnionArray,StartsWith}
 
 getindex(table::DBtableType,i::ValidQueryTypes,j::ValidQueryTypes) = getindex(table,toDBstring(i),toDBstring(j))
 
+# Query iterator functionality
+function getiterator(table::DBtableType,nelements::Number)
+    
+    if isa(table,DBtablePair)
+        Ti = DBtablePair(table.DB, table.name1, table.name2, table.security,
+            table.numLimit, table.numRow, table.columnfamily, table.putBytes,
+            table.d4mQuery,table.tableOps)
+    else
+        Ti = DBtable(table.DB, table.name, table.security,
+            table.numLimit, table.numRow, table.columnfamily, table.putBytes,
+            table.d4mQuery,table.tableOps)
+    end
+    
+    return Ti
+end
+
+# The getindex function to get the next few elements for an iterator table object
+function getindex(table::DBtableType)
+    
+    #T.d4mQuery.next();
+    #dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
+    jcall(table.d4mQuery,"next",Void,(),)
+    
+    # check if transpose table query- if so flip the r and c results.
+    tablename = jcall(table.d4mQuery,"getTableName", JString, (),)
+    
+    if isa(table,DBtablePair) && tablename == table.name2
+        c = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
+        r = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
+    else
+        r = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
+        c = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
+    end
+    
+    v = jcall(table.d4mQuery,"getValueReturnString", JString, (),)
+    
+    return deepCondense(Assoc(r,c,v))
+    
+end
+
 # Helper function for ingest
 function searchall(str::String,c::Char)
     idx = search(str,c)
