@@ -62,6 +62,7 @@ include("searchsortedmapping.jl")
 # Database functionality
 include("DBserver.jl")
 include("DBtable.jl")
+include("dbinit.jl")
 
 
 ########################################################

@@ -66,6 +66,10 @@ sum(A,2)
 ```
 For more examples of how you can use D4M.jl, check out the examples in the examples directory, including some examples with real datasets.
 
+Database Use
+------------
+Use of the database connection capabilites requires Graphulo. Graphulo is available on this page: https://github.com/Accla/graphulo. Build Graphulo according to the instructions on that page. There should be two jars and one zip file in the "target" directory after you build Graphulo. The jar ending with "alldeps.jar" is the server side jar meant to go with your Accumulo instance. The other jar should be placed in the "lib" folder in the D4M.jl package directory and the zip file should be unzipped into the D4M.jl package directory.
+
 Testing
 -------
 You can test that your installation is working by running the RunExamples.jl file in the examples directory:
