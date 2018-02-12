@@ -2,6 +2,6 @@
 
 function dbinit()
     JavaCall.addClassPath(Pkg.dir("D4M")*"/libext/*")
-    JavaCall.addClassPath(kg.dir("D4M")*"./lib/graphulo-3.0.0.jar")
+    JavaCall.addClassPath(Pkg.dir("D4M")*"./lib/graphulo-3.0.0.jar")
     JavaCall.init()
 end
