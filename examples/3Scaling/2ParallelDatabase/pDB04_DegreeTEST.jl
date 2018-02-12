@@ -1,46 +1,32 @@
-Nfile = 8
+# Calculate and plot in and out degrees of generated Kronecker Graph
+using JLD,PyPlot
 
-myFiles = 1:Nfile
+# Associative arrays to accumulate in and out degrees
+Aall = Assoc("","","")
 
-Aout = Assoc("","","")
-Ain = Assoc("","","")
-
-for i = myFiles
+# Iterate through files
+isdefined(:Nfile) || (Nfile = 8)
+for i = 1:Nfile
     tic()
     fname = "data/"* string(i)
     
-    fidRow = open(fname * "r.txt","r")
-    fidCol = open(fname * "c.txt","r")
-    fidVal = open(fname * "v.txt","r")
-    
-    rowStr = readline(fidRow)
-    colStr = readline(fidCol)
-    valStr = readline(fidVal)
+    # Load associative array
+    A = load(fname*".A.jld")["A"]
 
-    close(fidRow)
-    close(fidCol)
-    close(fidVal)
+    # Create associative arrays and accumulate degrees
+    Aall = A + Aall
 
-    A = Assoc(rowStr,colStr,1,(sum))
-    Aout += sum(A,2)
-    Ain  += sum(A,1)
-
-
-#TODO update Time
     pTime = toq()
     println("Sum Time: ", pTime)
-    println("Edges/sec: ", string(NumStr(rowStr)/pTime))
+    println("Edges/sec: ", string(nnz(A)/pTime))
 end
 
-
-#= #PyPlot
+# Plot out degree distribution
 figure()
-loglog(full(sparse(Adj(Aout),1,1)),"o")
+loglog(full(OutDegree(Aall))',"o")
 xlabel("out degree")
 
-
+# Plot out degree distribution
 figure()
-loglog(full(sparse(Adj(Ain),1,1)),"o")
+loglog(full(InDegree(Aall))',"o")
 xlabel("in degree")
-
-=#
