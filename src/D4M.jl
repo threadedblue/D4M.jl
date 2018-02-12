@@ -44,7 +44,7 @@ end
 include("Assoc_orig.jl") # Associative Array
 include("WriteCSV.jl") #load Assoc from CSV file
 include("ReadCSV.jl") #Dump Assoc into a CSV file
-include("OutDegree.jl") #Calculate OutDegree
+include("GraphDegree.jl") #Calculate degree distribution
 include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
 include("CatKeyMul.jl") #CatKeyMultiply
 include("CatValMul.jl") #CatValMultiply
