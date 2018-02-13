@@ -19,6 +19,7 @@ A = findtracks(E,t,p,x)
 # Track Graph
 G = findtrackgraph(A)
 print(G > 5)
+figure()
 spy(G)
 
 # Track graph pattern

@@ -25,6 +25,7 @@ printFull( (A[p,x] > 4) & (An[p,x] > 0.3))
 p0 = "PERSON/john kennedy,"
 
 p1 = Row(A[p,p0] + A[p0,p])
+figure()
 spy(A[p1,p1])
 
 p2 = Row( A[p1,p1] - (A[p,p0]+ A[p0,p]))
