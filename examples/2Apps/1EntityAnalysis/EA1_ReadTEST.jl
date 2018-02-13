@@ -24,6 +24,7 @@ E = Assoc(doc_val,typeEntity_val,position_val)
 
 # Show a few rows and plot a spy plot.
 print(E[1:5,:])
+figure()
 spy(E')
 
 # Save the associative array.

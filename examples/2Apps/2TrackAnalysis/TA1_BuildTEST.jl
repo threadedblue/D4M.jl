@@ -25,10 +25,12 @@ Ext = Assoc(edge,space,time)     # Combine edge, space and time.
 
 # Construct time tracks with matrix multiply.
 At = CatValMul(transpose(Etx),E3[:,p])   
+figure()
 spy(At')
 axis("auto")
 
 # Construct space tracks with matrix multiply.
-Ax = CatValMul(transpose(Ext),E3[:,p])  
+Ax = CatValMul(transpose(Ext),E3[:,p])
+figure()
 spy(Ax')
 axis("auto")

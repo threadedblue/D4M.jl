@@ -33,4 +33,3 @@ for i = 1:length(n)
     println(", GBytes: ", string(sparse_gbytes[i]))
 
 end
-#Plot

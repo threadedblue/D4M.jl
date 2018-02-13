@@ -26,7 +26,3 @@ for i = 1:length(n)
     println(", GBytes: ", string(dense_gbytes[i]))
 
 end
-
-
-
-##Print
