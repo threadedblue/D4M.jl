@@ -29,6 +29,11 @@ include("3Scaling/2ParallelDatabase/pDB01_DataTEST.jl")
 include("3Scaling/2ParallelDatabase/pDB02_FileTEST.jl")
 include("3Scaling/2ParallelDatabase/pDB03_AssocTEST.jl")
 include("3Scaling/2ParallelDatabase/pDB04_DegreeTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB06_AdjInsertTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB07_AdjQueryTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB08_AdjQueryItTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB09_AdjJoinTEST.jl")
 
 # Run Matrix Performance Example
 include("3Scaling/3MatrixPerformance/MP1_DenseTEST.jl")
