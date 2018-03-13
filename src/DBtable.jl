@@ -49,9 +49,9 @@ function delete(table::DBtable)
     if isa(input,StringArray)
         output = join(input,"\n")*"\n"
     elseif isa(input,NumericArray)
-        output = string.(input)
+        output = join(string.(input),"\n")*"\n"
     elseif isa(input,UnionArray)
-        output = convert(Array{AbstractString},input)
+        output = join(convert(Array{AbstractString},input),"\n")*"\n"
     elseif isa(input,Colon)
         output = ":"
     elseif isa(input,StartsWith)
@@ -167,15 +167,12 @@ end
 
 # putTriple is the main db ingest function
 DBtableType = Union{DBtable,DBtablePair}
-function putTriple(table::DBtableType,r::AbstractString,c::AbstractString,v::AbstractString)
+function putTriple(table::DBtableType,r::UnionArray,c::UnionArray,v::UnionArray)
     
     # Find chunk size for ingest
     chunkBytes = table.putBytes
-    rIdx = [0 searchall(r,r[end])]
-    cIdx = [0 searchall(c,c[end])]
-    vIdx = [0 searchall(v,v[end])]
-    numTriples = NumStr(r);
-    avgBytePerTriple = (length(r) + length(c) + length(v))/numTriples;
+    numTriples = length(r);
+    avgBytePerTriple = (sum(length.(r)) + sum(length.(c)) + sum(length.(v)))/numTriples;
     chunkSize = min(max(1,round(Integer,chunkBytes/avgBytePerTriple)),numTriples);
     
     # In Matlab D4M this is inside the loop- do we need to make a new object each time?
@@ -190,10 +187,10 @@ function putTriple(table::DBtableType,r::AbstractString,c::AbstractString,v::Abs
         
     # Insert each chunk
     for i in 1:chunkSize:numTriples
-        iNext = min(i + chunkSize,numTriples+1);
-        rr = r[(rIdx[i]+1):rIdx[iNext]];
-        cc = c[(cIdx[i]+1):cIdx[iNext]];
-        vv = v[(vIdx[i]+1):vIdx[iNext]];
+        iNext = min(i + chunkSize,numTriples);
+        rr = toDBstring(r[i:iNext]);
+        cc = toDBstring(c[i:iNext]);
+        vv = toDBstring(v[i:iNext]);
         
         jcall(insertObj,"doProcessing",Void,(JString,JString,JString,JString,JString,),rr, cc, vv, table.columnfamily, table.security)
         
@@ -205,10 +202,27 @@ function putTriple(table::DBtableType,r::AbstractString,c::AbstractString,v::Abs
     
 end
 
+function ingestprep(input)
+    StringArray = Array{T} where T <: AbstractString
+    NumericArray = Array{T} where T <: Number
+    UnionArray = Array{T} where T <: Union{AbstractString,Number}
+    
+    if isa(input,StringArray)
+        output = convert(UnionArray,input)
+    elseif isa(input,NumericArray)
+        output = string.(input)
+    elseif isa(input,AbstractString)
+        output = split(input,input[end],limit=NumStr(input))
+    else
+        output = input
+    end
+    
+    return output
+end
+
 UnionArray = Array{T} where T <: Union{AbstractString,Number}
 ValidType = Union{UnionArray,AbstractString}
-
-putTriple(table::DBtableType,r::ValidType,c::ValidType,v::ValidType) = putTriple(table,toDBstring(r),toDBstring(c),toDBstring(v))
+putTriple(table::DBtableType,r::ValidType,c::ValidType,v::ValidType) = putTriple(table,ingestprep(r),ingestprep(c),ingestprep(v))
 
 # The put function deconstructs A and calls putTriple
 function put(table::DBtableType,A::Assoc)
