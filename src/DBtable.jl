@@ -114,15 +114,24 @@ getindex(table::DBtableType,i::ValidQueryTypes,j::ValidQueryTypes) = getindex(ta
 
 # Query iterator functionality
 function getiterator(table::DBtableType,nelements::Number)
+
+    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
+    opsObj = ops((JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.DB.user, table.DB.pass)
     
     if isa(table,DBtablePair)
+        d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
+        queryObj = d4mQuery((JString, JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.name1, table.DB.user, table.DB.pass)
+
         Ti = DBtablePair(table.DB, table.name1, table.name2, table.security,
-            table.numLimit, table.numRow, table.columnfamily, table.putBytes,
-            table.d4mQuery,table.tableOps)
+        nelements, table.numRow, table.columnfamily, table.putBytes,
+        queryObj,opsObj)
     else
+        d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
+        queryObj = d4mQuery((JString, JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.name, table.DB.user, table.DB.pass)
+        
         Ti = DBtable(table.DB, table.name, table.security,
-            table.numLimit, table.numRow, table.columnfamily, table.putBytes,
-            table.d4mQuery,table.tableOps)
+        nelements, table.numRow, table.columnfamily, table.putBytes,
+        queryObj,opsObj)
     end
     
     return Ti
