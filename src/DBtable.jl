@@ -262,7 +262,7 @@ function nnz(table::DBtableType)
     list = @jimport "java.util.List"
     
     tableList = arrayList((),)
-    jcall(tableList,"add",jboolean,(JObject,),Tadj.name1)
+    jcall(tableList,"add",jboolean,(JObject,),tname)
     
     jcall(table.tableOps,"getNumberOfEntries",jlong,(list,),tableList)
 end
