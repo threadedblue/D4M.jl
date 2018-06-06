@@ -9,11 +9,12 @@ function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     return Assoc([1],[1],0,(+))
     end
 
+    # Need to check if numeric values- don't move into Vals, keep in A.A
     return deepCondense(Assoc(A.row[i],A.col[j],A.val,A.A[i,j]))
     end
 
 #Singular Case
-getindex(A::Assoc,i::Any)                  = getindex(A,i,:)
+getindex(A::Assoc,i::Any) = getindex(A,i,:)
 
 PreviousTypes = Array{Int64}
 
