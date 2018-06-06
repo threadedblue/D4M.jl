@@ -20,13 +20,15 @@ function plus(A::Assoc,B::Assoc)
     At = A
     Bt = B
     
+    # There can be numberic values in the "vals" this will not work in this case
     if(A.val != [1.0])
         At = logical(A)
     end
     if(A.val != [1.0])
         Bt = logical(B)
     end
-    ## A*B operation
+    
+    ## A+B operation
     ABrow = sortedunion(At.row,Bt.row)
     ABcol = sortedunion(At.col,Bt.col)
     if (size(ABrow,1) == 0 || size(ABcol,1) == 0)

@@ -9,6 +9,7 @@ Note that saving would convert row and col types to number.
 # Delimiter for saving- using new line is safer than comma!
 del = "\n"
 
+# Change type to struct
 type AssocSerial
     rowstr::AbstractString
     colstr::AbstractString
@@ -105,7 +106,5 @@ function JLD.readas(serData::AssocSerial)
     end
     val = Array{Union{AbstractString,Number}}(val)
     
-    
-
     return Assoc(row,col,val,serData.A)
 end

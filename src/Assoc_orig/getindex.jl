@@ -9,11 +9,12 @@ function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     return Assoc([1],[1],0,(+))
     end
 
+    # Need to check if numeric values- don't move into Vals, keep in A.A
     return deepCondense(Assoc(A.row[i],A.col[j],A.val,A.A[i,j]))
     end
 
 #Singular Case
-getindex(A::Assoc,i::Any)                  = getindex(A,i,:)
+getindex(A::Assoc,i::Any) = getindex(A,i,:)
 
 PreviousTypes = Array{Int64}
 
@@ -25,9 +26,9 @@ PreviousTypes = Array{Int64}
 
 #Get index with basic addressing.
 #Variations between Element, Array, Colon, Range
-getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::PreviousTypes)                                       = getindex(A,find(x-> x in i,A.row),j)
-getindex(A::Assoc,i::PreviousTypes,j::Array{Union{AbstractString,Number}})                                       = getindex(A,i,find(x-> x in j,A.col))
-getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::Array{Union{AbstractString,Number}})                 = getindex(A,find(x-> x in i,A.row),find(x-> x in j,A.col))
+getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::PreviousTypes)                          = getindex(A,find(x-> x in i,A.row),j)
+getindex(A::Assoc,i::PreviousTypes,j::Array{Union{AbstractString,Number}})                          = getindex(A,i,find(x-> x in j,A.col))
+getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::Array{Union{AbstractString,Number}})    = getindex(A,find(x-> x in i,A.row),find(x-> x in j,A.col))
 
 PreviousTypes = Union{PreviousTypes,Array{Union{AbstractString,Number}}}
 
