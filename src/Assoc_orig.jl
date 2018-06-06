@@ -6,6 +6,7 @@ isless(A::AbstractString,B::Number) = true
 
 
 StringOrNumArray = Union{AbstractString,Array,Number}
+UnionArray = Array{Union{AbstractString,Number}}
 
 #Creation of Assoc require StrUnique to split Single-Character-separated String Sequence.
 include("StrUnique.jl")
@@ -19,11 +20,12 @@ Support a
 type Assoc
 # TODO: "type" being depreciated, should change to struct or mutable struct
 # Should be struct- operations on A return a new Assoc, not a changed A.
-    row::Array{Union{AbstractString,Number}}
-    col::Array{Union{AbstractString,Number}}
-    val::Array{Union{AbstractString,Number}}
+    row::UnionArray
+    col::UnionArray
+    val::UnionArray
     A::AbstractSparseMatrix
     
+    # default uses min, should it be sum?
     Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray) = Assoc(rowIn,colIn,valIn,min) 
     Assoc(row::Array{Int64}, col::Array{Int64},val::Array{Int64},A::AbstractSparseMatrix) = new(row,col,val,A)
     #Setting Default Function
@@ -34,7 +36,10 @@ type Assoc
     end
 
     function Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray,funcIn::Function)
-        if isempty(rowIn) || isempty(colIn) || isempty(valIn)  #testing needed for isemtpy, for Matlab isemtpy is always possible TODO  Seems to work okay with String or NumArray type hard defined, Union type untested.  Should keep an eye.
+        # testing needed for isemtpy, for Matlab isemtpy is always possible
+        # TODO  Seems to work okay with String or NumArray type hard defined, Union type untested.
+        # Should keep an eye.
+        if isempty(rowIn) || isempty(colIn) || isempty(valIn)  
             x = Array{Union{AbstractString,Number}}()
             return Assoc(x,x,x,spzeros(1,1));
         end
@@ -43,14 +48,13 @@ type Assoc
         end
 
         if isa(colIn,Number)
-
             colIn = Array{Union{AbstractString,Number},1}([colIn])
         end
-
 
         if isa(valIn,Number)
             valIn = Array{Union{AbstractString,Number},1}([valIn])
         end
+
         i = rowIn;
         j = colIn;
         v = valIn;
@@ -60,23 +64,27 @@ type Assoc
 
         if isa(rowIn,AbstractString)
             row, i_out2in, i = StrUnique(rowIn); 
-            else 
+        else 
+            # Get unique sorted keys
             row = unique(i)
             sort!(row)
-            i = AbstractArray([Int64(searchsortedfirst(row,x)) for x in i])
-            i = convert(AbstractArray{Int64},i)
 
-            end
+            # Find index of row keys from triples in row (int indices for sparse matrix)
+            i = convert(AbstractArray{Int64},[searchsortedfirst(row,x) for x in i])
+
+        end
 
         if isa(colIn,AbstractString)
             col, j_out2in, j = StrUnique(colIn);
-            else
+        else
+            # Get unique sorted keys
             col = unique(j)
             sort!(col)
-            j = [searchsortedfirst(col,x) for x in j]
-            j = convert(AbstractArray{Int64},j)
 
-            end
+            # Find index of row keys from triples in row (int indices for sparse matrix)
+            j = convert(AbstractArray{Int64},[searchsortedfirst(col,x) for x in j])
+
+        end
 
         if isa(valIn,AbstractString)
             val, v_out2in, v = StrUnique(valIn);           
@@ -84,59 +92,45 @@ type Assoc
             val = unique(v)
             sort!(val)
             if (isa(valIn[1],AbstractString))
-                k = 0
+                # This bit ensures zeros are placed in any location where there are empty strings for value
                 if val[1] == "" 
-                    k =-1
-                end
-                v = [searchsortedfirst(val,x)+ k  for x in v]
-                v = convert(AbstractArray{Int64},v)
-                if val[1] == ""
                     val = val[2:end]
+                    emptyidx = v .== ""
                 end
+                v2 = convert(AbstractArray{Int64},[searchsortedfirst(val,x) for x in v])
+                v2[emptyidx] = 0
             end
         end 
 
+        # If any of r,c,v are length 1, expands to array with length of others 
         NMax = maximum([length(i) length(j) length(v)]);
         if length(i) == 1
-            x = i[1]
-            i = Array{typeof(x)}(NMax)
-            for n = 1:NMax
-                i[n] = x
-            end
+            i = repmat(i,NMax)
         end
-
         if length(j) == 1
-            x = j[1]
-            j = Array{typeof(x)}(NMax)
-            for n = 1:NMax
-                j[n] = x
-            end
+            j = repmat(j,NMax)
         end
-
         if length(v) == 1
-            x = v[1]
-            v = Array{typeof(x)}(NMax)
-            for n = 1:NMax
-                v[n] = x
-            end
+            v = repmat(v,NMax)
         end
 
-        #i = convert(AbstractArray{Int64},i)
-        if isa(val[1],AbstractString) #If the values are string, assume that there are duplicates and take the earliest one ( the numbers should be the same)
+        # Create the sparse matrix
+        # If the values are string, assume that there are duplicates 
+        # and take the earliest one (the numbers should be the same)
+        if isa(val[1],AbstractString) 
             A = sparse(i,j,v,length(row),length(col),min);
         else
             A = sparse(i,j,v,length(row),length(col),(+));
         end
-        #Accumarray isn't in Julia, use "push" for a more rapid array generation (acccumarray is too slow and cumbersome for Julia)  Sparse matrix generation condition with summation combine seem would do the trick.
-
-        #End bit with val string.  Unknown purpose.
-        if isa(val[1],Number) #if numeric, val should be [1.0]
+        
+        # If values are Numbers (not strings), actual values are stored in the sparse matrix
+        # and "val" is set to [1.0] as a signal
+        if isa(val[1],Number)
             val = convert(Array{Union{AbstractString,Number}},[1.0])
         end
         return new(row,col,val,A)
     end
 end
-
 
 #=
 Adding related operations for Assoc_orig
