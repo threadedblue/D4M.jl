@@ -106,7 +106,5 @@ function JLD.readas(serData::AssocSerial)
     end
     val = Array{Union{AbstractString,Number}}(val)
     
-    
-
     return Assoc(row,col,val,serData.A)
 end

@@ -36,21 +36,21 @@ type Assoc
     end
 
     function Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray,funcIn::Function)
-        # testing needed for isemtpy, for Matlab isemtpy is always possible
-        # TODO  Seems to work okay with String or NumArray type hard defined, Union type untested.
-        # Should keep an eye.
-        if isempty(rowIn) || isempty(colIn) || isempty(valIn)  
+        if isempty(rowIn) || isempty(colIn) || isempty(valIn)
+            # testing needed for isemtpy, for Matlab isemtpy is always possible TODO 
+            # Seems to work okay with String or NumArray type hard defined, Union type untested. 
+            # Should keep an eye.
             x = Array{Union{AbstractString,Number}}()
             return Assoc(x,x,x,spzeros(1,1));
         end
+
+        # Convert any scalar numbers to an array
         if isa(rowIn,Number)
             rowIn = Array{Union{AbstractString,Number},1}([rowIn])
         end
-
         if isa(colIn,Number)
             colIn = Array{Union{AbstractString,Number},1}([colIn])
         end
-
         if isa(valIn,Number)
             valIn = Array{Union{AbstractString,Number},1}([valIn])
         end
@@ -61,7 +61,7 @@ type Assoc
         row = rowIn;
         col = colIn;
         val = valIn;
-
+        
         if isa(rowIn,AbstractString)
             row, i_out2in, i = StrUnique(rowIn); 
         else 
@@ -71,7 +71,6 @@ type Assoc
 
             # Find index of row keys from triples in row (int indices for sparse matrix)
             i = convert(AbstractArray{Int64},[searchsortedfirst(row,x) for x in i])
-
         end
 
         if isa(colIn,AbstractString)
@@ -83,7 +82,6 @@ type Assoc
 
             # Find index of row keys from triples in row (int indices for sparse matrix)
             j = convert(AbstractArray{Int64},[searchsortedfirst(col,x) for x in j])
-
         end
 
         if isa(valIn,AbstractString)
@@ -92,31 +90,35 @@ type Assoc
             val = unique(v)
             sort!(val)
             if (isa(valIn[1],AbstractString))
+
                 # This bit ensures zeros are placed in any location where there are empty strings for value
-                if val[1] == "" 
+                if val[1] == ""
                     val = val[2:end]
                     emptyidx = v .== ""
+                else
+                    emptyidx = []
                 end
-                v2 = convert(AbstractArray{Int64},[searchsortedfirst(val,x) for x in v])
-                v2[emptyidx] = 0
+                v = convert(AbstractArray{Int64},[searchsortedfirst(val,x) for x in v])
+
+                v[emptyidx] = 0
             end
-        end 
+        end
 
         # If any of r,c,v are length 1, expands to array with length of others 
         NMax = maximum([length(i) length(j) length(v)]);
         if length(i) == 1
-            i = repmat(i,NMax)
+            i = convert(AbstractArray{Int64},repmat(i,NMax))
         end
         if length(j) == 1
-            j = repmat(j,NMax)
+            j = convert(AbstractArray{Int64},repmat(j,NMax))
         end
         if length(v) == 1
-            v = repmat(v,NMax)
+            v = convert(AbstractArray{Int64},repmat(v,NMax))
         end
 
         # Create the sparse matrix
-        # If the values are string, assume that there are duplicates 
-        # and take the earliest one (the numbers should be the same)
+        # If the values are string, assume that there are duplicates
+        # and take the earliest one ( the numbers should be the same)
         if isa(val[1],AbstractString) 
             A = sparse(i,j,v,length(row),length(col),min);
         else
