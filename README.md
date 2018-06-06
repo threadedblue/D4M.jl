@@ -60,7 +60,7 @@ You can get particular rows and columns of associative arrays by using row and c
 ```julia
 Ar = A["a,b,",:];
 Ac = A[:,"a,b,"];
-Av = A >= 2
+Av = A > "b,"
 ```
 
 Associative arrays support a variety of mathematical operations, including addition, subtraction, matrix multiplication, elementwise multiplication/division, summing across rows/columns, and more.
