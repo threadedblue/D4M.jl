@@ -32,7 +32,7 @@ function Val(A::Assoc)
     if isempty(A)
         return Union{AbstractString, Number}[]
     else
-        if isa(A.col[1], AbstractString)
+        if isa(A.val[1], AbstractString)
             return copy(A.val)
         end
         return sort(unique(nonzeros(A.A)))
