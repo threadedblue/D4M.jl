@@ -11,7 +11,13 @@ assoc_gbytes = zeros(1,length(n))
 assoc_flops = zeros(1,length(n))
 assoc_gflops = zeros(1,length(n))
 assoc_time = zeros(1,length(n))
+assoc_string_gbytes = zeros(1,length(n))
+assoc_string_flops = zeros(1,length(n))
+assoc_string_gflops = zeros(1,length(n))
+assoc_string_time = zeros(1,length(n))
 
+# Integer Labels
+println("With Integer Labels")
 for i = 1:length(n)
     
     ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
@@ -32,4 +38,29 @@ for i = 1:length(n)
     print("Time: ", assoc_time[i])
     print(", GFlops: ", assoc_gflops[i])
     println(", GBytes: ", assoc_gbytes[i])
+end
+
+
+# String Labels
+println("With String Labels")
+for i = 1:length(n)
+    
+    ii = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    jj = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    A = Assoc(ii,jj,1.0)
+
+    ii = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    jj = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    B = Assoc(ii,jj,1.0)
+
+    tic()
+    C = A*B
+    assoc_string_time[i] = toq()
+    assoc_string_flops[i] = 2*sum(C)
+    ii, jj, vv = find(C)
+    assoc_string_gbytes[i] = assoc_string_gbytes[i] + (length(ii) + length(jj)) + 8 .* m[i] ./ 1e9
+    assoc_string_gflops[i] = assoc_string_flops[i] ./ assoc_string_time[i] ./ 1e9
+    print("Time: ", assoc_string_time[i])
+    print(", GFlops: ", assoc_string_gflops[i])
+    println(", GBytes: ", assoc_string_gbytes[i])
 end

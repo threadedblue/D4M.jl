@@ -20,4 +20,3 @@ printFull(A)
 # Write to a CSV file.
 println("When written into CSV form, the data is stored in the tabular form")
 WriteCSV(A,"A.csv")
-
