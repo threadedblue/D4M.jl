@@ -13,6 +13,15 @@ assoc_flops = zeros(1,length(n))
 assoc_gflops = zeros(1,length(n))
 assoc_time = zeros(1,length(n))
 
+#=
+assoc_string_gbytes = zeros(1,length(n))
+assoc_string_flops = zeros(1,length(n))
+assoc_string_gflops = zeros(1,length(n))
+assoc_string_time = zeros(1,length(n))
+=#
+
+# Ingeger Indices and Values
+println("With integer indices and values")
 for i = 1:length(n)
     
     ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
@@ -34,3 +43,29 @@ for i = 1:length(n)
     print(", GFlops: ", assoc_gflops[i])
     println(", GBytes: ", assoc_gbytes[i])
 end
+
+#=
+# String Indices and Values
+println("With string indices and values")
+for i = 1:length(n)
+    
+    ii = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    jj = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    A = Assoc(ii,jj,"1,")
+
+    ii = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    jj = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    B = Assoc(ii,jj,"1,")
+
+    tic()
+        C = CatKeyMul(A,B)
+    assoc_string_time[i] = toq()
+    assoc_string_flops[i] = 2*sum(C)
+    ii, jj, vv = find(C)
+    assoc_string_gbytes[i] = assoc_string_gbytes[i] + (length(ii) + length(jj)) + 8 .* m[i] ./ 1e9
+    assoc_string_gflops[i] = assoc_string_flops[i] ./ assoc_string_time[i] ./ 1e9
+    print("Time: ", assoc_string_time[i])
+    print(", GFlops: ", assoc_string_gflops[i])
+    println(", GBytes: ", assoc_string_gbytes[i])
+end
+=#

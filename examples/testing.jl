@@ -114,13 +114,11 @@ function testassoc(A,B)
     pass = pass && isequal(A,B)
 end
 
-allres = load("testing_results.jld")["allres"]
-
 # Run Tests
 @testset "All Tests" begin
     include("loadD4M.jl")
     @testset "Intro Tests" begin
-    intro_res = load("testing_results/1intro_results.jld")["intro_res"]
+        intro_res = load("testing_results/1intro_results.jld")["intro_res"]
         @testset "Assoc Intro" begin
             include("1Intro/1AssocIntro/AI1_SetupTEST.jl")
             @test testassoc(A,intro_res["AI1_setup"])
