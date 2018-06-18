@@ -6,12 +6,16 @@ StringOrNumArray  = Union{AbstractString,Array,Number}
 function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     #Check if A is empty
     if nnz(A.A) == 0
-    return Assoc([1],[1],0,(+))
+        return Assoc([1],[1],0,(+))
     end
 
     # Need to check if numeric values- don't move into Vals, keep in A.A
-    return deepCondense(Assoc(A.row[i],A.col[j],A.val,A.A[i,j]))
+    if A.val == [1.0]
+        return condense(Assoc(A.row[i],A.col[j],A.val,A.A[i,j]))
+    else
+        return deepCondense(Assoc(A.row[i],A.col[j],A.val,A.A[i,j]))
     end
+end
 
 #Singular Case
 getindex(A::Assoc,i::Any) = getindex(A,i,:)

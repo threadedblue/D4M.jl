@@ -32,6 +32,9 @@ type Assoc
     
 
     function Assoc(rowIn::Array{Union{AbstractString,Number}}, colIn::Array{Union{AbstractString,Number}}, valIn::Array{Union{AbstractString,Number}}, AIn::AbstractSparseMatrix)
+        if (!isempty(valIn) && isassigned(valIn)) && isa(valIn[1],Number)
+            valIn = convert(Array{Union{AbstractString,Number}},[1.0])
+        end
         return new(rowIn,colIn,valIn,AIn)
     end
 

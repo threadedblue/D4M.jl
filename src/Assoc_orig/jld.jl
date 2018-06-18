@@ -29,7 +29,7 @@ function JLD.writeas(data::Assoc)
     val = Val(data)
     A   = Adj(data)
 
-    #Split the mapping array into string and number arraries for storage
+    #Split the mapping array into string and number arrays for storage
     rowindex = searchsortedfirst(row,AbstractString,lt=isa)
     colindex = searchsortedfirst(col,AbstractString,lt=isa)
     valindex = searchsortedfirst(val,AbstractString,lt=isa)
