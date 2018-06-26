@@ -107,8 +107,8 @@ function getindex(table::DBtableType,i::AbstractString,j::AbstractString)
     
 end
 
-UnionArray = Array{T} where T <: Union{AbstractString,Number}
-ValidQueryTypes = Union{Colon,AbstractString,UnionArray,StartsWith}
+UnionArray = Array{Union{AbstractString,Number}}
+ValidQueryTypes = Union{Colon,AbstractString,Array,UnionArray,StartsWith}
 
 getindex(table::DBtableType,i::ValidQueryTypes,j::ValidQueryTypes) = getindex(table,toDBstring(i),toDBstring(j))
 
@@ -214,7 +214,7 @@ end
 function ingestprep(input)
     StringArray = Array{T} where T <: AbstractString
     NumericArray = Array{T} where T <: Number
-    UnionArray = Array{T} where T <: Union{AbstractString,Number}
+    UnionArray = Array{Union{AbstractString,Number}}
     
     if isa(input,StringArray)
         output = convert(UnionArray,input)
@@ -229,8 +229,9 @@ function ingestprep(input)
     return output
 end
 
-UnionArray = Array{T} where T <: Union{AbstractString,Number}
-ValidType = Union{UnionArray,AbstractString}
+UnionArray = Array{Union{AbstractString,Number}}
+#StringOrNumArray = Union{AbstractString,Array,Number}
+ValidType = Union{UnionArray,AbstractString,Array,Number}
 putTriple(table::DBtableType,r::ValidType,c::ValidType,v::ValidType) = putTriple(table,ingestprep(r),ingestprep(c),ingestprep(v))
 
 # The put function deconstructs A and calls putTriple
