@@ -8,6 +8,8 @@ struct DBserver
     dbType::String
 end
 
+using JavaCall
+
 # dbsetup calls the DBserver constructor given configuration information.
 # When provided only the instance name, dbsetup assumes the default configuration directory.
 #   The default location is that on the MIT Supercloud.
@@ -34,10 +36,12 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
 
         DB = DBserver(conf["instance"],conf["hostname"],conf["username"],conf["password"],"BigTableLike")
     end
+    if ~JavaCall.isloaded()
+        println("Starting up JVM for DB operations")
+        dbinit()
+    end
     return DB
 end
-
-using JavaCall
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
     dbInfo = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbInfo"
