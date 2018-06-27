@@ -1,10 +1,7 @@
 # Set up database connections and bindings
-using JavaCall
-
 # Add required jars to classpath and then start up java
 dbinit()
 
-# 
 isdefined(:myname) || (myname="DB_Scale_") # SET LOCAL LABEL TO AVOID COLLISIONS.
 DB = dbsetup("class-db02","db.conf")
 

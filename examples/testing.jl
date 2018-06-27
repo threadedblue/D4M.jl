@@ -239,7 +239,15 @@ end
             @test testassoc(E)
             include("3Scaling/2ParallelDatabase/pDB04_DegreeTEST.jl")
             @test testassoc(Aall)
+            @testset "Using Database" begin
+                include("3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB06_AdjInsertTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB07_AdjQueryTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB08_AdjQueryItTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB09_AdjJoinTEST.jl")
+            end
         end
+        #=
         @testset "Matrix Performance" begin
             include("3Scaling/3MatrixPerformance/MP1_DenseTEST.jl")
             include("3Scaling/3MatrixPerformance/MP2_SparseTEST.jl")
@@ -248,5 +256,6 @@ end
             include("3Scaling/3MatrixPerformance/MP5_AssocCatValKeyTEST.jl")
             include("3Scaling/3MatrixPerformance/MP6_AssocPlus.jl")
         end
+        =#
     end
 end
