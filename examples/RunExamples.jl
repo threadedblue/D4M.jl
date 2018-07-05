@@ -48,6 +48,11 @@ println("Running pDB03_AssocTEST")
 include("3Scaling/2ParallelDatabase/pDB03_AssocTEST.jl")
 println("Running pDB04_DegreeTEST")
 include("3Scaling/2ParallelDatabase/pDB04_DegreeTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB06_AdjInsertTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB07_AdjQueryTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB08_AdjQueryItTEST.jl")
+include("3Scaling/2ParallelDatabase/pDB09_AdjJoinTEST.jl")
 
 # Run Matrix Performance Example
 println("Running MP1_DenseTEST")

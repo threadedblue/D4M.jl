@@ -25,6 +25,7 @@ type Assoc
     val::UnionArray
     A::AbstractSparseMatrix
     
+    # default uses min, should it be sum?
     Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray) = Assoc(rowIn,colIn,valIn,min) 
     Assoc(row::Array{Int64}, col::Array{Int64},val::Array{Int64},A::AbstractSparseMatrix) = new(row,col,val,A)
     #Setting Default Function
@@ -39,7 +40,7 @@ type Assoc
 
     function Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray,funcIn::Function)
         if isempty(rowIn) || isempty(colIn) || isempty(valIn)
-            #testing needed for isemtpy, for Matlab isemtpy is always possible TODO 
+            # testing needed for isemtpy, for Matlab isemtpy is always possible TODO 
             # Seems to work okay with String or NumArray type hard defined, Union type untested. 
             # Should keep an eye.
             x = Array{Union{AbstractString,Number}}()
@@ -136,7 +137,6 @@ type Assoc
     end
 end
 
-
 #=
 Adding related operations for Assoc_orig
 =#
@@ -171,6 +171,7 @@ include("./Assoc_orig/size.jl")
 include("./Assoc_orig/printTriple.jl")
 include("./Assoc_orig/nnz.jl")
 include("./Assoc_orig/printFull.jl")
+include("./Assoc_orig/str2num.jl")
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)

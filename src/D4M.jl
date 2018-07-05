@@ -59,6 +59,11 @@ include("sortedintersectmapping.jl")
 include("sortedunion.jl")
 include("searchsortedmapping.jl")
 
+# Database functionality
+include("DBserver.jl")
+include("DBtable.jl")
+include("dbinit.jl")
+
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model

@@ -180,7 +180,7 @@ end
             @test testassoc(E,apps_EA1["E"])
             include("2Apps/1EntityAnalysis/EA2_StatTEST.jl")
             apps_EA2 = load("testing_results/2apps_1EA2.jld")["apps_EA2"]
-            @test testassoc(sum(logical(col2type(E,"/")),1),allres["2Apps"]["EA2_stat"]["Ent"])
+            @test testassoc(sum(logical(col2type(E,"/")),1),apps_EA2["Ent"])
             @test testassoc(En,apps_EA2["En"])
             @test testassoc(An,apps_EA2["An"])
             @test full(sum(Adj(An[:,StartsWith("LOCATION/,")]),2)) == apps_EA2["plot"]
@@ -238,8 +238,14 @@ end
             @test testassoc(A)
             @test testassoc(E)
             include("3Scaling/2ParallelDatabase/pDB04_DegreeTEST.jl")
-            @test testassoc(Aout)
-            @test testassoc(Ain)
+            @test testassoc(Aall)
+            @testset "Using Database" begin
+                include("3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB06_AdjInsertTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB07_AdjQueryTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB08_AdjQueryItTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB09_AdjJoinTEST.jl")
+            end
         end
         #=
         @testset "Matrix Performance" begin
