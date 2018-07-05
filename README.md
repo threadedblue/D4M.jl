@@ -85,7 +85,7 @@ We have provided the jars that were used to test this version of D4M.jl, but you
 
 D4M.jl does rely on the JavaCall package to call the Graphulo functions that enable database communication. The above jars must be on the classpath before initializing the JVM. Note that as of now, the JavaCall package does not allow anything to be added to the classpath after intializing the JVM, and the JVM cannot be "unitialized" except by exiting Julia.
 
-For convenience we have included a `dbinit()` function that adds these jars to your classpath and initializes the JVM. If you need other jars on your classpath, add these before calling this function. Again, you can only run this once per Julia session. If you are running on a Mac, you may get a Segmentation fault when running this function, you can most likely ignore it. See <http://juliainterop.github.io/JavaCall.jl/faq.html> for more information.
+For convenience we have included a `dbinit()` function that adds these jars to your classpath and initializes the JVM. You can call this function to initialize the JVM, or it will be called on your first dbsetup() call. If you need other jars on your classpath, add these before calling this function. Again, you can only run this once per Julia session. If you are running on a Mac, you may get a Segmentation fault when running this function, you can most likely ignore it. See <http://juliainterop.github.io/JavaCall.jl/faq.html> for more information.
 
 ## Testing
 
