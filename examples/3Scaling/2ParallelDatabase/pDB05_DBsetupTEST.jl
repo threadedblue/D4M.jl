@@ -10,8 +10,14 @@ TadjDeg = DB[myname*"TadjDeg"];                    # Create database table for c
 
 Tedge = DB[myname*"Tedge",myname*"TedgeT"]; # Create database table pair for holding incidense matrix.
 TedgeDeg = DB[myname*"TedgeDeg"];                  # Create database table for counting degree.
-Tedge1 = DB[myname*"Tedge"];                       # Create binding for setting split.
-Tedge2 = DB[myname*"TedgeT"];  
+
+delete(Tedge); delete(Tadj); delete(TedgeDeg); delete(TadjDeg); 
+
+Tadj = DB[myname*"Tadj",myname*"TadjT"];    # Create database table pair for holding adjacency matrix.
+TadjDeg = DB[myname*"TadjDeg"];                    # Create database table for counting degree.
+
+Tedge = DB[myname*"Tedge",myname*"TedgeT"]; # Create database table pair for holding incidense matrix.
+TedgeDeg = DB[myname*"TedgeDeg"];                  # Create database table for counting degree.
 
 addColCombiner(TadjDeg,"OutDeg,InDeg,","sum");  # Set accumulator columns.
 addColCombiner(TedgeDeg,"Degree,","sum");      # Set accumulator columns.

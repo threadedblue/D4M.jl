@@ -17,8 +17,8 @@ for i = 1:Nfile
     put(Tadj,A)
 
     #Compute in and out degree.
-    Aout_i = putCol(sum(A,2),convert(Array{Union{AbstractString,Number}},["OutDeg"]))
-    Ain_i = putCol(sum(A,1)',convert(Array{Union{AbstractString,Number}},["InDeg"]))
+    Aout_i = putCol(sum(A,2),"OutDeg,")
+    Ain_i = putCol(sum(A,1)',"InDeg,")
 
     # Accumulate in and out degrees.
     put(TadjDeg,Aout_i)
