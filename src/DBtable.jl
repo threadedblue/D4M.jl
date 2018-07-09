@@ -73,6 +73,11 @@ function delete(table::DBtable)
     return output
 end
 
+# Given a DBtablePair, returns DBtablePair with name1 and name2 reassigned as name2 and name1, respectively.
+function transpose(table::DBtablePair)
+    return DBtablePair(table.DB, table.name2, table.name1, table.security, table.numLimit, table.numRow, table.columnfamily, table.putBytes, table.d4mQuery, table.tableOps)
+end
+
 # Base getindex function- i and j are d4m formatted strings (delimitered)
 DBtableType = Union{DBtable,DBtablePair}
 function getindex(table::DBtableType,i::AbstractString,j::AbstractString)
