@@ -6,6 +6,7 @@ struct DBserver
     user::String
     pass::String
     dbType::String
+    Graphulo
 end
 
 using JavaCall
@@ -22,25 +23,32 @@ using JavaCall
 #   See example configuration file for formatting.
 function dbsetup(instance, config="/home/gridsan/tools/groups/")
     # Note default value for config location is the MIT Supercloud default location
-    if isdir(config) # Config dir
-        dbdir = config*"/databases/"*instance
-        f = open(dbdir*"/accumulo_user_password.txt","r")
-        pword = readstring(f)
-        f = open(dbdir*"/dnsname","r")
-        hostname = replace(readstring(f),"\n","")*":2181"
-        DB = DBserver(instance,hostname,"AccumuloUser",pword,"BigTableLike")
-    else # Conifg file
-        f = open(config)
-        conf = readlines(config)
-        conf = Dict(l[1] => l[2] for l in split.(conf,"="))
-
-        DB = DBserver(conf["instance"],conf["hostname"],conf["username"],conf["password"],"BigTableLike")
-    end
+    
     if ~JavaCall.isloaded()
         println("Starting up JVM for DB operations")
         dbinit()
     end
-    return DB
+
+    if isdir(config) # Config dir
+        dbdir = config*"/databases/"*instance
+        f = open(dbdir*"/accumulo_user_password.txt","r")
+        pword = readstring(f)
+        username = "AccumuloUser"
+        f = open(dbdir*"/dnsname","r")
+        hostname = replace(readstring(f),"\n","")*":2181"
+    else # Conifg file
+        f = open(config)
+        conf = readlines(config)
+        conf = Dict(l[1] => l[2] for l in split.(conf,"="))
+        instance = conf["instance"]
+        hostname = conf["hostname"]
+        username = conf["username"]
+        pword = conf["password"]
+    end
+
+    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
+    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
+    return DBserver(conf["instance"],conf["hostname"],conf["username"],conf["password"],"BigTableLike",Graphulo)
 end
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
