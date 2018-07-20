@@ -18,6 +18,7 @@ v1str = Row((Adeg[:,"OutDeg,"] > degMin) < degMax )
 # Get vertex neighbors.
 A = logical(Tadj[v1str,:])
 
+figure()
 spy(A)
 xlabel("end vertex")
 ylabel("start vertex");

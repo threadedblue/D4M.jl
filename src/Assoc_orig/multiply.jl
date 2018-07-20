@@ -1,12 +1,10 @@
 import Base.*
 
 #=
-
 * : matrix multiply between two Assoc.
-
 If there are Strings in Assoc Value mapping, the Assoc will be reduced to logical.
-
 =#
+
 function *(A::Assoc,B::Assoc)
     #Check A,B, if string => Logical
     At = A
