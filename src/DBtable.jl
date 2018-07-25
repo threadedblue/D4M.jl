@@ -267,3 +267,28 @@ function nnz(table::DBtableType)
     
     jcall(table.tableOps,"getNumberOfEntries",jlong,(list,),tableList)
 end
+
+function addsplits(table::DBtable, splitstring)
+    jcall(table.tableOps,"addSplits", Void, (JString,JString,), table.name, splitstring)
+end
+
+function addsplits(table::DBtablePair, splitstring, splitstringT)
+
+    jcall(table.tableOps,"addSplits", Void, (JString,JString,), table.name1, splitstring)
+    jcall(table.tableOps,"addSplits", Void, (JString,JString,), table.name2, splitstringT)
+    
+end
+
+function getsplits(table::DBtableType)
+
+    if isa(table,DBtablePair)
+        splits = jcall(table.tableOps,"getSplitsString", JString, (JString,), table.name1)
+        splitsT = jcall(table.tableOps,"getSplitsString", JString, (JString,), table.name2)
+
+        return splits,splitsT
+    else
+        splits = jcall(table.tableOps,"getSplitsString", JString, (JString,), table.name)
+
+        return splits
+    end
+end
