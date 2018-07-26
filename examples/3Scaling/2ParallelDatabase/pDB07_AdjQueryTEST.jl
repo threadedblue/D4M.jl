@@ -12,12 +12,13 @@ v0str = string.(v0)
 Adeg = str2num(TadjDeg[v0str,:])
 
 # Select vertices in an out degree range.
-degMin = 5;  degMax = 10
+degMin = 5;  degMax = max(10,minimum(Val(Adeg[:,"OutDeg,"]))+1)
 v1str = Row((Adeg[:,"OutDeg,"] > degMin) < degMax )
 
 # Get vertex neighbors.
 A = logical(Tadj[v1str,:])
 
+figure()
 spy(A)
 xlabel("end vertex")
-ylabel("start vertex")
+ylabel("start vertex");

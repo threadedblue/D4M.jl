@@ -4,7 +4,7 @@ import Base.(==)
 =#
 (==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
 function equal(A::Assoc, E::Union{AbstractString,Number})
-    if (isa(E,Number) && (Val(A) == [1.0])  ) 
+    if (isa(E,Number) && (A.val == [1.0])  ) 
         tarIndex = E
     else
         tarIndex = searchsortedfirst(A.val,E)
@@ -19,6 +19,7 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
 
     Aout = Assoc(rows[mapping],cols[mapping],vals[mapping])
 
+    # May not need this anymore
     if A.val==[1.0]
         Aout = putVal(Aout,A.val)
     end

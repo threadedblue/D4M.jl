@@ -39,6 +39,7 @@ include("2Apps/2TrackAnalysis/TA2_QueryTEST.jl")
 println("Running TA3_GraphTEST")
 include("2Apps/2TrackAnalysis/TA3_GraphTEST.jl")
 
+
 # Run Parallel Database Example
 println("Running pDB01_DataTEST")
 include("3Scaling/2ParallelDatabase/pDB01_DataTEST.jl")
@@ -48,12 +49,16 @@ println("Running pDB03_AssocTEST")
 include("3Scaling/2ParallelDatabase/pDB03_AssocTEST.jl")
 println("Running pDB04_DegreeTEST")
 include("3Scaling/2ParallelDatabase/pDB04_DegreeTEST.jl")
+println("Running pDB05_DBsetupTEST")
 include("3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
+println("Running pDB06_AdjInsertTEST")
 include("3Scaling/2ParallelDatabase/pDB06_AdjInsertTEST.jl")
+println("Running pDB07_AdjQueryTEST")
 include("3Scaling/2ParallelDatabase/pDB07_AdjQueryTEST.jl")
+println("Running pDB08_AdjQueryItTEST")
 include("3Scaling/2ParallelDatabase/pDB08_AdjQueryItTEST.jl")
+println("Running pDB09_AdjJoinTEST")
 include("3Scaling/2ParallelDatabase/pDB09_AdjJoinTEST.jl")
-
 # Run Matrix Performance Example
 println("Running MP1_DenseTEST")
 include("3Scaling/3MatrixPerformance/MP1_DenseTEST.jl")

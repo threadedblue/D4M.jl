@@ -49,12 +49,12 @@ end
 println("With string indices and values")
 for i = 1:length(n)
     
-    ii = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
-    jj = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    ii = join(string.(rand(1:n[i],m[i])),",")*","
+    jj = join(string.(rand(1:n[i],m[i])),",")*","
     A = Assoc(ii,jj,"1,")
 
-    ii = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
-    jj = string.(round.(Int, floor.(rand(m[i]) .* n[i]) +1))
+    ii = join(string.(rand(1:n[i],m[i])),",")*","
+    jj = join(string.(rand(1:n[i],m[i])),",")*","
     B = Assoc(ii,jj,"1,")
 
     tic()

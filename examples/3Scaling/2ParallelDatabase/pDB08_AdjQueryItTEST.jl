@@ -1,7 +1,7 @@
 # Query adjacency matrix in a database table using an iterator. This example queries all the elements of a set of starting vertices, calculates their degrees, and finds the maximum degree.
 
 # Max elements in iterator.
-MaxElem = 1000
+MaxElem = 500
 
 # Create array of starting vertices
 Nv0 = 100
