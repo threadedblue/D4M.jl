@@ -48,7 +48,7 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
 
     g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
     Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
-    return DBserver(conf["instance"],conf["hostname"],conf["username"],conf["password"],"BigTableLike",Graphulo)
+    return DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
 end
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
