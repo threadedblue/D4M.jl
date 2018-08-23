@@ -116,7 +116,7 @@ end
 
 # Run Tests
 @testset "All Tests" begin
-    include("loadD4M.jl")
+    #include("loadD4M.jl")
     @testset "Intro Tests" begin
         intro_res = load("testing_results/1intro_results.jld")["intro_res"]
         @testset "Assoc Intro" begin
@@ -172,7 +172,6 @@ end
             @test testassoc(AeOG,intro_res["EA3_subgraph"]["AeOG2"])
         end
     end
-
     @testset "Apps" begin
         @testset "Entity Analysis" begin
             include("2Apps/1EntityAnalysis/EA1_ReadTEST.jl")
@@ -204,6 +203,12 @@ end
             @test testassoc(A[p1,p1],apps_EA5["Ap1"])
             @test testassoc(A[p2,p2] > 1,apps_EA5["Ap2"])
         end
+        PyPlot.close()
+        PyPlot.close()
+        PyPlot.close()
+        PyPlot.close()
+        PyPlot.close()
+        PyPlot.close()
         @testset "Track Analysis" begin
             include("2Apps/2TrackAnalysis/findtrackgraph.jl")
             include("2Apps/2TrackAnalysis/findtracks.jl")
@@ -228,25 +233,58 @@ end
             @test testassoc((Go > 2) & ((Go ./ G) > 0.2),apps_TA3["GoG"])
         end
     end
-
+    PyPlot.close()
+    PyPlot.close()
+    PyPlot.close()
     @testset "Scaling" begin
         @testset "Parallel Database" begin
-            include("3Scaling/2ParallelDatabase/KronGraph500NoPerm.jl")
-            include("3Scaling/2ParallelDatabase/pDB01_DataTEST.jl")
+        include("3Scaling/2ParallelDatabase/KronGraph500NoPerm.jl")
+        println("pDB01_DataTEST.jl")
+        include("3Scaling/2ParallelDatabase/pDB01_DataTEST.jl")
+        PyPlot.close()
+        PyPlot.close()
+            println("pDB02_FileTEST.jl")
             include("3Scaling/2ParallelDatabase/pDB02_FileTEST.jl")
+            println("pDB03_AssocTEST.jl")
             include("3Scaling/2ParallelDatabase/pDB03_AssocTEST.jl")
             @test testassoc(A)
             @test testassoc(E)
+            println("pDB04_DegreeTEST.jl")
             include("3Scaling/2ParallelDatabase/pDB04_DegreeTEST.jl")
+            PyPlot.close()
+            PyPlot.close()
             @test testassoc(Aall)
             @testset "Using Database" begin
+                println("pDB05_DBsetupTEST.jl")
                 include("3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
+                println("pDB06_AdjInsertTEST.jl")
                 include("3Scaling/2ParallelDatabase/pDB06_AdjInsertTEST.jl")
+                println("pDB07_AdjQueryTEST.jl")
                 include("3Scaling/2ParallelDatabase/pDB07_AdjQueryTEST.jl")
+                PyPlot.close()
+                @test testassoc(Adeg)
+                @test testassoc(A)
+                println("pDB08_AdjQueryItTEST.jl")
                 include("3Scaling/2ParallelDatabase/pDB08_AdjQueryItTEST.jl")
+                println("pDB09_AdjJoinTEST.jl")
                 include("3Scaling/2ParallelDatabase/pDB09_AdjJoinTEST.jl")
+                println("pDB10_EdgeInsertTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB10_EdgeInsertTEST.jl")
+                println("pDB11_EdgeQueryTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB11_EdgeQueryTEST.jl")
+                println("pDB12_EdgeQueryItTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB12_EdgeQueryItTEST.jl")
+                println("pDB13_EdgeJoinTEST.jl")
+                include("3Scaling/2ParallelDatabase/pDB13_EdgeJoinTEST.jl")
+                PyPlot.close()
+
             end
         end
+        
+        
+        PyPlot.close()
+        PyPlot.close()
+        PyPlot.close()
         #=
         @testset "Matrix Performance" begin
             include("3Scaling/3MatrixPerformance/MP1_DenseTEST.jl")
