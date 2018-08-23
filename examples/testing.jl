@@ -285,15 +285,19 @@ end
         PyPlot.close()
         PyPlot.close()
         PyPlot.close()
-        #=
         @testset "Matrix Performance" begin
+            println("MP1_DenseTEST.jl")
             include("3Scaling/3MatrixPerformance/MP1_DenseTEST.jl")
+            println("MP2_SparseTEST.jl")
             include("3Scaling/3MatrixPerformance/MP2_SparseTEST.jl")
+            println("MP3_AssocTEST.jl")
             include("3Scaling/3MatrixPerformance/MP3_AssocTEST.jl")
+            println("MP4_AssocCatKeyTEST.jl")
             include("3Scaling/3MatrixPerformance/MP4_AssocCatKeyTEST.jl")
+            println("MP5_AssocCatValKeyTEST.jl")
             include("3Scaling/3MatrixPerformance/MP5_AssocCatValKeyTEST.jl")
+            println("MP6_AssocPlus.jl")
             include("3Scaling/3MatrixPerformance/MP6_AssocPlus.jl")
         end
-        =#
     end
 end
