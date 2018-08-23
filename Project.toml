@@ -1,0 +1,6 @@
+authors = ["Lauren <lauren.milechin@mit.edu>"]
+name = "D4M"
+uuid = "ca196bdc-a701-11e8-3d50-3b5cc8577617"
+version = "0.1.0"
+
+[deps]
