@@ -29,7 +29,7 @@ PreviousTypes = Array{Int64}
 #It does so by building up row and column combinations of the new type with all previous types.
 
 #Get index with basic addressing.
-#Variations between Element, Array, Colon, Range
+#Variations between Element, Array, Colon, AbstractRange
 getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::PreviousTypes)                          = getindex(A,find(x-> x in i,A.row),j)
 getindex(A::Assoc,i::PreviousTypes,j::Array{Union{AbstractString,Number}})                          = getindex(A,i,find(x-> x in j,A.col))
 getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::Array{Union{AbstractString,Number}})    = getindex(A,find(x-> x in i,A.row),find(x-> x in j,A.col))
@@ -48,11 +48,11 @@ getindex(A::Assoc,i::Colon,j::Colon)                 = getindex(A,1:size(A.row,1
 
 PreviousTypes = Union{PreviousTypes,Colon}
 
-getindex(A::Assoc,i::Range,j::PreviousTypes)         = getindex(A,collect(i),j)
-getindex(A::Assoc,i::PreviousTypes,j::Range)         = getindex(A,i,collect(j))
-getindex(A::Assoc,i::Range,j::Range)                 = getindex(A,collect(i),collect(j))
+getindex(A::Assoc,i::AbstractRange,j::PreviousTypes)         = getindex(A,collect(i),j)
+getindex(A::Assoc,i::PreviousTypes,j::AbstractRange)         = getindex(A,i,collect(j))
+getindex(A::Assoc,i::AbstractRange,j::AbstractRange)                 = getindex(A,collect(i),collect(j))
 
-PreviousTypes = Union{PreviousTypes,Range}
+PreviousTypes = Union{PreviousTypes,AbstractRange}
 
 function convertrange(Akeys,r::AbstractString)
     sep = r[end]

@@ -1,5 +1,5 @@
 # Entity facet search. Shows next most common terms.
-using JLD
+using JLD2
 
 # Load data
 E = load("./Entity.jld")["E"]

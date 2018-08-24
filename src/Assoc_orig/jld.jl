@@ -1,5 +1,4 @@
-import JLD.readas
-import JLD.writeas
+import JLD2
 
 #=
 Assoc Serialized for saving
@@ -9,8 +8,7 @@ Note that saving would convert row and col types to number.
 # Delimiter for saving- using new line is safer than comma!
 del = "\n"
 
-# Change type to struct
-type AssocSerial
+struct AssocSerial
     rowstr::AbstractString
     colstr::AbstractString
     valstr::AbstractString
@@ -22,7 +20,7 @@ type AssocSerial
     A::AbstractSparseMatrix
 end
 
-function JLD.writeas(data::Assoc)
+function writeas(data::Assoc)
     #Get parts from the assoc
     row = Row(data)
     col = Col(data)
@@ -78,7 +76,7 @@ function JLD.writeas(data::Assoc)
     return AssocSerial(rowstr,colstr,valstr,rownum,colnum,valnum,A)
 end
 
-function JLD.readas(serData::AssocSerial)
+function readas(serData::AssocSerial)
     row = []
     if serData.rowstr != ""
        row = vcat(row, split(serData.rowstr,del)) ;

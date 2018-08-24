@@ -4,7 +4,7 @@
 # entity extraction algorithms applied to <1% of the NIST Rueters Corpus.
 # See: http://trec.nist.gov/data/reuters/reuters.html
 
-using JLD,PyPlot
+using JLD2,PyPlot
 
 # Load data
 file_dir = "./Entity.csv"

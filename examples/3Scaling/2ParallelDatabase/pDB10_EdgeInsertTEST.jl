@@ -1,5 +1,5 @@
 # Insert graph data into an adjacency table.
-using JLD
+using JLD2
 
 # Iterate through files
 isdefined(:Nfile) || (Nfile = 8)

@@ -2,9 +2,10 @@
 #Module for D4M
 module D4M
 
+    using LinearAlgebra,SparseArrays,JavaCall,PyPlot
     #=
         Loaded Example
-    =#
+    
     module_dir = Pkg.dir("D4M")
     ParallelDatabase_dir = module_dir*"/examples/3Scaling/2ParallelDatabase"
     example_3Scaling_2ParallelDatabase_pDB01_DataTEST = () -> include( ParallelDatabase_dir *"/pDB01_DataTEST.jl")
@@ -37,32 +38,34 @@ module D4M
     example_3Scaling_3MatrixPerformance_MP4_AssocCatKeyTEST = () -> include( MatrixPerformance_dir * "/MP4_AssocCatKeyTEST.jl")
     example_3Scaling_3MatrixPerformance_MP5_AssocCatValKeyTEST = () -> include( MatrixPerformance_dir * "/MP5_AssocCatValKeyTEST.jl")
     example_3Scaling_3MatrixPerformance_MP6_AssocPlusTEST = () -> include( MatrixPerformance_dir * "/MP6_AssocPlusTEST.jl")
+    =#
 
+    include("Assoc_orig.jl") # Associative Array
+    include("WriteCSV.jl") #load Assoc from CSV file
+    include("ReadCSV.jl") #Dump Assoc into a CSV file
+    include("GraphDegree.jl") #Calculate degree distribution
+    include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
+    include("CatKeyMul.jl") #CatKeyMultiply
+    include("CatValMul.jl") #CatValMultiply
+    include("CatStr.jl")    #Cat String
+    include("SplitStr.jl")
+    include("col2type.jl")
+    include("val2col.jl")
+
+    #Operation that gain performance benefit on sorted inputs
+    include("sortedintersect.jl")
+    include("sortedintersectmapping.jl")
+    include("sortedunion.jl")
+    include("searchsortedmapping.jl")
+
+    # Database functionality
+    include("DBserver.jl")
+    include("DBtable.jl")
+    include("dbinit.jl")
 end
 
 
-include("Assoc_orig.jl") # Associative Array
-include("WriteCSV.jl") #load Assoc from CSV file
-include("ReadCSV.jl") #Dump Assoc into a CSV file
-include("GraphDegree.jl") #Calculate degree distribution
-include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
-include("CatKeyMul.jl") #CatKeyMultiply
-include("CatValMul.jl") #CatValMultiply
-include("CatStr.jl")    #Cat String
-include("SplitStr.jl")
-include("col2type.jl")
-include("val2col.jl")
 
-#Operation that gain performance benefit on sorted inputs
-include("sortedintersect.jl")
-include("sortedintersectmapping.jl")
-include("sortedunion.jl")
-include("searchsortedmapping.jl")
-
-# Database functionality
-include("DBserver.jl")
-include("DBtable.jl")
-include("dbinit.jl")
 
 
 ########################################################

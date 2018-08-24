@@ -1,5 +1,5 @@
 # Create associative arrays from sparse matrices
-using JLD
+using JLD2
 
 # Iterate through files
 isdefined(:Nfile) || (Nfile = 8)

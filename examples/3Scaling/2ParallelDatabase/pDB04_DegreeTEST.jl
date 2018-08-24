@@ -1,5 +1,5 @@
 # Calculate and plot in and out degrees of generated Kronecker Graph
-using JLD,PyPlot
+using JLD2,PyPlot
 
 # Associative arrays to accumulate in and out degrees
 Aall = Assoc("","","")

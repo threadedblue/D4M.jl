@@ -1,4 +1,5 @@
 import Base.*
+using Distributed
 
 #=
 * : matrix multiply between two Assoc.

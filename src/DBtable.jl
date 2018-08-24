@@ -1,3 +1,4 @@
+using SparseArrays
 
 # DBtable contains the table binding information, as well as the
 # d4mQuery Java object for the table.

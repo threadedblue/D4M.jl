@@ -1,4 +1,5 @@
-import Base.nnz
+#import Base.nnz
+using SparseArrays
 
 #=
 nnz: Return the number of nonzeros in an Associative Array

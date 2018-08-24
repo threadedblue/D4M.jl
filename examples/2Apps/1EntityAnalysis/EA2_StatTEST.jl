@@ -1,6 +1,6 @@
 # Compute statistics on entity data
 
-using JLD,PyPlot
+using JLD2,PyPlot
 
 # Load the data file
 file_dir = "./Entity.jld"

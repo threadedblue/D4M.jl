@@ -1,6 +1,6 @@
 # Compute graphs from entity edge data.
 
-using JLD, PyPlot
+using JLD2, PyPlot
 
 E = load("./Entity.jld")["E"]
 E = logical(E)

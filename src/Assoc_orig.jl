@@ -1,5 +1,6 @@
 import Base.isless
 import PyPlot
+using SparseArrays
 #Allow sorting between Numbers and Strings
 isless(A::Number,B::AbstractString) = false
 isless(A::AbstractString,B::Number) = true
@@ -17,7 +18,7 @@ Support a
 =#
 
 
-type Assoc
+struct Assoc
 # TODO: "type" being depreciated, should change to struct or mutable struct
 # Should be struct- operations on A return a new Assoc, not a changed A.
     row::UnionArray

@@ -1,6 +1,6 @@
 # Various ways to query subgraphs.
 
-using JLD,PyPlot
+using JLD2,PyPlot
 
 # Load data
 E = load("./Entity.jld")["E"]

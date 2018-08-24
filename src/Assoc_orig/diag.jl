@@ -1,4 +1,5 @@
-import Base.diag
+#import Base.diag
+using LinearAlgebra
 #=
 diag : Output the diagonal of input Assoc A.
 Outputs the Assoc with only the diagonal elements of A.
