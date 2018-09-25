@@ -1,4 +1,4 @@
-import Base.print
+#import Base.print
 
 #=
 print : print Assoc in a way that mimics the Sparse Array print.

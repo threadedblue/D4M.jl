@@ -1,11 +1,11 @@
 # This is the getindex function for Assoc, the Associate Array.
-import Base.getindex
+#import Base.getindex
 StringOrNumArray  = Union{AbstractString,Array,Number}
 
 #The Base getindex function which most higher level function would call upon.
 function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     #Check if A is empty
-    if nnz(A.A) == 0
+    if isempty(A.A)
         return Assoc([1],[1],0,(+))
     end
 
@@ -57,7 +57,7 @@ PreviousTypes = Union{PreviousTypes,AbstractRange}
 function convertrange(Akeys,r::AbstractString)
     sep = r[end]
     idx = 1
-    while contains(r[idx:end],":") 
+    while occursin(r[idx:end],":") 
         idx = search(r,':',idx)
         from = rsearch(r,sep,idx-2)+1:idx-2
         to = idx+2:search(r,sep,idx+2)-1
@@ -73,9 +73,9 @@ function convertrange(Akeys,r::AbstractString)
 end
 
 #Variations of Single Sequence Strings that is separated by a single character separator.
-getindex(A::Assoc, i::AbstractString, j::PreviousTypes)   = getindex(A, find( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row), j)
-getindex(A::Assoc, i::PreviousTypes ,j::AbstractString)   = getindex(A, i ,find( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
-getindex(A::Assoc, i::AbstractString ,j::AbstractString)  = getindex(A, find( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row) ,find( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
+getindex(A::Assoc, i::AbstractString, j::PreviousTypes)   = getindex(A, findall( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row), j)
+getindex(A::Assoc, i::PreviousTypes ,j::AbstractString)   = getindex(A, i ,findall( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
+getindex(A::Assoc, i::AbstractString ,j::AbstractString)  = getindex(A, findall( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row) ,find( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
 
 PreviousTypes = Union{PreviousTypes,AbstractString}
 

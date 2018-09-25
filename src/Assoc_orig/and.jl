@@ -1,4 +1,4 @@
-import Base.&
+#import Base.&
 
 #=
 &,And : Logical & of A and B

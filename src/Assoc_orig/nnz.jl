@@ -1,5 +1,4 @@
-#import Base.nnz
-using SparseArrays
+#using SparseArrays, LinearAlgebra
 
 #=
 nnz: Return the number of nonzeros in an Associative Array
@@ -7,7 +6,12 @@ nnz: Return the number of nonzeros in an Associative Array
 
 
 function nnz(A::Assoc)
-    return nnz(A.A)
+
+    if isa(A.A,LinearAlgebra.Adjoint)
+        return nnz(A.A.parent)
+    else
+        return nnz(A.A)
+    end
 end
 
 

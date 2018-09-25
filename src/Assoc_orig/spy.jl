@@ -16,8 +16,8 @@ function spy(A::Assoc)
    else
        yIdx = 0:(length(Y)-1)
    end
-   xticks(xIdx, X[xIdx+1],rotation="vertical")
-   yticks(yIdx, Y[yIdx+1])
+   xticks(xIdx, X[collect(xIdx) .+ 1],rotation="vertical")
+   yticks(yIdx, Y[collect(yIdx) .+ 1])
    
    return im
 

@@ -1,11 +1,17 @@
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
+[[BenchmarkTools]]
+deps = ["JSON", "Pkg", "Printf", "Statistics", "Test"]
+git-tree-sha1 = "e686f1754227e4748259f400839b83a1e8773e02"
+uuid = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+version = "0.4.1"
+
 [[BinaryProvider]]
 deps = ["Libdl", "Pkg", "SHA", "Test"]
-git-tree-sha1 = "ffbf89cc49b073cffdb91381b7ee60557a03ec96"
+git-tree-sha1 = "b530fbeb6f41ab5a83fbe3db1fcbe879334bcd2d"
 uuid = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
-version = "0.4.1"
+version = "0.4.2"
 
 [[CodecZlib]]
 deps = ["BinaryProvider", "Libdl", "Pkg", "Test", "TranscodingStreams"]
@@ -21,15 +27,15 @@ version = "0.7.4"
 
 [[Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "InteractiveUtils", "Pkg", "Printf", "Reexport", "Test"]
-git-tree-sha1 = "26f24e97782dd19d52cf97073c316897ac4d0e30"
+git-tree-sha1 = "8c89e0a9a583954eae3efcf6a531e51c02b38cee"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
-version = "0.9.3"
+version = "0.9.4"
 
 [[Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "277d3807440d9793421354b6680911fc95d91a84"
+git-tree-sha1 = "ae262fa91da6a74e8937add6b613f58cd56cdad4"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "1.0.1"
+version = "1.1.0"
 
 [[Conda]]
 deps = ["Compat", "JSON", "VersionParsing"]
@@ -39,9 +45,9 @@ version = "1.0.1"
 
 [[DataStructures]]
 deps = ["InteractiveUtils", "REPL", "Random", "Serialization", "Test"]
-git-tree-sha1 = "6e72a9098f5774601c8c8d6a4511a68270594910"
+git-tree-sha1 = "5162c360c52e9265e0bfafb71415c31f746f7e04"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.11.0"
+version = "0.12.0"
 
 [[Dates]]
 deps = ["Printf"]
@@ -63,9 +69,9 @@ version = "1.0.1"
 
 [[FixedPointNumbers]]
 deps = ["Pkg", "Test"]
-git-tree-sha1 = "31cbf24d537a217475b37274df05de09882b53f1"
+git-tree-sha1 = "b8045033701c3b10bf2324d7203404be7aef88ba"
 uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
-version = "0.5.2"
+version = "0.5.3"
 
 [[InteractiveUtils]]
 deps = ["LinearAlgebra", "Markdown"]
@@ -73,9 +79,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[JLD2]]
 deps = ["CodecZlib", "DataStructures", "FileIO", "LinearAlgebra", "Mmap", "Printf", "Random", "Test"]
-git-tree-sha1 = "8f0b471c05fd5c256932bd08bb71729cbb7b966f"
+git-tree-sha1 = "3ba90ff93e1d5b9b2103588051c2d349fae54dac"
 uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-version = "0.1.1"
+version = "0.1.2"
 
 [[JSON]]
 deps = ["Dates", "Distributed", "Mmap", "Pkg", "Sockets", "Test", "Unicode"]
@@ -85,9 +91,9 @@ version = "0.19.0"
 
 [[JavaCall]]
 deps = ["DataStructures", "Dates", "Libdl", "Test", "WinReg"]
-git-tree-sha1 = "1e08e91dbacc452b90d16ca5d13223ac3905d3fb"
+git-tree-sha1 = "192aa4f92bc1b19c5e400504f26ad03c4553b265"
 uuid = "494afd89-becb-516b-aafa-70d2670c0337"
-version = "0.7.0"
+version = "0.7.1"
 
 [[LaTeXStrings]]
 deps = ["Compat"]
@@ -131,15 +137,15 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[PyCall]]
 deps = ["Compat", "Conda", "MacroTools", "Statistics", "VersionParsing"]
-git-tree-sha1 = "993d80a2cfd0fc4b2acc698370a4f9761b27cd9e"
+git-tree-sha1 = "f56428481fd0caf01cc8ecd2a0892fdaf8fddd50"
 uuid = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
-version = "1.18.2"
+version = "1.18.4"
 
 [[PyPlot]]
-deps = ["Colors", "Compat", "LaTeXStrings", "PyCall", "Test", "VersionParsing"]
-git-tree-sha1 = "3a0908224526b378cb0eb1b770385e23b70adb5c"
+deps = ["Colors", "Compat", "LaTeXStrings", "PyCall", "VersionParsing"]
+git-tree-sha1 = "777c48006c57c8bd322d2032267085983a5fd50f"
 uuid = "d330b81b-6aea-500a-939a-2ce795aea3ee"
-version = "2.6.0"
+version = "2.6.3"
 
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets"]
@@ -182,9 +188,9 @@ uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[TranscodingStreams]]
 deps = ["DelimitedFiles", "Pkg", "Random", "Test"]
-git-tree-sha1 = "a27b3a1b9c1120ef67b4647b80c61a16c09b9218"
+git-tree-sha1 = "a34a2d588e2d2825602bf14a24216d5c8b0921ec"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.8.0"
+version = "0.8.1"
 
 [[UUIDs]]
 deps = ["Random"]

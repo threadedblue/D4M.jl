@@ -1,3 +1,5 @@
+using SparseArrays, LinearAlgebra
+
 println("This file demos some of the mathematical operations on Associative Array")
 
 A = ReadCSV("A.csv")
@@ -15,7 +17,7 @@ Ab = A[:,"b,"]
 Aab = nocol(Aa) & nocol(Ab)
 
 # Compute a histogram (facets) of other columns that are in rows with both a and b
-F =  ( Aab )' * A;
+AF =  ( Aab )' * A;
 printFull(F)
 
 # Compute normalized histogram
@@ -25,5 +27,5 @@ printFull(Fn)
 # Compute correlation
 AtA = sqIn(A)
 d = diag(Adj(AtA))
-AtA = putAdj(AtA,Adj(AtA) - sparse(diagm(d)))
+AtA = putAdj(AtA,Adj(AtA) - sparse(diagm(0 => d)))
 printFull(AtA)

@@ -3,11 +3,16 @@ function sqOut(A::Assoc)
     if ! isa(A.val[1], Number)
         AtA = logical(A)
     end
+
     AA = Adj(AtA)
     AAtAA = AA * AA';
+
+#=
     AtA.A = AAtAA;
     AtA.col = AtA.row
     return AtA
+=#
+    return Assoc(copy(AtA.row),copy(AtA.row),copy(AtA.val),AAtAA)
 end
 
 ########################################################

@@ -10,11 +10,14 @@ function sqIn(A::Assoc)
     end
 
     AA = Adj(AtA)
-    AAtAA = AA' * AA;
+    AAtAA = AA' * AA
 
-    AtA.A = AAtAA;
+    #=
+    AtA.A = AAtAA
     AtA.row = AtA.col
     return AtA
+=#
+    return Assoc(copy(AtA.col),copy(AtA.col),copy(AtA.val),AAtAA)
 end
 
 ########################################################

@@ -2,7 +2,27 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra,SparseArrays,JavaCall,PyPlot
+    using LinearAlgebra, SparseArrays, JavaCall, PyPlot, DelimitedFiles
+
+    import SparseArrays: nnz, diag
+    import Base: &, ==, >, <, -, *, +, /
+    import Base: isless, find, full, getindex, isempty, print, size, sum, transpose,
+            Array, Matrix, adjoint, broadcast
+
+    export  Assoc,
+            StartsWith,
+            CatKeyMul, CatValMul,
+            CatStr,
+            col2type,
+            ReadCSV, WriteCSV,
+            print, printFull, printTriple,
+            norow, nocol,
+            logical,
+            sqIn, sqOut,
+            putAdj, putRow, putCol, putVal,
+            Adj, Row, Col, Val,
+            saveassoc, loadassoc
+
     #=
         Loaded Example
     
@@ -64,9 +84,30 @@ module D4M
     include("dbinit.jl")
 end
 
+#=
+include("Assoc_orig.jl") # Associative Array
+include("WriteCSV.jl") #load Assoc from CSV file
+include("ReadCSV.jl") #Dump Assoc into a CSV file
+include("GraphDegree.jl") #Calculate degree distribution
+include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
+include("CatKeyMul.jl") #CatKeyMultiply
+include("CatValMul.jl") #CatValMultiply
+include("CatStr.jl")    #Cat String
+include("SplitStr.jl")
+include("col2type.jl")
+include("val2col.jl")
 
+#Operation that gain performance benefit on sorted inputs
+include("sortedintersect.jl")
+include("sortedintersectmapping.jl")
+include("sortedunion.jl")
+include("searchsortedmapping.jl")
 
-
+# Database functionality
+include("DBserver.jl")
+include("DBtable.jl")
+include("dbinit.jl")
+=#
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model

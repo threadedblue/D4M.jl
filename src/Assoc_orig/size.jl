@@ -1,4 +1,4 @@
-import Base.size
+#import Base.size
 
 #=
 size: Return the dimensions of the Associative Array

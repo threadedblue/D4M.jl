@@ -1,6 +1,6 @@
-import Base.isless
-import PyPlot
-using SparseArrays
+#import Base.isless
+#import PyPlot
+#using SparseArrays
 #Allow sorting between Numbers and Strings
 isless(A::Number,B::AbstractString) = false
 isless(A::AbstractString,B::Number) = true
@@ -8,6 +8,7 @@ isless(A::AbstractString,B::Number) = true
 
 StringOrNumArray = Union{AbstractString,Array,Number}
 UnionArray = Array{Union{AbstractString,Number}}
+SparseOrTranspose = Union{AbstractSparseMatrix,Adjoint{<:Any,<:SparseMatrixCSC},Transpose{<:Any,<:SparseMatrixCSC}}
 
 #Creation of Assoc require StrUnique to split Single-Character-separated String Sequence.
 include("StrUnique.jl")
@@ -24,15 +25,17 @@ struct Assoc
     row::UnionArray
     col::UnionArray
     val::UnionArray
-    A::AbstractSparseMatrix
+    A::SparseOrTranspose
     
     # default uses min, should it be sum?
     Assoc(rowIn::StringOrNumArray,colIn::StringOrNumArray,valIn::StringOrNumArray) = Assoc(rowIn,colIn,valIn,min) 
-    Assoc(row::Array{Int64}, col::Array{Int64},val::Array{Int64},A::AbstractSparseMatrix) = new(row,col,val,A)
+    Assoc(row::Array{Int64}, col::Array{Int64},val::Array{Int64},A::SparseOrTranspose) = new(row,col,val,A)
     #Setting Default Function
+
+    #Assoc(rowIn::UnionArray,colIn::UnionArray,A::Adjoint{<:Any,<:SparseMatrixCSC}) = new(row,col,A)
     
 
-    function Assoc(rowIn::Array{Union{AbstractString,Number}}, colIn::Array{Union{AbstractString,Number}}, valIn::Array{Union{AbstractString,Number}}, AIn::AbstractSparseMatrix)
+    function Assoc(rowIn::Array{Union{AbstractString,Number}}, colIn::Array{Union{AbstractString,Number}}, valIn::Array{Union{AbstractString,Number}}, AIn::SparseOrTranspose)
         if (!isempty(valIn) && isassigned(valIn)) && isa(valIn[1],Number)
             valIn = convert(Array{Union{AbstractString,Number}},[1.0])
         end
@@ -104,20 +107,20 @@ struct Assoc
                 end
                 v = convert(AbstractArray{Int64},[searchsortedfirst(val,x) for x in v])
 
-                v[emptyidx] = 0
+                v[emptyidx] .= 0
             end
         end
 
         # If any of r,c,v are length 1, expands to array with length of others 
         NMax = maximum([length(i) length(j) length(v)]);
         if length(i) == 1
-            i = convert(AbstractArray{Int64},repmat(i,NMax))
+            i = convert(AbstractArray{Int64},repeat(i,NMax))
         end
         if length(j) == 1
-            j = convert(AbstractArray{Int64},repmat(j,NMax))
+            j = convert(AbstractArray{Int64},repeat(j,NMax))
         end
         if length(v) == 1
-            v = convert(AbstractArray{Int64},repmat(v,NMax))
+            v = convert(AbstractArray{Int64},repeat(v,NMax))
         end
 
         # Create the sparse matrix
@@ -151,7 +154,6 @@ include("./Assoc_orig/and.jl")
 include("./Assoc_orig/print.jl")
 include("./Assoc_orig/transpose.jl")
 include("./Assoc_orig/multiply.jl")
-include("./Assoc_orig/rdivide.jl")
 include("./Assoc_orig/sqIn.jl")
 include("./Assoc_orig/sqOut.jl")
 include("./Assoc_orig/accessor.jl")
@@ -173,6 +175,7 @@ include("./Assoc_orig/printTriple.jl")
 include("./Assoc_orig/nnz.jl")
 include("./Assoc_orig/printFull.jl")
 include("./Assoc_orig/str2num.jl")
+include("./Assoc_orig/broadcast.jl")
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)

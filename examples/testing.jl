@@ -1,5 +1,5 @@
 # Functions that are useful for testing
-using Test, JLD2, D4M
+using Test, JLD2, D4M, SparseArrays
 #include("loadD4M.jl")
 
 UnionArray = Array{Union{AbstractString,Number}}

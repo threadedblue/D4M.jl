@@ -1,11 +1,15 @@
-import Base.transpose
+#import Base.transpose
 
 #=
  transpose : return the transpose of Given Assoc
 =#
 
 function transpose(A::Assoc)
-    return Assoc(A.col,A.row,A.val,A.A')
+    return Assoc(A.col,A.row,A.val,Transpose(A.A))
+end
+
+function adjoint(A::Assoc)
+    return Assoc(A.col,A.row,A.val,Adjoint(A.A))
 end
 
 ########################################################
