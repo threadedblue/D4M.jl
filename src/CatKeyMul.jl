@@ -3,8 +3,8 @@ function CatKeyMul(A::Assoc,B::Assoc)
         AB = sortedintersect(A.col,B.row)
         A = A[:,AB]
         B = B[AB,:]
-        rrr,ccc,vvv = findnz(Adj(A*B))
-        ABVal = Array{Union{AbstractString,Number}}(length(rrr))
+        rrr,ccc,vvv = SparseArrays.findnz(Adj(A*B))
+        ABVal = Array{Union{AbstractString,Number},length(rrr)}
         for i in 1:length(rrr)
             r = rrr[i]
             c = ccc[i]

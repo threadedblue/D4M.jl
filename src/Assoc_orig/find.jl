@@ -1,11 +1,11 @@
 #import Base.find
 #=
-find : get the triplet of the input Assoc in three array.  Similar to findnz for sparse.
+find : get the triplet of the input Assoc in three array.  Similar to SparseArrays.findnz for sparse.
 =#
 using SparseArrays
 
 function find(A::Assoc)
-    row, col, val = findnz(A.A)
+    row, col, val = SparseArrays.findnz(A.A)
     val = Array(val)
     n = nnz(A)
     #map if the Associative array isn't numerical

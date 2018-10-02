@@ -2,10 +2,9 @@
 Reduce all value to logical, checking if that cell is empty
 =#
 
-using SparseArrays
+using SparseArrays,LinearAlgebra
 
-# spones may be depreciated in next version
-logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],spones(dropzeros!(copy(A.A))))
+logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],LinearAlgebra.fillstored!(dropzeros!(copy(A.A)),1))
 
 
 ########################################################

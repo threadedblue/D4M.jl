@@ -9,7 +9,7 @@ function >(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = searchsortedlast(Val(A),E)
     end
 
-    rowkey, colkey, valkey = findnz(A.A)
+    rowkey, colkey, valkey = SparseArrays.findnz(A.A)
     mapping = findall( x-> x > tarIndex, valkey)
     rows, cols, vals = find(A)
 

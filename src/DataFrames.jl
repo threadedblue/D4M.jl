@@ -28,7 +28,7 @@ function Assoc(df::DataFrame)
     end
     
     #Begin mapping value
-    r,c,v = findnz(mat)
+    r,c,v = SparseArrays.findnz(mat)
     val = sort!(unique(v))
     v = map(x -> searchsortedfirst(val,x),v)
     A = sparse(r,c,v)

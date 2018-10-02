@@ -1,5 +1,5 @@
 #import Base.&
-
+using LinearAlgebra
 #=
 &,And : Logical & of A and B
 =#
@@ -14,13 +14,13 @@ function and(A::Assoc, B::Assoc)
     AA = spzeros(size(ABrow,1), size(ABcol,1))
     rowMapping = searchsortedmapping(ABrow,A.row)
     colMapping = searchsortedmapping(ABcol,A.col)
-    AA = spones(A.A[rowMapping,colMapping])
+    AA = LinearAlgebra.fillstored!(copy(A.A[rowMapping,colMapping]),1)
     AA = round.(Int64,AA)
 
     BB = spzeros(size(ABrow,1), size(ABcol,1))
     rowMapping = searchsortedmapping(ABrow,B.row)
     colMapping = searchsortedmapping(ABcol,B.col)
-    BB = spones(B.A[rowMapping,colMapping])
+    BB = LinearAlgebra.fillstored!(copy(B.A[rowMapping,colMapping]),1)
     BB = round.(Int64,BB)
 
     ABA = AA .& BB 

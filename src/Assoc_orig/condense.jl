@@ -3,8 +3,8 @@ using SparseArrays
 Condense : remove empty row and column within the input Assoc A and return the new condensed Assoc
 =#
 function condense(A::Assoc)#performance improvement needed
-    nonZeroCol = findnz(sum(A.A, dims = 1))[2]
-    nonZeroRow = findnz(sum(A.A, dims = 2))[1]
+    nonZeroCol = SparseArrays.findnz(sum(A.A, dims = 1))[2]
+    nonZeroRow = SparseArrays.findnz(sum(A.A, dims = 2))[1]
     Newrow = A.row[nonZeroRow]
     Newcol = A.col[nonZeroCol]
     NewA = A.A[nonZeroRow,nonZeroCol]

@@ -9,7 +9,7 @@ function sum(A::Assoc, dim::Int64)
 end
 
 
-sum(A::Assoc) = sum(findnz(A.A)[3])
+sum(A::Assoc) = sum(SparseArrays.findnz(A.A)[3])
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model

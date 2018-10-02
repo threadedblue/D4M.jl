@@ -13,7 +13,7 @@ A = putAdj(A,Adj(A)-diagm(d))
 
 
 # Compute normalized correlation.
-i,j,v = findnz(Adj(A))
+i,j,v = SparseArrays.findnz(Adj(A))
 An = putAdj(A, sparse(i,j,v ./ min.(d[i],d[j])))
 
 # Multi-facet queries.
