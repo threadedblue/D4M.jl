@@ -4,7 +4,7 @@ deepCondense : remove empty mapping of row, column, and value, and return the co
 =#
 function deepCondense(A::Assoc)
     Anew = condense(A)
-    row,col,val = SparseArrays.findnz(Anew.A)
+    row,col,val = findnz(Anew.A)
     uniVal = sort!(unique(val))
     val = Array{Int64,1}(pmap(x -> searchsortedfirst(uniVal,x), val))
     #At this point val is the mapping to uniVal

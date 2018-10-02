@@ -8,7 +8,7 @@ function OutDegree(A)
         A = A.A
     end
     dout = sum(A,2)
-    dout_i,dout_j,dout_v = SparseArrays.findnz(dout)
+    dout_i,dout_j,dout_v = findall(!iszero,dout)
     ndout = sum(sparse(dout_i,dout_v,1),1)
     return ndout
 end
@@ -18,7 +18,7 @@ function InDegree(A)
         A = A.A
     end
     din = sum(A,1)
-    din_i,din_j,din_v = SparseArrays.findnz(din)
+    din_i,din_j,din_v = findall(!iszero,din)
     ndin = sum(sparse(din_i,din_v,1),1)
     return ndin
 end

@@ -13,7 +13,11 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
         end
     end
     
-    rowkey, colkey, valkey = SparseArrays.findnz(A.A)
+    if isa(A.A,LinearAlgebra.Adjoint)
+        rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
+    else
+        rowkey, colkey, valkey = findnz(A.A)
+    end
     mapping = find( x-> x == tarIndex, valkey)
     rows,cols,vals = find(A)
 
