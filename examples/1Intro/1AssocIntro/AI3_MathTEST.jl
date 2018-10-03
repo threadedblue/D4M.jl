@@ -17,7 +17,7 @@ Ab = A[:,"b,"]
 Aab = nocol(Aa) & nocol(Ab)
 
 # Compute a histogram (facets) of other columns that are in rows with both a and b
-AF =  ( Aab )' * A;
+F =  ( Aab )' * A;
 printFull(F)
 
 # Compute normalized histogram

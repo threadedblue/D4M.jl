@@ -47,7 +47,7 @@ struct Assoc
             # testing needed for isemtpy, for Matlab isemtpy is always possible TODO 
             # Seems to work okay with String or NumArray type hard defined, Union type untested. 
             # Should keep an eye.
-            x = Array{Union{AbstractString,Number}}()
+            x = Array{Union{AbstractString,Number}}(undef)
             return Assoc(x,x,x,spzeros(1,1));
         end
 

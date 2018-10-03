@@ -1,15 +1,15 @@
 # Various ways to query subgraphs.
 
-using JLD2,PyPlot
+using JLD2,PyPlot,LinearAlgebra,SparseArrays
 
 # Load data
-E = load("./Entity.jld")["E"]
+E = loadassoc("./Entity.jld2")
 E = logical(E)
 
 # Compute entity (all facet pairs).
 A = sqIn(E)
 d = diag(Adj(A))
-A = putAdj(A,Adj(A)-diagm(d))
+A = putAdj(A,Adj(A)-Diagonal(d))
 
 
 # Compute normalized correlation.

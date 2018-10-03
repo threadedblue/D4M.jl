@@ -4,7 +4,7 @@ function CatKeyMul(A::Assoc,B::Assoc)
         A = A[:,AB]
         B = B[AB,:]
         rrr,ccc,vvv = findnz(Adj(A*B))
-        ABVal = Array{Union{AbstractString,Number},length(rrr)}
+        ABVal = Array{Union{AbstractString,Number}}(undef,length(rrr))
         for i in 1:length(rrr)
             r = rrr[i]
             c = ccc[i]
