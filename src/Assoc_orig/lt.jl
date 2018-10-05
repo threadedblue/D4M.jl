@@ -15,7 +15,7 @@ function <(A::Assoc, E::Union{AbstractString,Number})
     else
         rowkey, colkey, valkey = findnz(A.A)
     end
-    mapping = find( x-> x < tarIndex, valkey)
+    mapping = findall( x-> x < tarIndex, valkey)
     rows, cols, vals = find(A)
 
     outA = Assoc(rows[mapping],cols[mapping],vals[mapping])
