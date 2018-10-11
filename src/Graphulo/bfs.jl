@@ -72,7 +72,7 @@ function edgebfs(A::DBtableType,v0::AbstractString,numsteps::Number,Rtable=""::A
     
     Authorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
     IteratorSetting = @jimport "org.apache.accumulo.core.client.IteratorSetting"
-    MutableLong = @import "org.apache.commons.lang.mutable.MutableLong"
+    MutableLong = @jimport "org.apache.commons.lang.mutable.MutableLong"
     
     jcall(A.DB.Graphulo,"EdgeBFS", JString, 
             (JString, JString, jint, JString, JString, 
