@@ -64,6 +64,10 @@ include("DBserver.jl")
 include("DBtable.jl")
 include("dbinit.jl")
 
+# Graphulo
+include("Graphulo/tablemult.jl")
+include("Graphulo/bfs.jl")
+
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
