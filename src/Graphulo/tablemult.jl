@@ -82,4 +82,4 @@ end
 UnionArray = Array{Union{AbstractString,Number}}
 ValidQueryTypes = Union{Colon,AbstractString,Array,UnionArray,StartsWith}
 
-tablemult(AT::DBtableType,B::DBtableType,C::AbstractString,CT::AbstractString=""; rowfilter::ValidQueryTypes="",colfilterAT::ValidQueryTypes="",colfilterB::ValidQueryTypes="") = tablemult(AT,B,C,CT; toDBstring(rowfilter),toDBstring(colfilterAT),toDBstring(colfilterB))
+tablemult(AT::DBtableType,B::DBtableType,C::AbstractString,CT::AbstractString=""; rowfilter::ValidQueryTypes="",colfilterAT::ValidQueryTypes="",colfilterB::ValidQueryTypes="") = tablemult(AT,B,C,CT; rowfilter=toDBstring(rowfilter),colfilterAT=toDBstring(colfilterAT),colfilterB=toDBstring(colfilterB))
