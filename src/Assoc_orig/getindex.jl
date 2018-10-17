@@ -75,15 +75,15 @@ end
 #Variations of Single Sequence Strings that is separated by a single character separator.
 getindex(A::Assoc, i::AbstractString, j::PreviousTypes)   = getindex(A, findall( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row), j)
 getindex(A::Assoc, i::PreviousTypes ,j::AbstractString)   = getindex(A, i ,findall( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
-getindex(A::Assoc, i::AbstractString ,j::AbstractString)  = getindex(A, findall( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row) ,find( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
+getindex(A::Assoc, i::AbstractString ,j::AbstractString)  = getindex(A, findall( x -> in(x,StrUnique(convertrange(A.row,i))[1]),A.row) ,findall( x -> in(x,StrUnique(convertrange(A.col,j))[1]),A.col))
 
 PreviousTypes = Union{PreviousTypes,AbstractString}
 
 
 #Variations by Regex
-getindex(A::Assoc, i::Regex, j::PreviousTypes)  = getindex(A, find( x -> ismatch(i,x),A.row), j)
-getindex(A::Assoc, i::PreviousTypes, j::Regex)  = getindex(A, i, find( x -> ismatch(j,x),A.col))
-getindex(A::Assoc, i::Regex, j::Regex)          = getindex(A, find( x -> ismatch(i,x),A.row), find( x -> ismatch(j,x),A.col))
+getindex(A::Assoc, i::Regex, j::PreviousTypes)  = getindex(A, findall( x -> ismatch(i,x),A.row), j)
+getindex(A::Assoc, i::PreviousTypes, j::Regex)  = getindex(A, i, findall( x -> ismatch(j,x),A.col))
+getindex(A::Assoc, i::Regex, j::Regex)          = getindex(A, findall( x -> ismatch(i,x),A.row), findall( x -> ismatch(j,x),A.col))
 
 
 PreviousTypes = Union{PreviousTypes,Regex}
