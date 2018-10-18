@@ -182,7 +182,7 @@ end
             @test testassoc(sum(logical(col2type(E,"/")),1),apps_EA2["Ent"])
             @test testassoc(En,apps_EA2["En"])
             @test testassoc(An,apps_EA2["An"])
-            @test full(sum(Adj(An[:,StartsWith("LOCATION/,")]),2)) == apps_EA2["plot"]
+            @test full(sum(adj(An[:,StartsWith("LOCATION/,")]),2)) == apps_EA2["plot"]
             include("2Apps/1EntityAnalysis/EA3_FacetTEST.jl")
             apps_EA3 = load("testing_results/2apps_1EA3.jld")["apps_EA3"]
             @test testassoc(F,apps_EA3["F"])

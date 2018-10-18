@@ -8,12 +8,12 @@ E = logical(E)
 
 # Compute entity (all facet pairs).
 A = sqIn(E)
-d = diag(Adj(A))
-A = putAdj(A,Adj(A)-Diagonal(d))
+d = diag(adj(A))
+A = putAdj(A,adj(A)-Diagonal(d))
 
 
 # Compute normalized correlation.
-i,j,v = findnz(Adj(A))
+i,j,v = findnz(adj(A))
 An = putAdj(A, sparse(i,j,v ./ min.(d[i],d[j])))
 
 # Multi-facet queries.
@@ -24,9 +24,9 @@ printFull( (A[p,x] > 4) & (An[p,x] > 0.3))
 # Triangles.
 p0 = "PERSON/john kennedy,"
 
-p1 = Row(A[p,p0] + A[p0,p])
+p1 = row(A[p,p0] + A[p0,p])
 figure()
 spy(A[p1,p1])
 
-p2 = Row( A[p1,p1] - (A[p,p0]+ A[p0,p]))
+p2 = row( A[p1,p1] - (A[p,p0]+ A[p0,p]))
 A[p2,p2] > 1

@@ -6,7 +6,7 @@ function >(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )
         tarIndex = E
     else
-        tarIndex = searchsortedlast(Val(A),E)
+        tarIndex = searchsortedlast(val(A),E)
     end
 
     if isa(A.A,LinearAlgebra.Adjoint)

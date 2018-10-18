@@ -3,7 +3,10 @@ using JLD2
 include("FindTracks.jl")
 
 # Load edge incidence matrix.
-E = load("Entity.jld")["E"]
+# Load the data file
+file_dir = "./Entity.jld2"
+E = loadassoc(file_dir)
+#E = load("Entity.jld")["E"]
 Es = E
 A = logical(E)
 
@@ -23,4 +26,4 @@ printFull( A[:,p1*p2] )
 # Track windows (Who was in Austria during this time?)
 t = "TIME/1996-09-03,:,TIME/1996-09-06,"
 x = "LOCATION/austria"
-Col(A[t,:] == x)
+col(A[t,:] == x)

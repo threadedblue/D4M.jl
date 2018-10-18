@@ -1,7 +1,10 @@
 # General approach to computing tracks from entity edge data.
 using JLD2
 
-E = load("Entity.jld")["E"]
+# Load the data file
+file_dir = "./Entity.jld2"
+E = loadassoc(file_dir)
+#E = load("Entity.jld")["E"]
 Es = E
 E = logical(E)
 
@@ -12,15 +15,15 @@ x = StartsWith("LOCATION/,")    # Set spatial range.
 a = StartsWith("PERSON/,TIME/,LOCATION/,")
 
 # Limit to edges with all three.
-E3 = E[Row( sum(E[:,p],2) & sum(E[:,t],2) & sum(E[:,x],2) ),a]
+E3 = E[row( sum(E[:,p],2) & sum(E[:,t],2) & sum(E[:,x],2) ),a]
 printFull(E3)
 
 # Collapse to get unique time and space for each edge and get triples.
-edge,time  = find(  val2col(col2type(E3[:,t],"/"),"/")  )
+edge,timeCols  = find(  val2col(col2type(E3[:,t],"/"),"/")  )
 edge,space = find(  val2col(col2type(E3[:,x],"/"),"/")  )
 
-Etx = Assoc(edge,time,space)     # Combine edge, time and space.
-Ext = Assoc(edge,space,time)     # Combine edge, space and time.
+Etx = Assoc(edge,timeCols,space)     # Combine edge, time and space.
+Ext = Assoc(edge,space,timeCols)     # Combine edge, space and time.
 
 
 # Construct time tracks with matrix multiply.

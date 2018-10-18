@@ -1,11 +1,14 @@
 # Compute tracks from entity edge data.
 
-using JLD2
+using JLD2, PyPlot
 include("findtracks.jl")
 include("findtrackgraph.jl")
 
 # Load edge incidence matrix.
-E = load("Entity.jld")["E"]
+# Load the data file
+file_dir = "./Entity.jld2"
+E = loadassoc(file_dir)
+#E = load("Entity.jld")["E"]
 E = logical(E)
 
 # Set prefixes
@@ -25,6 +28,6 @@ spy(G)
 # Track graph pattern
 o = "ORGANIZATION/international monetary fund,"
 p = StartsWith("PERSON/,")
-Go = findtrackgraph(A[:,Col(E[Row(E[:,o]),p])]);
+Go = findtrackgraph(A[:,col(E[row(E[:,o]),p])]);
 
 print((Go > 2) & ((Go ./ G) > 0.2))

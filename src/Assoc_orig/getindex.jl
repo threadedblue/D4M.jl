@@ -55,12 +55,19 @@ getindex(A::Assoc,i::AbstractRange,j::AbstractRange)                 = getindex(
 PreviousTypes = Union{PreviousTypes,AbstractRange}
 
 function convertrange(Akeys,r::AbstractString)
-    sep = r[end]
+    sep = r[end:end]
     idx = 1
-    while occursin(r[idx:end],":") 
-        idx = search(r,':',idx)
-        from = rsearch(r,sep,idx-2)+1:idx-2
-        to = idx+2:search(r,sep,idx+2)-1
+    while occursin(":",r[idx:end]) 
+        idx = findfirst(":",r)[1]
+        from = 1:idx-2
+        to = idx+2:length(r)
+
+        if occursin(sep,r[1:idx-2])
+            from = findprev(sep,r,idx-2)[1]:idx-2
+        end
+        if occursin(sep,r[idx+1:end-1])
+            to = idx+2:findnext(sep,r,idx+2)[1]-1
+        end
         newKeys = join(Akeys[searchsortedfirst(Akeys,r[from]):searchsortedlast(Akeys,r[to])],sep)
         if !isempty(newKeys)
             r = r[1:from[1]-1]*newKeys*r[to[end]+1:end]
@@ -112,11 +119,11 @@ function StartsWithHelper(Ar::Array{Union{AbstractString,Number}},S::StartsWith)
     return result_indice
 end
 
-getindex(A::Assoc,i::PreviousTypes,j::StartsWith) = getindex(A,i,StartsWithHelper(Col(A),j))
+getindex(A::Assoc,i::PreviousTypes,j::StartsWith) = getindex(A,i,StartsWithHelper(col(A),j))
 
-getindex(A::Assoc,i::StartsWith,j::PreviousTypes) = getindex(A,StartsWithHelper(Row(A),i),j)
+getindex(A::Assoc,i::StartsWith,j::PreviousTypes) = getindex(A,StartsWithHelper(row(A),i),j)
 
-getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(Row(A),i),StartsWithHelper(Col(A),j))
+getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(row(A),i),StartsWithHelper(col(A),j))
 
 PreviousTypes = Union{PreviousTypes,StartsWith}
 

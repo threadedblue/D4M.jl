@@ -23,10 +23,10 @@ end
 
 function writeas(data::Assoc)
     #Get parts from the assoc
-    row = Row(data)
-    col = Col(data)
-    val = D4M.Val(data)
-    A   = dropzeros!(Adj(data))
+    row = row(data)
+    col = col(data)
+    val = val(data)
+    A   = dropzeros!(adj(data))
 
     #Split the mapping array into string and number arrays for storage
     rowindex = searchsortedfirst(row,AbstractString,lt=isa)

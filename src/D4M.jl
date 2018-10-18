@@ -2,26 +2,32 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra, SparseArrays, JavaCall, PyPlot, DelimitedFiles
+    using LinearAlgebra, SparseArrays, JavaCall, PyPlot, DelimitedFiles, Pkg
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, find, full, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
+    import PyPlot: spy
 
     export  Assoc,
             StartsWith,
             CatKeyMul, CatValMul,
-            CatStr,
-            col2type,
+            CatStr, SplitStr, NumStr,
+            col2type, val2col,
             ReadCSV, WriteCSV,
             print, printFull, printTriple,
             norow, nocol,
-            logical,
+            logical, str2num,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
-            Adj, Row, Col, Val,
-            saveassoc, loadassoc
+            adj, row, col, val,
+            saveassoc, loadassoc,
+            OutDegree, InDegree,
+            dbsetup, ls, 
+            nnz, delete, addColCombiner,
+            put, putTriple, getiterator,
+            getsplits, addsplits
 
     #=
         Loaded Example

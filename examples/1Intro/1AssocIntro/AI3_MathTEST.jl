@@ -26,6 +26,6 @@ printFull(Fn)
 
 # Compute correlation
 AtA = sqIn(A)
-d = diag(Adj(AtA))
-AtA = putAdj(AtA,Adj(AtA) - sparse(diagm(0 => d)))
+d = diag(adj(AtA))
+AtA = putAdj(AtA,adj(AtA) - sparse(diagm(0 => d)))
 printFull(AtA)
