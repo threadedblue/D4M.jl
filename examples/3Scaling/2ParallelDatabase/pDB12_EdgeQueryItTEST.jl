@@ -18,8 +18,11 @@ EinDeg = Assoc("","","")
 
 # While there are still elements in E
 while nnz(E) > 0
+
+    global E, EinDeg
+
     # Compute in degree
-    Etmp = logical(Tedge[Row(E),:])
+    Etmp = logical(Tedge[getrow(E),:])
     EinDeg = EinDeg + sum(Etmp[:,StartsWith("In|")],1)
     
     # Get next query
@@ -27,4 +30,4 @@ while nnz(E) > 0
 end
 
 # Get vertex with the maximum degree
-EmaxInDeg = (EinDeg == maximum(Adj(EinDeg)))
+EmaxInDeg = (EinDeg == maximum(getadj(EinDeg)))

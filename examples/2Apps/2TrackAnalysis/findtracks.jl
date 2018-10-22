@@ -2,13 +2,13 @@ function findtracks(A,t,p,l);
     #FINDTRACKS creates track associative array.
     
         # Find docs that have person
-        DocIDwPer = row(A[:,p])
+        DocIDwPer = getrow(A[:,p])
     
         # Find docs that have person and location.
-        DocIDwPerLoc = row(A[DocIDwPer,l])
+        DocIDwPerLoc = getrow(A[DocIDwPer,l])
     
         # Find docs that have person, location and time.
-        DocIDwPerLocTime = row(A[DocIDwPerLoc,t])
+        DocIDwPerLocTime = getrow(A[DocIDwPerLoc,t])
     
         # Limit to these documents.
         AA = A[DocIDwPerLocTime,:]

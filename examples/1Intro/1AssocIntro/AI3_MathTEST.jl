@@ -2,7 +2,7 @@ using SparseArrays, LinearAlgebra
 
 println("This file demos some of the mathematical operations on Associative Array")
 
-A = ReadCSV("A.csv")
+A = ReadCSV(joinpath(Base.source_dir(),"A.csv"))
 A = logical(A)
 printFull(A)
 
@@ -26,6 +26,6 @@ printFull(Fn)
 
 # Compute correlation
 AtA = sqIn(A)
-d = diag(adj(AtA))
-AtA = putAdj(AtA,adj(AtA) - sparse(diagm(0 => d)))
+d = diag(getadj(AtA))
+AtA = putAdj(AtA,getadj(AtA) - sparse(diagm(0 => d)))
 printFull(AtA)

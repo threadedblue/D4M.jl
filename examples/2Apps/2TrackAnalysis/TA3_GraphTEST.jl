@@ -6,7 +6,7 @@ include("findtrackgraph.jl")
 
 # Load edge incidence matrix.
 # Load the data file
-file_dir = "./Entity.jld2"
+file_dir = joinpath(Base.source_dir(),"./Entity.jld2")
 E = loadassoc(file_dir)
 #E = load("Entity.jld")["E"]
 E = logical(E)
@@ -28,6 +28,6 @@ spy(G)
 # Track graph pattern
 o = "ORGANIZATION/international monetary fund,"
 p = StartsWith("PERSON/,")
-Go = findtrackgraph(A[:,col(E[row(E[:,o]),p])]);
+Go = findtrackgraph(A[:,getcol(E[getrow(E[:,o]),p])]);
 
 print((Go > 2) & ((Go ./ G) > 0.2))

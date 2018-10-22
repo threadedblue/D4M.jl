@@ -9,7 +9,7 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = E
     else
         tarIndex = searchsortedfirst(A.val,E)
-        if !(E == val(A)[tarIndex])
+        if !(E == getval(A)[tarIndex])
             tarIndex = 0
         end
     end

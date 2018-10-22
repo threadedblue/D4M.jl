@@ -3,8 +3,8 @@ function findtrackgraph(Atrack)
     
         # Find 1 hop and >1 hop tracks.
         AtrackHop = sum(Atrack,1)
-        Hop1 = col(AtrackHop == 1)
-        Hop2 = col(AtrackHop > 1) 
+        Hop1 = getcol(AtrackHop == 1)
+        Hop2 = getcol(AtrackHop > 1) 
     
         # Get track list.  Naturally comes out sorted by p.
         t1,p1,x1 = find(Atrack[:,Hop1])

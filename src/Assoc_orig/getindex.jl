@@ -119,11 +119,11 @@ function StartsWithHelper(Ar::Array{Union{AbstractString,Number}},S::StartsWith)
     return result_indice
 end
 
-getindex(A::Assoc,i::PreviousTypes,j::StartsWith) = getindex(A,i,StartsWithHelper(col(A),j))
+getindex(A::Assoc,i::PreviousTypes,j::StartsWith) = getindex(A,i,StartsWithHelper(getcol(A),j))
 
-getindex(A::Assoc,i::StartsWith,j::PreviousTypes) = getindex(A,StartsWithHelper(row(A),i),j)
+getindex(A::Assoc,i::StartsWith,j::PreviousTypes) = getindex(A,StartsWithHelper(getrow(A),i),j)
 
-getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(row(A),i),StartsWithHelper(col(A),j))
+getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(getrow(A),i),StartsWithHelper(getcol(A),j))
 
 PreviousTypes = Union{PreviousTypes,StartsWith}
 

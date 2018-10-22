@@ -4,7 +4,7 @@ function sqOut(A::Assoc)
         AtA = logical(A)
     end
 
-    AA = adj(AtA)
+    AA = getadj(AtA)
     AAtAA = AA * AA';
 
 #=

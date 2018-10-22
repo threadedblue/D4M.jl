@@ -2,7 +2,7 @@
 using JLD2
 
 # Load the data file
-file_dir = "./Entity.jld2"
+file_dir = joinpath(Base.source_dir(),"./Entity.jld2")
 E = loadassoc(file_dir)
 #E = load("Entity.jld")["E"]
 Es = E
@@ -15,7 +15,7 @@ x = StartsWith("LOCATION/,")    # Set spatial range.
 a = StartsWith("PERSON/,TIME/,LOCATION/,")
 
 # Limit to edges with all three.
-E3 = E[row( sum(E[:,p],2) & sum(E[:,t],2) & sum(E[:,x],2) ),a]
+E3 = E[getrow( sum(E[:,p],2) & sum(E[:,t],2) & sum(E[:,x],2) ),a]
 printFull(E3)
 
 # Collapse to get unique time and space for each edge and get triples.

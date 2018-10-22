@@ -2,11 +2,11 @@
 #=
 Protected Accessor Function for User.
 =#
-function adj(A::Assoc)
+function getadj(A::Assoc)
     return copy(A.A)
 end
 
-function col(A::Assoc)
+function getcol(A::Assoc)
     if isempty(A)
         return Union{AbstractString, Number}[]
     else
@@ -17,7 +17,7 @@ function col(A::Assoc)
     end
 end
 
-function row(A::Assoc)
+function getrow(A::Assoc)
     if isempty(A)
         return Union{AbstractString, Number}[]
     else
@@ -28,7 +28,7 @@ function row(A::Assoc)
     end
 end
 
-function val(A::Assoc)
+function getval(A::Assoc)
     if isempty(A)
         return Union{AbstractString, Number}[]
     else

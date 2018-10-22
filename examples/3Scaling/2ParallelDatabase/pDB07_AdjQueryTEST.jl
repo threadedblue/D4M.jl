@@ -12,8 +12,8 @@ v0str = string.(v0)
 Adeg = str2num(TadjDeg[v0str,:])
 
 # Select vertices in an out degree range.
-degMin = 5;  degMax = max(10,minimum(Val(Adeg[:,"OutDeg,"]))+1)
-v1str = Row((Adeg[:,"OutDeg,"] > degMin) < degMax )
+degMin = 5;  degMax = max(100,minimum(getval(Adeg[:,"OutDeg,"]))+1)
+v1str = getrow((Adeg[:,"OutDeg,"] > degMin) < degMax )
 
 # Get vertex neighbors.
 A = logical(Tadj[v1str,:])

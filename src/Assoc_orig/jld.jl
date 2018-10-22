@@ -23,10 +23,10 @@ end
 
 function writeas(data::Assoc)
     #Get parts from the assoc
-    row = row(data)
-    col = col(data)
-    val = val(data)
-    A   = dropzeros!(adj(data))
+    row = getrow(data)
+    col = getcol(data)
+    val = getval(data)
+    A   = dropzeros!(getadj(data))
 
     #Split the mapping array into string and number arrays for storage
     rowindex = searchsortedfirst(row,AbstractString,lt=isa)

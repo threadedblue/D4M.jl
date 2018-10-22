@@ -21,7 +21,7 @@ module D4M
             logical, str2num,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
-            adj, row, col, val,
+            getadj, getrow, getcol, getval,
             saveassoc, loadassoc,
             OutDegree, InDegree,
             dbsetup, ls, 

@@ -1,8 +1,8 @@
 import PyPlot.spy,PyPlot.xticks,PyPlot.yticks,SparseArrays
 function spy(A::Assoc)
-   im = spy(adj(logical(A)))
-   X = col(A)
-   Y = row(A)
+   im = spy(getadj(logical(A)))
+   X = getcol(A)
+   Y = getrow(A)
 
    numIdx = 8
    
