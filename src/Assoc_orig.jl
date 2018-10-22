@@ -108,6 +108,13 @@ struct Assoc
                 v = convert(AbstractArray{Int64},[searchsortedfirst(val,x) for x in v])
 
                 v[emptyidx] .= 0
+
+            else # convert v to Int64 or Float64
+                if any(isa.(v,Float64)) # If there are any floats, convert all to float
+                    v = convert(AbstractArray{Float64},v)
+                else
+                    v = convert(AbstractArray{Int64},v)
+                end
             end
         end
 
