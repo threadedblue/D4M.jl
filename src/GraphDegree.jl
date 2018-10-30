@@ -3,13 +3,16 @@ OutDegree : Calculate the out-degree distribution of graph A
 InDegree : Calculate the in-degree distribution of graph A
 =#
 
+using SparseArrays
+
 function OutDegree(A)
     if isa(A,Assoc)
         A = A.A
     end
-    dout = sum(A,2)
-    dout_i,dout_j,dout_v = findall(!iszero,dout)
-    ndout = sum(sparse(dout_i,dout_v,1),1)
+    dout = sum(A,dims = 2)
+    dout_i = getindex.(findall(!iszero,dout),1)
+    dout_v = dout[dout_i]
+    ndout = sum(sparse(dout_i,dout_v,1),dims = 1)
     return ndout
 end
 
@@ -17,9 +20,10 @@ function InDegree(A)
     if isa(A,Assoc)
         A = A.A
     end
-    din = sum(A,1)
-    din_i,din_j,din_v = findall(!iszero,din)
-    ndin = sum(sparse(din_i,din_v,1),1)
+    din = sum(A,dims = 1)
+    din_i = getindex.(findall(!iszero,din),1)
+    din_v = din[din_i]
+    ndin = sum(sparse(din_i,din_v,1),dims = 1)
     return ndin
 end
 

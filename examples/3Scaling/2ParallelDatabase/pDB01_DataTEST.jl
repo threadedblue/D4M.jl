@@ -1,11 +1,11 @@
 ##Testing the Generation of Kronecker Graph
 include("KronGraph500NoPerm.jl")
-using PyPlot
+using PyPlot, SparseArrays
 
 # Set scale, average degree, and determine number of vertices and edges
 SCALE = 12
 EdgesPerVertex = 16
-Nmax = 2.^SCALE
+Nmax = 2 .^ SCALE
 M = EdgesPerVertex .* Nmax
 
 println("Maximum number of vertices: "*string(Nmax))
@@ -17,10 +17,10 @@ A = sparse(v1,v2,1)
 
 # Visualize graph with spy plot
 figure()
-spy(A)
+spy(convert(Array,A))
 
 # Plot degree distribution
 figure()
-loglog(full(OutDegree(A))',"o")
+loglog(convert(Array,OutDegree(A)'),"o")
 xlabel("degree")
 ylabel("count")

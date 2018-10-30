@@ -1,6 +1,6 @@
-import PyPlot.spy,PyPlot.xticks,PyPlot.yticks,SparseArrays
+import PyPlot.spy,PyPlot.xticks,PyPlot.yticks
 function spy(A::Assoc)
-   im = spy(getadj(logical(A)))
+   im = spy(convert(Array,getadj(logical(A))))
    X = getcol(A)
    Y = getrow(A)
 

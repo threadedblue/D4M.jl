@@ -2,6 +2,6 @@
 
 function str2num(A::Assoc)
     r,c,v = find(A)
-    v = parse.(v)
+    v = Meta.parse.(v)
     A = Assoc(r,c,v)
 end

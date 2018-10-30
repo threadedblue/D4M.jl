@@ -1,5 +1,10 @@
 #import Base.sum
 function sum(A::Assoc, dim::Int64)
+
+    if(A.val != [1.0])
+        A = logical(A)
+    end
+
     if(dim == 1)
         return condense(Assoc(promote([1.0],A.row)[1],A.col, promote([1.0],A.val)[1],sparse(sum(A.A, dims = 1))))
     elseif (dim == 2)
@@ -9,7 +14,15 @@ function sum(A::Assoc, dim::Int64)
 end
 
 
-sum(A::Assoc) = sum(A.A)
+function sum(A::Assoc)
+
+    if(A.val != [1.0])
+        A = logical(A)
+    end
+    
+    sum(A.A)
+
+end
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model

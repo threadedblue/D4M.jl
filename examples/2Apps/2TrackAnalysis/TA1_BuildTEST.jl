@@ -16,7 +16,7 @@ a = StartsWith("PERSON/,TIME/,LOCATION/,")
 
 # Limit to edges with all three.
 E3 = E[getrow( sum(E[:,p],2) & sum(E[:,t],2) & sum(E[:,x],2) ),a]
-printFull(E3)
+printFull(E3[1:5,:])
 
 # Collapse to get unique time and space for each edge and get triples.
 edge,timeCols  = find(  val2col(col2type(E3[:,t],"/"),"/")  )

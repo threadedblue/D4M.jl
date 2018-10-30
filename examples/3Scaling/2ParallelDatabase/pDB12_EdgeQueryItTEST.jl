@@ -11,7 +11,7 @@ v0 = "Out|" .* string.(ceil.(Int,10000*rand(Nv0,1)))
 TedgeIt = getiterator(Tedge,MaxElem)
 
 # Start query iterator
-E= logical(TedgeIt[:,v0str])
+E = logical(TedgeIt[:,v0str])
 
 # Initialize AinDeg to accumulate output
 EinDeg = Assoc("","","")
