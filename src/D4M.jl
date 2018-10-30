@@ -2,7 +2,7 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra, SparseArrays, JavaCall, PyPlot, DelimitedFiles, Pkg
+    using LinearAlgebra, SparseArrays, JavaCall, PyPlot, DelimitedFiles
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
@@ -87,7 +87,7 @@ module D4M
     # Database functionality
     include("DBserver.jl")
     include("DBtable.jl")
-    include("dbinit.jl")
+    #include("dbinit.jl")
 end
 
 #=
