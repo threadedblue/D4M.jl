@@ -1,6 +1,4 @@
 
-using D4M
-
 n = 2 .^ [6 6 7 8 9 10 11 12 13 14 15 16 17 18]
 
 K = 8
@@ -16,17 +14,15 @@ assoc_time = zeros(1,length(n))
 
 for i = 1:length(n)
     
-    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
-    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) .+1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) .+1) 
     A = Assoc(ii,jj,1.0)
 
-    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
-    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) .+1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) .+1) 
     B = Assoc(ii,jj,1.0)
 
-    tic()
-    C = A+B
-    assoc_time[i] = toq()
+    assoc_time[i] = @elapsed C = A+B
     assoc_flops[i] = 2*sum(C)
     ii, jj, vv = find(C)
     assoc_gbytes[i] = assoc_gbytes[i] + (length(ii) + length(jj)) + 8 .* m[i] ./ 1e9

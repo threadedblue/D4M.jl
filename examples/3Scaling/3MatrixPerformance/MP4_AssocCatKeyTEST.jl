@@ -23,18 +23,18 @@ assoc_string_time = zeros(1,length(n))
 # Ingeger Indices and Values
 println("With integer indices and values")
 for i = 1:length(n)
+
+    global assoc_gflops, assoc_time, assoc_gbytes, assoc_flops
     
-    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
-    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1) 
     A = Assoc(ii,jj,1.0)
 
-    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
-    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1) 
     B = Assoc(ii,jj,1.0)
 
-    tic()
-        C = CatKeyMul(A,B)
-    assoc_time[i] = toq()
+    assoc_time[i] = @elapsed C = CatKeyMul(A,B)
     assoc_flops[i] = 2*sum(C)
     ii, jj, vv = find(C)
     assoc_gbytes[i] = assoc_gbytes[i] + (length(ii) + length(jj)) + 8 .* m[i] ./ 1e9
