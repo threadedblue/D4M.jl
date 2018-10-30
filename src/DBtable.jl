@@ -33,12 +33,14 @@ end
 # Deletes specified DB table
 # TODO: add check whether want to delete
 function delete(table::DBtable)
-    jcall(table.tableOps,"deleteTable", Void, (JString,), table.name)
+    jcall(table.tableOps,"deleteTable", Nothing, (JString,), table.name)
+    return nothing
  end
  
  function delete(table::DBtablePair)
-     jcall(table.tableOps,"deleteTable", Void, (JString,), table.name1)
-     jcall(table.tableOps,"deleteTable", Void, (JString,), table.name2)
+     jcall(table.tableOps,"deleteTable", Nothing, (JString,), table.name1)
+     jcall(table.tableOps,"deleteTable", Nothing, (JString,), table.name2)
+     return nothing
  end
 
  # Helper function to convert Assoc fields to an Accumulo-friendly string
@@ -58,14 +60,14 @@ function delete(table::DBtable)
     elseif isa(input,StartsWith)
         str = input.inputString
         output = ""
-        del = str[end]
+        del = str[end:end]
         idx1 = 1
-        idx2 = search(str,del,idx1+1)
+        idx2 = findnext(del,str,idx1+1)
 
-        while idx2 > 0
-            output = output*str[idx1:idx2]*":"*del*str[idx1:idx2-1]*Char(127)*del
-            idx1 = idx2+1
-            idx2 = search(str,del,idx2+1)
+        while ~isa(idx2,Nothing)
+            output = output*str[idx1:idx2[1]]*":"*del*str[idx1:idx2[1]-1]*Char(127)*del
+            idx1 = idx2[1]+1
+            idx2 = findnext(del,str,idx1)
         end
     else
         output = input
@@ -78,16 +80,16 @@ end
 DBtableType = Union{DBtable,DBtablePair}
 function getindex(table::DBtableType,i::AbstractString,j::AbstractString)
     
-    jcall(table.d4mQuery,"setCloudType", Void, (JString,), table.DB.dbType)
-    jcall(table.d4mQuery,"setLimit", Void, (jint,), table.numLimit)
-    jcall(table.d4mQuery,"reset", Void, (),)
+    jcall(table.d4mQuery,"setCloudType", Nothing, (JString,), table.DB.dbType)
+    jcall(table.d4mQuery,"setLimit", Nothing, (jint,), table.numLimit)
+    jcall(table.d4mQuery,"reset", Nothing, (),)
     
     dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
     
     if i!=":" || j==":" || isa(table,DBtable)
         
         if isa(table,DBtablePair)
-            jcall(table.d4mQuery,"setTableName", Void, (JString,), table.name1)
+            jcall(table.d4mQuery,"setTableName", Nothing, (JString,), table.name1)
         end
         jcall(table.d4mQuery,"doMatlabQuery",dbResultSet,(JString,JString,JString,JString,),i,j,table.columnfamily,table.security)
 
@@ -95,7 +97,7 @@ function getindex(table::DBtableType,i::AbstractString,j::AbstractString)
         c = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
         
     else # Search transpose table if column query
-        jcall(table.d4mQuery,"setTableName", Void, (JString,), table.name2)
+        jcall(table.d4mQuery,"setTableName", Nothing, (JString,), table.name2)
         jcall(table.d4mQuery,"doMatlabQuery",dbResultSet,(JString,JString,JString,JString,),j,i,table.columnfamily,table.security)
 
         c = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
@@ -143,7 +145,7 @@ function getindex(table::DBtableType)
     
     #T.d4mQuery.next();
     #dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
-    jcall(table.d4mQuery,"next",Void,(),)
+    jcall(table.d4mQuery,"next",Nothing,(),)
     
     # check if transpose table query- if so flip the r and c results.
     tablename = jcall(table.d4mQuery,"getTableName", JString, (),)
@@ -202,11 +204,11 @@ function putTriple(table::DBtableType,r::UnionArray,c::UnionArray,v::UnionArray)
         cc = toDBstring(c[i:iNext]);
         vv = toDBstring(v[i:iNext]);
         
-        jcall(insertObj,"doProcessing",Void,(JString,JString,JString,JString,JString,),rr, cc, vv, table.columnfamily, table.security)
+        jcall(insertObj,"doProcessing",Nothing,(JString,JString,JString,JString,JString,),rr, cc, vv, table.columnfamily, table.security)
         
         # Insert transpose into transpose table if DBtablePair
         if isa(table,DBtablePair)
-            jcall(insertObjT,"doProcessing",Void,(JString,JString,JString,JString,JString,),cc, rr, vv, table.columnfamily, table.security)
+            jcall(insertObjT,"doProcessing",Nothing,(JString,JString,JString,JString,JString,),cc, rr, vv, table.columnfamily, table.security)
         end
     end
     
@@ -249,7 +251,7 @@ end
     #      specify "min_decimal", "max_decimal", or "sum_decimal"
     #      to obtain the ability to combine on decimals
 function addColCombiner(table::DBtable,colNames=":,",combineType="sum")   
-        jcall(table.tableOps,"designateCombiningColumns", Void, (JString, JString, JString, JString,), table.name, colNames, combineType, table.columnfamily)
+        jcall(table.tableOps,"designateCombiningColumns", Nothing, (JString, JString, JString, JString,), table.name, colNames, combineType, table.columnfamily)
 end
 
 # nnz returns the number of entries in specified table
@@ -270,13 +272,13 @@ function nnz(table::DBtableType)
 end
 
 function addsplits(table::DBtable, splitstring)
-    jcall(table.tableOps,"addSplits", Void, (JString,JString,), table.name, splitstring)
+    jcall(table.tableOps,"addSplits", Nothing, (JString,JString,), table.name, splitstring)
 end
 
 function addsplits(table::DBtablePair, splitstring, splitstringT)
 
-    jcall(table.tableOps,"addSplits", Void, (JString,JString,), table.name1, splitstring)
-    jcall(table.tableOps,"addSplits", Void, (JString,JString,), table.name2, splitstringT)
+    jcall(table.tableOps,"addSplits", Nothing, (JString,JString,), table.name1, splitstring)
+    jcall(table.tableOps,"addSplits", Nothing, (JString,JString,), table.name2, splitstringT)
     
 end
 
