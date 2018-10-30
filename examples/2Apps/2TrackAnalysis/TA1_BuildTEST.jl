@@ -2,7 +2,7 @@
 using JLD2
 
 # Load the data file
-file_dir = joinpath(Base.source_dir(),"./Entity.jld2")
+file_dir = joinpath(Base.source_dir(),"../1EntityAnalysis/Entity.jld2")
 E = loadassoc(file_dir)
 #E = load("Entity.jld")["E"]
 Es = E

@@ -6,7 +6,7 @@ include("findtrackgraph.jl")
 
 # Load edge incidence matrix.
 # Load the data file
-file_dir = joinpath(Base.source_dir(),"./Entity.jld2")
+file_dir = joinpath(Base.source_dir(),"../1EntityAnalysis/Entity.jld2")
 E = loadassoc(file_dir)
 #E = load("Entity.jld")["E"]
 E = logical(E)
