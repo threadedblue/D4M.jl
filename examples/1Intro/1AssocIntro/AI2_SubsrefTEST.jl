@@ -1,6 +1,6 @@
 println("This is a test on the subreferencing of Associative Array")
 
-A = ReadCSV("A.csv")
+A = ReadCSV(joinpath(Base.source_dir(),"A.csv"))
 
 # Get rows a and b.
 println("Get rows a and b:")

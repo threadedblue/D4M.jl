@@ -2,7 +2,7 @@
 
 using JLD2, PyPlot
 
-E = loadassoc("./Entity.jld2")
+E = loadassoc(joinpath(Base.source_dir(),"./Entity.jld2"))
 E = logical(E)
 
 # Computing adjacency matrix for the Entity-Entity graph.

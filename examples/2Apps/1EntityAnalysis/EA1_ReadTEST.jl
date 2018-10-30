@@ -7,8 +7,8 @@
 using JLD2,FileIO,PyPlot,SparseArrays
 
 # Load data
-file_dir = "./Entity.csv"
-save_dir = "./Entity.jld2"
+file_dir = joinpath(Base.source_dir(),"./Entity.csv")
+save_dir = joinpath(Base.source_dir(),"./Entity.jld2")
 E = ReadCSV(file_dir)
 print(E[1:5,:])
 

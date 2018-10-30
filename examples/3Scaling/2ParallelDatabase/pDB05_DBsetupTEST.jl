@@ -1,9 +1,9 @@
 # Set up database connections and bindings
 # Add required jars to classpath and then start up java
-dbinit()
+#dbinit()
 
-isdefined(:myname) || (myname="DB_Scale_") # SET LOCAL LABEL TO AVOID COLLISIONS.
-DB = dbsetup("class-db02","db.conf")
+(@isdefined myname) || (myname="DB_Scale_") # SET LOCAL LABEL TO AVOID COLLISIONS.
+DB = dbsetup("uno",joinpath(Base.source_dir(),"db.conf"))
 
 Tadj = DB[myname*"Tadj",myname*"TadjT"];    # Create database table pair for holding adjacency matrix.
 TadjDeg = DB[myname*"TadjDeg"];                    # Create database table for counting degree.

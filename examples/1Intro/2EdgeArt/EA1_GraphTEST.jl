@@ -1,7 +1,7 @@
 # Forming adjacency graphs.
 
 # Read CSV file into associative array.
-E = ReadCSV("Edge.csv")
+E = ReadCSV(joinpath(Base.source_dir(),"Edge.csv"))
 
 # Get vertices and convert to numbers.
 Ev = logical( E[:, StartsWith("V,")] )

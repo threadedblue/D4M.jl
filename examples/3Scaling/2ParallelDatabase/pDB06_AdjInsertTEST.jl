@@ -2,16 +2,16 @@
 using JLD2
 
 # Iterate through files
-isdefined(:Nfile) || (Nfile = 8)
+(@isdefined Nfile) || (Nfile = 8)
 for i = 1:Nfile
-    tic();
+    inserttime = @elapsed begin
 
     # Create filename
-    fname = "data/"*string(i)
+    fname = joinpath(Base.source_dir(),"data",string(i))
     println("On file: "*string(i))
 
     # Load associative array.
-    A = load(fname*".A.jld")["A"]
+    A = loadassoc(fname*".A.jld")
 
     # Insert associative array.
     put(Tadj,A)
@@ -24,8 +24,8 @@ for i = 1:Nfile
     put(TadjDeg,Aout_i)
     put(TadjDeg,Ain_i)
             
-    insertTime = toc()
-    println("Time: "*string(insertTime)*", Edges/sec: "*string((2*nnz(A)+nnz(Aout_i)+nnz(Ain_i))./insertTime))
+    end
+    println("Time: "*string(inserttime)*", Edges/sec: "*string((2*nnz(A)+nnz(Aout_i)+nnz(Ain_i))./inserttime))
     #println(['Time: ' num2str(insertTime) ', Edges/sec: ' num2str((2*nnz(A)+nnz(Aout_i)+nnz(Ain_i))./insertTime)]); 
 end
 

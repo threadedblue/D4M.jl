@@ -2,7 +2,7 @@
 using JLD2, SparseArrays
 
 # Load data
-file_dir = "./Entity.jld2"
+file_dir = joinpath(Base.source_dir(),"./Entity.jld2")
 E = loadassoc(file_dir)
 E = logical(E)
 
