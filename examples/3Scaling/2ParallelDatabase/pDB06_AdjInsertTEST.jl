@@ -1,5 +1,5 @@
 # Insert graph data into an adjacency table.
-using JLD2
+using JLD
 
 # Iterate through files
 (@isdefined Nfile) || (Nfile = 8)
@@ -11,7 +11,8 @@ for i = 1:Nfile
     println("On file: "*string(i))
 
     # Load associative array.
-    A = loadassoc(fname*".A.jld")
+    #A = loadassoc(fname*".A.jld")
+    A = load(fname*".A.jld")["A"]
 
     # Insert associative array.
     put(Tadj,A)

@@ -6,9 +6,10 @@ module D4M
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
-    import Base: isless, find, full, getindex, isempty, print, size, sum, transpose,
-            Array, Matrix, adjoint, broadcast
+    import Base: isless, getindex, isempty, print, size, sum, transpose,
+            Array, Matrix, adjoint, broadcast, find
     import PyPlot: spy
+    import JLD: writeas, readas
 
     export  Assoc,
             StartsWith,
@@ -21,8 +22,8 @@ module D4M
             logical, str2num,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
-            getadj, getrow, getcol, getval,
-            saveassoc, loadassoc,
+            getadj, getrow, getcol, getval, find,
+            #saveassoc, loadassoc,
             OutDegree, InDegree,
             dbsetup, ls, 
             nnz, delete, addColCombiner,

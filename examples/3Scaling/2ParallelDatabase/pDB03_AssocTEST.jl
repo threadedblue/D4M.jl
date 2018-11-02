@@ -23,8 +23,9 @@ for i = 1:Nfile
         close(fidVal)
 
         # Construct adjacency associative array and sum duplicates
-        A = Assoc(rowStr,colStr,1,(sum))
-        saveassoc(fname*".A.jld",A)
+        A = Assoc(rowStr,colStr,1)
+        save(fname*".A.jld","A",A)
+        #saveassoc(fname*".A.jld",A)
 
         if i == 1; global testA = A; end
 
@@ -41,8 +42,9 @@ for i = 1:Nfile
         inStr = CatStr(fill("In",length(colStr)),"|",colStr)
 
         # Create directed incidence Assoc
-        E = Assoc([edgeStr; edgeStr],[outStr; inStr],[valStr; valStr]) 
-        saveassoc(fname*".E.jld",E)
+        E = Assoc([edgeStr; edgeStr],[outStr; inStr],[valStr; valStr])
+        save(fname*".E.jld","E",E)
+        #saveassoc(fname*".E.jld",E)
 
         if i == 1; global testE = E; end
 

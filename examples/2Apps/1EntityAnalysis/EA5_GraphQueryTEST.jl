@@ -3,7 +3,9 @@
 using JLD2,PyPlot,LinearAlgebra,SparseArrays
 
 # Load data
-E = loadassoc(joinpath(Base.source_dir(),"./Entity.jld2"))
+file_dir = joinpath(Base.source_dir(),"./Entity.jld")
+E = load(file_dir)["E"]
+#E = loadassoc(joinpath(Base.source_dir(),"./Entity.jld2"))
 E = logical(E)
 
 # Compute entity (all facet pairs).

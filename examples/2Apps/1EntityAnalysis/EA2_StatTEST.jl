@@ -3,8 +3,9 @@
 using JLD2,PyPlot,SparseArrays
 
 # Load the data file
-file_dir = joinpath(Base.source_dir(),"./Entity.jld2")
-E = loadassoc(file_dir)
+file_dir = joinpath(Base.source_dir(),"./Entity.jld")
+#E = loadassoc(file_dir)
+E = load(file_dir)["E"]
 
 # Calculate number of entities in each category, then count the number of times each entity occurs.
 print(sum(logical(col2type(E,"/")),1))

@@ -12,7 +12,8 @@ for i = 1:Nfile
         fname = joinpath(Base.source_dir(),"data", string(i))
         
         # Load associative array
-        A = loadassoc(fname*".A.jld")
+        A = load(fname*".A.jld")["A"]
+        #A = loadassoc(fname*".A.jld")
 
         # Create associative arrays and accumulate degrees
         Aall = A + Aall

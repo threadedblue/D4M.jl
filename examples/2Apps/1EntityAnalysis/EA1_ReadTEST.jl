@@ -4,11 +4,11 @@
 # entity extraction algorithms applied to <1% of the NIST Rueters Corpus.
 # See: http://trec.nist.gov/data/reuters/reuters.html
 
-using JLD2,FileIO,PyPlot,SparseArrays
+using JLD,FileIO,PyPlot,SparseArrays
 
 # Load data
 file_dir = joinpath(Base.source_dir(),"./Entity.csv")
-save_dir = joinpath(Base.source_dir(),"./Entity.jld2")
+save_dir = joinpath(Base.source_dir(),"./Entity.jld")
 E = ReadCSV(file_dir)
 print(E[1:5,:])
 
@@ -28,5 +28,5 @@ figure()
 spy(E')
 
 # Save the associative array.
-#save(save_dir,"E",E)
-saveassoc(save_dir,E)
+save(save_dir,"E",E)
+#saveassoc(save_dir,E)
