@@ -1,6 +1,6 @@
 # Compute statistics on entity data
 
-using JLD2,PyPlot,SparseArrays
+using JLD, PyPlot, SparseArrays
 
 # Load the data file
 file_dir = joinpath(Base.source_dir(),"./Entity.jld")
