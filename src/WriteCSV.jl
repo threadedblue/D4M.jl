@@ -11,7 +11,7 @@ end
 
 write(iostream,"\n")
 
-valMap = !isempty(A.val) #Check if val needs to be mapped.
+valMap = A.val != [1.0]#!isempty(A.val) #Check if val needs to be mapped.
 #For each row write in row
 for r = 1:size(A.row,1)
     print(iostream,A.row[r])
