@@ -2,6 +2,7 @@
 #=
 full : return A in dense String matrix form
 =#
+# Should create appropriate Array constructor instead
 function full(A::Assoc)
 
     output = Matrix(A.A)

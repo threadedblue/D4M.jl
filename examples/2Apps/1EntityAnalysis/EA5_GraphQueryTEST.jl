@@ -1,6 +1,6 @@
 # Various ways to query subgraphs.
 
-using JLD2,PyPlot,LinearAlgebra,SparseArrays
+using JLD, PyPlot, LinearAlgebra, SparseArrays
 
 # Load data
 file_dir = joinpath(Base.source_dir(),"./Entity.jld")

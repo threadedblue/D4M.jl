@@ -1,5 +1,5 @@
 # Entity facet search. Shows next most common terms.
-using JLD2, SparseArrays
+using JLD, SparseArrays
 
 # Load data
 file_dir = joinpath(Base.source_dir(),"./Entity.jld")

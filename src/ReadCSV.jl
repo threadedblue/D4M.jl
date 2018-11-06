@@ -1,4 +1,8 @@
 function ReadCSV(fname)
+
+    if filesize(fname) <= 1
+        return Assoc("","","")
+    end
     inDim = readdlm(fname,',')
     rowN,colN = size(inDim)
     row = [];

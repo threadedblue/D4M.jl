@@ -7,7 +7,7 @@ module D4M
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
-            Array, Matrix, adjoint, broadcast, find
+            Array, Matrix, adjoint, broadcast
     import PyPlot: spy
     import JLD: writeas, readas
 

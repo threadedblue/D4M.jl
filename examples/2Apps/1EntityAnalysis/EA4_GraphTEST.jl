@@ -1,6 +1,6 @@
 # Compute graphs from entity edge data.
 
-using JLD2, PyPlot
+using JLD, PyPlot
 
 file_dir = joinpath(Base.source_dir(),"./Entity.jld")
 E = load(file_dir)["E"]

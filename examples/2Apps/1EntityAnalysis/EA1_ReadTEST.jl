@@ -4,7 +4,7 @@
 # entity extraction algorithms applied to <1% of the NIST Rueters Corpus.
 # See: http://trec.nist.gov/data/reuters/reuters.html
 
-using JLD,FileIO,PyPlot,SparseArrays
+using JLD, FileIO, PyPlot, SparseArrays
 
 # Load data
 file_dir = joinpath(Base.source_dir(),"./Entity.csv")

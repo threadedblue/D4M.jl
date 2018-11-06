@@ -1,5 +1,4 @@
 using SparseArrays#, LinearAlgebra
-import JLD: writeas,readas
 
 #=
 Assoc Serialized for saving
@@ -73,7 +72,7 @@ function writeas(data::Assoc)
 
 
     #Reconstitute converted parts into Serialized
-
+    
     return AssocSerial(rowstr,colstr,valstr,rownum,colnum,valnum,A)
 end
 
@@ -84,7 +83,10 @@ function readas(serData::AssocSerial)
        row = vcat(row, split(serData.rowstr[1:end-1],serData.rowstr[end]))#vcat(row, split(join(serData.rowstr,"")[1:end-1],serData.rowstr[end][end]))
     end
     if !isempty(serData.rownum)
-        row = vcat(row, map(float,split(serData.rownum,del)))#vcat(row, map(float,split(join(serData.rownum,"")[1:end-1],serData.rownum[end][end])))
+        rownums = convert(Array{Number},parse.(Float64,split(serData.rownum,del)))
+        rownums[isinteger.(rownums)] = Int.(rownums[isinteger.(rownums)])
+        row = vcat(row, rownums)
+        #row = vcat(row, parse.(Float64,split(serData.rownum,del)))#vcat(row, map(float,split(join(serData.rownum,"")[1:end-1],serData.rownum[end][end])))
     end
     row = Array{Union{AbstractString,Number}}(row)
 
@@ -93,7 +95,10 @@ function readas(serData::AssocSerial)
        col = vcat(col, split(serData.colstr[1:end-1],serData.colstr[end]))#vcat(col, split(join(serData.colstr,"")[1:end-1],serData.colstr[end][end]))
     end
     if !isempty(serData.colnum)
-        col = vcat(col, map(float,split(serData.colnum,del)))#vcat(col, map(float,split(join(serData.colnum,"")[1:end-1],serData.colnum[end][end])))
+        colnums = convert(Array{Number},parse.(Float64,split(serData.colnum,del)))
+        colnums[isinteger.(colnums)] = Int.(colnums[isinteger.(colnums)])
+        col = vcat(col, colnums)
+        #col = vcat(col, parse.(Float64,split(serData.colnum,del)))#vcat(col, map(float,split(join(serData.colnum,"")[1:end-1],serData.colnum[end][end])))
     end
     col = Array{Union{AbstractString,Number}}(col)
     
@@ -102,7 +107,10 @@ function readas(serData::AssocSerial)
        val = vcat(val, split(serData.valstr[1:end-1],serData.valstr[end]))#vcat(val, split(join(serData.valstr,"")[1:end-1],serData.valstr[end][end]))
     end
     if !isempty(serData.valnum)
-        val = vcat(val, map(float,split(serData.valnum,del)))#vcat(val, map(float,split(join(serData.valnum,"")[1:end-1],serData.valnum[end][end])))
+        #val = vcat(val, map(float,split(serData.valnum,del)))#vcat(val, map(float,split(join(serData.valnum,"")[1:end-1],serData.valnum[end][end])))
+        valnums = convert(Array{Number},parse.(Float64,split(serData.valnum,del)))
+        valnums[isinteger.(valnums)] = Int.(valnums[isinteger.(valnums)])
+        val = vcat(val, valnums)
     end
     val = Array{Union{AbstractString,Number}}(val)
     
