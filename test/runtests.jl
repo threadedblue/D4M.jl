@@ -320,10 +320,10 @@ end
             include("../examples/2Apps/2TrackAnalysis/TA3_GraphTEST.jl")
             apps_TA3 = load("test_assocs/2apps_2TA3.jld")["apps_TA3"]
             @test testassoc(A,apps_TA3["A"])
-            @test testassoc(G,apps_TA3["G"]) # check Octave
-            @test testassoc(G > 5,apps_TA3["G5"]) # check Octave
-            @test testassoc(Go,apps_TA3["Go"]) # check Octave
-            @test testassoc((Go > 2) & ((Go ./ G) > 0.2),apps_TA3["GoG"]) # check Octave
+            @test testassoc(G,apps_TA3["G"
+            @test testassoc(G > 5,apps_TA3["G5"])
+            @test testassoc(Go,apps_TA3["Go"])
+            @test testassoc((Go > 2) & ((Go ./ G) > 0.2),apps_TA3["GoG"])
             
         end
     end

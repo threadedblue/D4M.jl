@@ -22,20 +22,31 @@ D4M.jl is written and tested to work with Julia v0.6. It requires the `JLD2` pac
 
 ## Installation
 
-You can use the `Pkg.clone()` command to install D4M.jl in your package directory:
+You can use the `Pkg.add()` command to install D4M.jl in your package directory:
 
 ```julia
-Pkg.clone("https://github.com/Accla/D4M.jl.git")
+pkg> add https://github.com/Accla/D4M.jl.git
 ```
 
 Once you have added the D4M.jl package, you can update it using the `Pkg.update()` command:
 
 ```julia
-Pkg.update("D4M")
+pkg> up D4M
 ```
 
-For an offline installing of D4M.jl, put the unzipped D4M.jl directory in Julia's package directory (can be found by running `Pkg.dir()` in Julia). Then run `Pkg.add("D4M")`.
-For more information on installing Julia packages, visit the Julia documentation on the subject: <https://docs.julialang.org/en/stable/manual/packages/.>
+You can test that your installation is working by running:
+
+```julia
+pkg> test D4M
+```
+
+For an offline installation  of D4M.jl, you can use the `Pkg.add()` command and specify the path to the D4M.jl directory:
+
+```julia
+pkg> add /path/to/D4M.jl
+```
+
+For for the most up to date information on installing and working with Julia packages, view the Julia documentation on the subject: <https://docs.julialang.org/en/stable/stdlib/Pkg/.>
 
 ## Basic Use
 
@@ -75,7 +86,7 @@ sum(A,1)
 sum(A,2)
 ```
 
-For more examples of how you can use D4M.jl, check out the examples in the examples directory, including some examples with real datasets.
+For more examples of how you can use D4M.jl, check out the examples in the examples directory, including some examples with real datasets. A Jupyter notebook is provided with these examples as well.
 
 ## Database Use
 
@@ -85,17 +96,7 @@ We have provided the jars that were used to test this version of D4M.jl, but you
 
 D4M.jl does rely on the JavaCall package to call the Graphulo functions that enable database communication. In order for JavaCall to initialize the JVM, the JAVA_HOME environment variable must be set and the above jars must be on the classpath before initializing the JVM. Note that as of now, the JavaCall package does not allow anything to be added to the classpath after intializing the JVM, and the JVM cannot be "unitialized" except by exiting Julia.
 
-For convenience we have included a `dbinit()` function that adds these jars to your classpath and initializes the JVM. You can call this function to initialize the JVM, or it will be called on your first dbsetup() call. If you need other jars on your classpath, add these before calling this function. Again, you can only run this once per Julia session. If you are running on a Mac, you may get a Segmentation fault when running this function, you can most likely ignore it. See <http://juliainterop.github.io/JavaCall.jl/faq.html> for more information.
-
-## Testing
-
-You can test that your installation is working by running the RunExamples.jl file in the examples directory:
-
-```julia
-include("RunExamples.jl")
-```
-
-This runs through all the examples included in this package and successful completion indicates a proper installation.
+For convenience we add these jars to your classpath and initialize the JVM on your first dbsetup() call. If you need other jars on your classpath, add these before calling this function. If you are running on a Mac, you may get a Segmentation fault when running this function, you can most likely ignore it. See <http://juliainterop.github.io/JavaCall.jl/faq.html> for more information.
 
 ***NOTE***
 Various parts of this implementation has been completed and compared with the original matlab in performance.  In the matrix performance example folder (testing performance in matrix like operations such as add and multiply), this implementation has achieved on par if not significant speed up (10x).
