@@ -46,7 +46,7 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
         f = open(dbdir*"/accumulo_user_password.txt","r")
         pword = read(f, String)#readstring(f)
         f = open(dbdir*"/dnsname","r")
-        hostname = replace(read(f, String),"\n","")*":2181"
+        hostname = replace(read(f, String),"\n"=>"")*":2181"
         DB = DBserver(instance,hostname,"AccumuloUser",pword,"BigTableLike")
     else # Conifg file
         f = open(config)
