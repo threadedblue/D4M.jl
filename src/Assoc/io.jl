@@ -1,7 +1,7 @@
 using SparseArrays#, LinearAlgebra
 
 # Writing and Reading CSV Files
-function WriteCSV(A::Assoc,fname,del=',',eol="\n")
+function WriteCSV(A::Assoc,fname,del=',',eol='\n')
     #Because of potential memory issues, the Assoc will not be converted to dense matrix, but instead directly printed onto the file.
     
     iostream = open(fname,"w")
@@ -35,7 +35,7 @@ function WriteCSV(A::Assoc,fname,del=',',eol="\n")
     close(iostream)
 end
 
-function ReadCSV(fname,del=',',eol="\n")
+function ReadCSV(fname,del=',',eol='\n')
 
     if filesize(fname) <= 1
         return Assoc("","","")
