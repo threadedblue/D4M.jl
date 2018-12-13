@@ -1,6 +1,6 @@
 # Compute tracks from entity edge data.
 using JLD
-include("FindTracks.jl")
+include("findtracks.jl")
 
 # Load edge incidence matrix.
 # Load the data file
