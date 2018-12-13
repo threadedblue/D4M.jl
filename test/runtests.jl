@@ -260,6 +260,7 @@ end
             PyPlot.close()
             PyPlot.close()
             @test testassoc(Aall)
+            #=
             @testset "Using Database" begin
                 println("pDB05_DBsetupTEST.jl")
                 include("../examples/3Scaling/2ParallelDatabase/pDB05_DBsetupTEST.jl")
@@ -284,6 +285,7 @@ end
                 include("../examples/3Scaling/2ParallelDatabase/pDB13_EdgeJoinTEST.jl")
                 PyPlot.close()
             end
+            =#
         end
         
         
