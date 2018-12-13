@@ -1,3 +1,6 @@
+# Various ways to get part of an Associative Array (indexing, diag, or >,<,==)
+using LinearAlgebra
+
 # This is the getindex function for Assoc, the Associate Array.
 #import Base.getindex
 StringOrNumArray  = Union{AbstractString,Array,Number}
@@ -21,8 +24,6 @@ end
 getindex(A::Assoc,i::Any) = getindex(A,i,:)
 
 PreviousTypes = Array{Int64}
-
-
 
 #Variations by derivations
 #Each of the additional type would call upon the base functions above.
@@ -57,8 +58,8 @@ PreviousTypes = Union{PreviousTypes,AbstractRange}
 function convertrange(Akeys,r::AbstractString)
     sep = r[end:end]
     idx = 1
-    while occursin(":",r[idx:end]) 
-        idx = findfirst(":",r)[1]
+    while occursin(sep*":"*sep,r[idx:end]) 
+        idx = findfirst(sep*":"*sep,r)[1]+1
         from = 1:idx-2
         to = idx+2:length(r)
 
@@ -120,13 +121,115 @@ function StartsWithHelper(Ar::Array{Union{AbstractString,Number}},S::StartsWith)
 end
 
 getindex(A::Assoc,i::PreviousTypes,j::StartsWith) = getindex(A,i,StartsWithHelper(getcol(A),j))
-
 getindex(A::Assoc,i::StartsWith,j::PreviousTypes) = getindex(A,StartsWithHelper(getrow(A),i),j)
-
 getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(getrow(A),i),StartsWithHelper(getcol(A),j))
 
 PreviousTypes = Union{PreviousTypes,StartsWith}
 
+#=
+> : get a new Assoc where all of the elements of input Assoc mataches the given Element.
+=#
+function >(A::Assoc, E::Union{AbstractString,Number})
+    if (isa(E,Number) & (A.val ==[1.0])  )
+        tarIndex = E
+    else
+        tarIndex = searchsortedlast(getval(A),E)
+    end
+
+    if isa(A.A,LinearAlgebra.Adjoint)
+        rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
+    else
+        rowkey, colkey, valkey = findnz(A.A)
+    end
+    mapping = findall( x-> x > tarIndex, valkey)
+    rows, cols, vals = find(A)
+
+    outA = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    if A.val==[1.0]
+        outA = putVal(outA,A.val)
+    end
+    
+    return outA
+end
+
+>(E::Union{AbstractString,Number},A::Assoc) = (A < E)
+
+#=
+< : get a new Assoc where all of the elements of input Assoc mataches the given Element.
+=#
+function <(A::Assoc, E::Union{AbstractString,Number})
+    if (isa(E,Number) & (A.val ==[1.0])  )
+        tarIndex = E
+    else
+        tarIndex = searchsortedfirst(A.val,E)
+    end
+
+    if isa(A.A,LinearAlgebra.Adjoint)
+        rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
+    else
+        rowkey, colkey, valkey = findnz(A.A)
+    end
+    mapping = findall( x-> x < tarIndex, valkey)
+    rows, cols, vals = find(A)
+
+    outA = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    if A.val==[1.0]
+        outA = putVal(outA,A.val)
+    end
+    
+    return outA
+end
+
+<(E::Union{AbstractString,Number},A::Assoc) = (A > E)
+
+#=
+== : get a new Assoc where all of the elements of input Assoc matches the given Element.
+=#
+(==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
+function equal(A::Assoc, E::Union{AbstractString,Number})
+    if (isa(E,Number) && (A.val == [1.0])  ) 
+        tarIndex = E
+    else
+        tarIndex = searchsortedfirst(A.val,E)
+        if !(E == getval(A)[tarIndex])
+            tarIndex = 0
+        end
+    end
+    
+    if isa(A.A,LinearAlgebra.Adjoint)
+        rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
+    else
+        rowkey, colkey, valkey = findnz(A.A)
+    end
+    mapping = findall( x-> x == tarIndex, valkey)
+    rows,cols,vals = find(A)
+
+    Aout = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    # May not need this anymore
+    if A.val==[1.0]
+        Aout = putVal(Aout,A.val)
+    end
+    
+    return Aout
+end
+
+==(E::Union{AbstractString,Number},A::Assoc) = (A == E)
+
+#=
+diag : Output the diagonal of input Assoc A.
+Outputs the Assoc with only the diagonal elements of A.
+=#
+function diag(A::Assoc)
+    # Check if numeric values first
+    if A.val == [1.0]
+        return Assoc(A.row,A.col,A.val,dropzeros!(sparse(diagm(diag(A.A)))))
+    else
+        return deepCondense(Assoc(A.row,A.col,A.val,sparse(diagm(diag(A.A)))))
+    end
+end
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model

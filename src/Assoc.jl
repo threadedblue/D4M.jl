@@ -11,7 +11,7 @@ UnionArray = Array{Union{AbstractString,Number}}
 SparseOrTranspose = Union{AbstractSparseMatrix,Adjoint{<:Any,<:SparseMatrixCSC},Transpose{<:Any,<:SparseMatrixCSC}}
 
 #Creation of Assoc require StrUnique to split Single-Character-separated String Sequence.
-include("StrUnique.jl")
+#include("stringarrayhelpers.jl")
 
 #=
 Type Assoc (Associative Array)
@@ -149,40 +149,78 @@ struct Assoc
 end
 
 #=
+Returns an empty Associative Array
+=#
+function emptyAssoc()
+    Assoc([],[],[])
+end
+
+#=
+size: Return the dimensions of the Associative Array
+=#
+function size(A::Assoc)
+    return size(A.A)
+end
+
+#=
+nnz: Return the number of nonzeros in an Associative Array
+=#
+function nnz(A::Assoc)
+
+    if isa(A.A,LinearAlgebra.Adjoint)
+        return nnz(A.A.parent)
+    else
+        return nnz(A.A)
+    end
+end
+
+#=
+isempty : check if given Assoc is empty.
+Note: Assoc can be considered empty even if there are mapping for potential or past values.
+=#
+function isempty(A::Assoc)
+    return isempty(A.A)
+end
+
+
+#=
 Adding related operations for Assoc_orig
 =#
-include("./Assoc_orig/getindex.jl")
-include("./Assoc_orig/condense.jl")
-include("./Assoc_orig/no.jl")
-include("./Assoc_orig/sum.jl")
-include("./Assoc_orig/isempty.jl")
-include("./Assoc_orig/logical.jl")
-include("./Assoc_orig/and.jl")
-include("./Assoc_orig/print.jl")
-include("./Assoc_orig/transpose.jl")
-include("./Assoc_orig/multiply.jl")
-include("./Assoc_orig/sqIn.jl")
-include("./Assoc_orig/sqOut.jl")
-include("./Assoc_orig/accessor.jl")
-include("./Assoc_orig/find.jl")
-include("./Assoc_orig/diag.jl")
-include("./Assoc_orig/plus.jl")
-include("./Assoc_orig/deepcondense.jl")
-include("./Assoc_orig/lt.jl")
-include("./Assoc_orig/gt.jl")
-include("./Assoc_orig/spy.jl")
-include("./Assoc_orig/jld.jl")
-include("./Assoc_orig/put.jl")
-include("./Assoc_orig/full.jl")
-include("./Assoc_orig/equal.jl")
-include("./Assoc_orig/minus.jl")
-include("./Assoc_orig/emptyAssoc.jl")
-include("./Assoc_orig/size.jl")
-include("./Assoc_orig/printTriple.jl")
-include("./Assoc_orig/nnz.jl")
-include("./Assoc_orig/printFull.jl")
-include("./Assoc_orig/str2num.jl")
-include("./Assoc_orig/broadcast.jl")
+include("./Assoc/getindex.jl")
+include("./Assoc/condense.jl")
+include("./Assoc/operations.jl")
+include("./Assoc/print.jl")
+include("./Assoc/accessor.jl")
+include("./Assoc/spy.jl")
+include("./Assoc/put.jl")
+include("./Assoc/convert.jl")
+include("./Assoc/broadcast.jl")
+include("./Assoc/io.jl")
+include("./Assoc/convertvals.jl")
+#include("./Assoc_orig/find.jl")
+#include("./Assoc_orig/no.jl")
+#include("./Assoc_orig/isempty.jl")
+#include("./Assoc_orig/logical.jl")
+#include("./Assoc_orig/and.jl")
+#include("./Assoc_orig/transpose.jl")
+#include("./Assoc_orig/multiply.jl")
+#include("./Assoc_orig/sqIn.jl")
+#include("./Assoc_orig/sqOut.jl")
+#include("./Assoc_orig/diag.jl")
+#include("./Assoc_orig/plus.jl")
+#include("./Assoc_orig/deepcondense.jl")
+#include("./Assoc_orig/lt.jl")
+#include("./Assoc_orig/gt.jl")
+#include("./Assoc_orig/jld.jl")
+#include("./Assoc_orig/equal.jl")
+#include("./Assoc_orig/minus.jl")
+#include("./Assoc_orig/emptyAssoc.jl")
+#include("./Assoc_orig/size.jl")
+#include("./Assoc_orig/printTriple.jl")
+#include("./Assoc_orig/nnz.jl")
+#include("./Assoc_orig/printFull.jl")
+#include("./Assoc_orig/str2num.jl")
+
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)

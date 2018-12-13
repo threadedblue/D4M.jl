@@ -67,24 +67,24 @@ module D4M
     example_3Scaling_3MatrixPerformance_MP6_AssocPlusTEST = () -> include( MatrixPerformance_dir * "/MP6_AssocPlusTEST.jl")
     =#
 
-    include("Assoc_orig.jl") # Associative Array
-    include("WriteCSV.jl") #load Assoc from CSV file
-    include("ReadCSV.jl") #Dump Assoc into a CSV file
-    include("GraphDegree.jl") #Calculate degree distribution
-    include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
-    include("CatKeyMul.jl") #CatKeyMultiply
-    include("CatValMul.jl") #CatValMultiply
-    include("CatStr.jl")    #Cat String
-    include("SplitStr.jl")
-    include("col2type.jl")
-    include("val2col.jl")
+    #Helper functions for working with strings and string arrays
+    include("stringarrayhelpers.jl")
 
-    #Operation that gain performance benefit on sorted inputs
-    include("sortedintersect.jl")
-    include("sortedintersectmapping.jl")
-    include("sortedunion.jl")
-    include("searchsortedmapping.jl")
+    include("Assoc.jl") # Associative Array
+#    include("WriteCSV.jl") #load Assoc from CSV file
+#    include("ReadCSV.jl") #Dump Assoc into a CSV file
+    #include("GraphDegree.jl") #Calculate degree distribution
+    #include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
+    #include("CatKeyMul.jl") #CatKeyMultiply
+    #include("CatValMul.jl") #CatValMultiply
+    #include("CatStr.jl")    #Cat String
+    #include("SplitStr.jl")
+    #include("col2type.jl")
+    #include("val2col.jl")
 
+    #Helper functions for parsing
+    include("parsinghelpers.jl")
+    
     # Database functionality
     include("DBserver.jl")
     include("DBtable.jl")

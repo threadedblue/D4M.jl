@@ -1,6 +1,69 @@
 using SparseArrays#, LinearAlgebra
 
+# Writing and Reading CSV Files
+function WriteCSV(A::Assoc,fname,del=',',eol="\n")
+    #Because of potential memory issues, the Assoc will not be converted to dense matrix, but instead directly printed onto the file.
+    
+    iostream = open(fname,"w")
+    
+    #First write column
+    for c = 1:size(A.col,1)
+        write(iostream,del) #Separator
+        print(iostream,A.col[c])
+    end
+    
+    write(iostream,eol)
+    
+    valMap = !isempty(A.val) #Check if val needs to be mapped.
+    #For each row write in row
+    for r = 1:size(A.row,1)
+        print(iostream,A.row[r])
+        for c = 1:size(A.col,1)
+            write(iostream,del)
+            if A.A[r,c] != 0
+                if valMap #Mapping needed
+                    write(iostream,A.val[A.A[r,c]])
+                else #Mappping not needed.
+                    print(iostream,A.A[r,c])
+                end
+                end
+        end
+        write(iostream,eol)
+        flush(iostream) #Clear buffer for each line.
+    end
+    #Close stream.
+    close(iostream)
+end
+
+function ReadCSV(fname,del=',',eol="\n")
+
+    if filesize(fname) <= 1
+        return Assoc("","","")
+    end
+    inDim = readdlm(fname,del,eol)
+    rowN,colN = size(inDim)
+    row = [];
+    col = [];
+    val = [];
+    if colN >=2
+        for x = 2:colN
+            for y = 2:rowN
+                if ~isempty(inDim[y,x])
+                    push!(row, inDim[y,1])
+                    push!(col, inDim[1,x])
+                    push!(val, inDim[y,x])
+                end
+            end
+        end
+        return Assoc(row,col,val,(+))
+    else #2D associative?
+    #Currently Ignoring
+        return
+    end
+end
+
 #=
+Writing and Reading JLD Files
 Assoc Serialized for saving
 Note that saving would convert row and col types to number.
 =#
@@ -115,4 +178,32 @@ function readas(serData::AssocSerial)
     val = Array{Union{AbstractString,Number}}(val)
     
     return Assoc(row,col,val,serData.A)
+end
+
+
+function readmat(fname)
+    
+    vars = matread(fname)
+
+    for k in keys(vars)
+        if vars[k]["class"] == "Assoc"
+            row = convert(Array{Union{AbstractString,Number}},split(vars[k]["row"][1:end-1],vars[k]["row"][end]))
+            col = convert(Array{Union{AbstractString,Number}},split(vars[k]["col"][1:end-1],vars[k]["col"][end]))
+            if isempty(vars[k]["val"])
+                val = convert(Array{Union{AbstractString,Number}},[1.0])
+            else
+                val = convert(Array{Union{AbstractString,Number}},split(vars[k]["val"][1:end-1],vars[k]["val"][end]))
+            end
+
+            vars[k] = Assoc(row,col,val,vars[k]["A"])
+
+            if length(vars) == 1
+                return vars[k]
+            end
+
+        end
+    end
+
+    return vars
+
 end

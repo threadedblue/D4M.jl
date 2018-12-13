@@ -1,7 +1,7 @@
 using JLD2, SparseArrays
 
 #=
-Assoc Serialized for saving
+Assoc Serialized for saving using JLD2
 Note that saving would convert row and col types to number.
 =#
 

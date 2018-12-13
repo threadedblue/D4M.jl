@@ -1,3 +1,17 @@
+using SparseArrays
+#=
+Condense : remove empty row and column within the input Assoc A and return the new condensed Assoc
+=#
+function condense(A::Assoc)#performance improvement needed
+    nonZeroCol = getindex.(findall(!iszero,sum(A.A, dims = 1)),2)
+    nonZeroRow = getindex.(findall(!iszero,sum(A.A, dims = 2)),1)
+    Newrow = A.row[nonZeroRow]
+    Newcol = A.col[nonZeroCol]
+    NewA = A.A[nonZeroRow,nonZeroCol]
+
+
+    return Assoc(Newrow,Newcol,A.val,NewA)
+end
 
 #=
 deepCondense : remove empty mapping of row, column, and value, and return the condensed of the input Assoc.
@@ -24,7 +38,6 @@ function deepCondense(A::Assoc)
     return Anew
     
 end
-
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
