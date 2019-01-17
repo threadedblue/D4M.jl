@@ -9,7 +9,7 @@ col1 = "1,"
 col2 = "100,"
 
 # Find all rows with these columns
-Ajoin = Tadj[Row(sum(logical(Tadj[:,col1*col2]),2) == 2),:]
+Ajoin = Tadj[getrow(sum(logical(Tadj[:,col1*col2]),2) == 2),:]
 
 # Display
 figure()
@@ -31,6 +31,7 @@ A1 = logical(TadjIt1[:,colRange1])
 A1outDeg = Assoc("","","");
 
 while nnz(A1) > 0
+    global A1, A1outDeg
     # Combine
     A1outDeg = A1outDeg + sum(A1,2)
     # Run next query iterator
@@ -42,6 +43,7 @@ A2 = logical(TadjIt2[:,colRange2])
 A2outDeg = Assoc("","","")
 
 while nnz(A2) > 0
+    global A2, A2outDeg
     # Combine
     A2outDeg = A2outDeg + sum(A2,2)
     # Run next query iterator
@@ -49,4 +51,4 @@ while nnz(A2) > 0
 end
 
 # Join columns
-AjoinRange = Tadj[Row(A1outDeg[Row(A2outDeg),:]),:]
+AjoinRange = Tadj[getrow(A1outDeg[getrow(A2outDeg),:]),:]

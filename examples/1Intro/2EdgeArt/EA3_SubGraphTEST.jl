@@ -1,7 +1,7 @@
 # Show some associative array math.
 
 # Read CSV file into associative array, get vertices and convert to numbers.
-E = ReadCSV("Edge.csv")
+E = ReadCSV(joinpath(Base.source_dir(),"Edge.csv"))
 Ev = logical( E[:, StartsWith("V,")] )
 
 # Get orange and green edges

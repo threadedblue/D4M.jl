@@ -18,6 +18,7 @@ AinDeg = Assoc("","","")
 
 # While there are still elements in A
 while nnz(A) > 0
+    global AinDeg, A
     # Compute in degree
     AinDeg = AinDeg + sum(str2num(A),1)
     
@@ -26,4 +27,4 @@ while nnz(A) > 0
 end
 
 # Get vertex with the maximum degree
-AmaxInDeg = (AinDeg == maximum(Adj(AinDeg)))
+AmaxInDeg = (AinDeg == maximum(getadj(AinDeg)))

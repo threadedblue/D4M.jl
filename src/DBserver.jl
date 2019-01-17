@@ -20,14 +20,33 @@ using JavaCall
 #   Assumes username is AccumuloUser.
 # When provided a configuration file, will read in and use the configuration in the file.
 #   See example configuration file for formatting.
+
+function dbinit()
+    if ~JavaCall.isloaded()
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar"))
+        JavaCall.init()
+    else
+        println("JVM already initialized")
+
+        # Check if correct packages are on classpath
+        System = @jimport java.lang.System
+        cpath = jcall(System, "getProperty", JString, (JString,), "java.class.path")
+
+        if ~contains(cpath, "graphulo")
+            println("Required libraries for database operations missing from Java classpath. Restart Julia and intialize jvm using dbinit().")
+        end
+    end
+end
+
 function dbsetup(instance, config="/home/gridsan/tools/groups/")
     # Note default value for config location is the MIT Supercloud default location
     if isdir(config) # Config dir
         dbdir = config*"/databases/"*instance
         f = open(dbdir*"/accumulo_user_password.txt","r")
-        pword = readstring(f)
+        pword = read(f, String)#readstring(f)
         f = open(dbdir*"/dnsname","r")
-        hostname = replace(readstring(f),"\n","")*":2181"
+        hostname = replace(read(f, String),"\n"=>"")*":2181"
         DB = DBserver(instance,hostname,"AccumuloUser",pword,"BigTableLike")
     else # Conifg file
         f = open(config)
@@ -61,7 +80,7 @@ function getindex(DB::DBserver,tableName::String)
     
     if ~any(ls(DB) .== tableName) # Create new table if it doesn't exist
         println("Creating "*tableName*" in "*DB.instanceName);
-        jcall(opsObj,"createTable", Void, (JString,), tableName)
+        jcall(opsObj,"createTable", Nothing, (JString,), tableName)
     end
     
     d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
@@ -82,11 +101,11 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     if ~any(ls(DB) .== tableName1) || ~any(ls(DB) .== tableName2)
         if ~any(ls(DB) .== tableName1)
             println("Creating "*tableName1*" in "*DB.instanceName);
-            jcall(opsObj,"createTable", Void, (JString,), tableName1)
+            jcall(opsObj,"createTable", Nothing, (JString,), tableName1)
         end
         if ~any(ls(DB) .== tableName2)
             println("Creating "*tableName2*" in "*DB.instanceName);
-            jcall(opsObj,"createTable", Void, (JString,), tableName2)
+            jcall(opsObj,"createTable", Nothing, (JString,), tableName2)
         end
     end
     

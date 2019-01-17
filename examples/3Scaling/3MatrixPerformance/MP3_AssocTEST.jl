@@ -19,18 +19,18 @@ assoc_string_time = zeros(1,length(n))
 # Integer Labels
 println("With Integer Labels")
 for i = 1:length(n)
+
+    global assoc_gflops, assoc_time, assoc_gbytes, assoc_flops
     
-    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1)
-    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1)
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1)
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1)
     A = Assoc(ii,jj,1.0)
 
-    ii = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
-    jj = round.(Int, floor.(rand(m[i]) .* n[i]) +1) 
+    ii = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1) 
+    jj = round.(Int, floor.(rand(m[i]) .* n[i]) .+ 1) 
     B = Assoc(ii,jj,1.0)
 
-    tic()
-    C = A*B
-    assoc_time[i] = toq()
+    assoc_time[i] = @elapsed C = A*B
     assoc_flops[i] = 2*sum(C)
     ii, jj, vv = find(C)
     assoc_gbytes[i] = assoc_gbytes[i] + (length(ii) + length(jj)) + 8 .* m[i] ./ 1e9
@@ -44,6 +44,8 @@ end
 # String Labels
 println("With String Labels")
 for i = 1:length(n)
+
+    global assoc_string_gflops, assoc_string_time, assoc_string_gbytes, assoc_string_flops
     
     ii = join(string.(rand(1:n[i],m[i])),",")*","
     jj = join(string.(rand(1:n[i],m[i])),",")*","
@@ -53,9 +55,8 @@ for i = 1:length(n)
     jj = join(string.(rand(1:n[i],m[i])),",")*","
     B = Assoc(ii,jj,1.0)
 
-    tic()
-    C = A*B
-    assoc_string_time[i] = toq()
+    assoc_string_time[i] = @elapsed C = A*B
+    
     assoc_string_flops[i] = 2*sum(C)
     ii, jj, vv = find(C)
     assoc_string_gbytes[i] = assoc_string_gbytes[i] + (length(ii) + length(jj)) + 8 .* m[i] ./ 1e9

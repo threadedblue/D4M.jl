@@ -4,10 +4,10 @@ println("--Please note that this divider is indicated as the last char in the st
 
 row = "a,a,a,a,a,a,a,aa,aaa,b,bb,bbb,a,aa,aaa,b,bb,bbb,"
 column = "a,aa,aaa,b,bb,bbb,a,a,a,a,a,a,a,aa,aaa,b,bb,bbb,"
-values = "a-a,a-aa,a-aaa,a-b,a-bb,a-bbb,a-a,aa-a,aaa-a,b-a,bb-a,bbb-a,a-a,aa-aa,aaa-aaa,b-b,bb-bb,bbb-bbb,"
+vals = "a-a,a-aa,a-aaa,a-b,a-bb,a-bbb,a-a,aa-a,aaa-a,b-a,bb-a,bbb-a,a-a,aa-aa,aaa-aaa,b-b,bb-bb,bbb-bbb,"
 
 # Create assoc array and list triples.
-A = Assoc(row,column,values)
+A = Assoc(row,column,vals)
 
 # Show data structure.
 println("This is the data structure of the Associative Array Class")
@@ -19,4 +19,4 @@ printFull(A)
 
 # Write to a CSV file.
 println("When written into CSV form, the data is stored in the tabular form")
-WriteCSV(A,"A.csv")
+WriteCSV(A,joinpath(Base.source_dir(),"A.csv"))

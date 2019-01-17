@@ -5,28 +5,30 @@ using JLD,PyPlot
 Aall = Assoc("","","")
 
 # Iterate through files
-isdefined(:Nfile) || (Nfile = 8)
+(@isdefined Nfile) || (Nfile = 8)
 for i = 1:Nfile
-    tic()
-    fname = "data/"* string(i)
+    global Aall
+    ptime = @elapsed begin
+        fname = joinpath(Base.source_dir(),"data", string(i))
+        
+        # Load associative array
+        A = load(fname*".A.jld")["A"]
+        #A = loadassoc(fname*".A.jld")
+
+        # Create associative arrays and accumulate degrees
+        Aall = A + Aall
+    end
     
-    # Load associative array
-    A = load(fname*".A.jld")["A"]
-
-    # Create associative arrays and accumulate degrees
-    Aall = A + Aall
-
-    pTime = toq()
-    println("Sum Time: ", pTime)
-    println("Edges/sec: ", string(nnz(A)/pTime))
+    println("Sum Time: ", ptime)
+    println("Edges/sec: ", string(nnz(A)/ptime))
 end
 
 # Plot out degree distribution
 figure()
-loglog(full(OutDegree(Aall))',"o")
+loglog(convert(Array,OutDegree(Aall)'),"o")
 xlabel("out degree")
 
 # Plot out degree distribution
 figure()
-loglog(full(InDegree(Aall))',"o")
+loglog(convert(Array,InDegree(Aall)'),"o")
 xlabel("in degree")

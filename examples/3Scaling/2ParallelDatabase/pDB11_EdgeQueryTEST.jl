@@ -13,11 +13,11 @@ Edeg = str2num(TedgeDeg[v0str,:])
 
 # Select vertices in an out degree range.
 degMin = 5;  degMax = 10; 
-degMax = max(degMax,minimum(Val(Edeg[:,"Degree,"]))+1)
-v1str = Row((Edeg[:,"Degree,"] > degMin) < degMax )
+degMax = max(degMax,minimum(getval(Edeg[:,"Degree,"]))+1)
+v1str = getrow((Edeg[:,"Degree,"] > degMin) < degMax )
 
 # Get vertex neighbors.
-E = logical(Tedge[Row(Tedge[:,v1str]),:])
+E = logical(Tedge[getrow(Tedge[:,v1str]),:])
 
 figure()
 spy(E)

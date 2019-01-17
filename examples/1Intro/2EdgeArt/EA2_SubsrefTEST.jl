@@ -1,7 +1,7 @@
 # Show different wasy to index associative arrays.
 
 # Read CSV file into associative array.
-E = ReadCSV("Edge.csv")
+E = ReadCSV(joinpath(Base.source_dir(),"Edge.csv"))
 printFull(E)
 
 # Get orange edges.

@@ -2,9 +2,37 @@
 #Module for D4M
 module D4M
 
+    using LinearAlgebra, SparseArrays, JavaCall, PyPlot, DelimitedFiles
+
+    import SparseArrays: nnz, diag
+    import Base: &, ==, >, <, -, *, +, /
+    import Base: isless, getindex, isempty, print, size, sum, transpose,
+            Array, Matrix, adjoint, broadcast
+    import PyPlot: spy
+    import JLD: writeas, readas
+
+    export  Assoc,
+            StartsWith,
+            CatKeyMul, CatValMul,
+            CatStr, SplitStr, NumStr,
+            col2type, val2col,
+            ReadCSV, WriteCSV,
+            print, printFull, printTriple,
+            norow, nocol,
+            logical, str2num,
+            sqIn, sqOut,
+            putAdj, putRow, putCol, putVal,
+            getadj, getrow, getcol, getval, find,
+            #saveassoc, loadassoc,
+            OutDegree, InDegree,
+            dbsetup, ls, 
+            nnz, delete, addColCombiner,
+            put, putTriple, getiterator,
+            getsplits, addsplits
+
     #=
         Loaded Example
-    =#
+    
     module_dir = Pkg.dir("D4M")
     ParallelDatabase_dir = module_dir*"/examples/3Scaling/2ParallelDatabase"
     example_3Scaling_2ParallelDatabase_pDB01_DataTEST = () -> include( ParallelDatabase_dir *"/pDB01_DataTEST.jl")
@@ -37,10 +65,33 @@ module D4M
     example_3Scaling_3MatrixPerformance_MP4_AssocCatKeyTEST = () -> include( MatrixPerformance_dir * "/MP4_AssocCatKeyTEST.jl")
     example_3Scaling_3MatrixPerformance_MP5_AssocCatValKeyTEST = () -> include( MatrixPerformance_dir * "/MP5_AssocCatValKeyTEST.jl")
     example_3Scaling_3MatrixPerformance_MP6_AssocPlusTEST = () -> include( MatrixPerformance_dir * "/MP6_AssocPlusTEST.jl")
+    =#
 
+    #Helper functions for working with strings and string arrays
+    include("stringarrayhelpers.jl")
+
+    include("Assoc.jl") # Associative Array
+#    include("WriteCSV.jl") #load Assoc from CSV file
+#    include("ReadCSV.jl") #Dump Assoc into a CSV file
+    #include("GraphDegree.jl") #Calculate degree distribution
+    #include("NumStr.jl") #Quickly calculate the length of string sequence separated by single-character
+    #include("CatKeyMul.jl") #CatKeyMultiply
+    #include("CatValMul.jl") #CatValMultiply
+    #include("CatStr.jl")    #Cat String
+    #include("SplitStr.jl")
+    #include("col2type.jl")
+    #include("val2col.jl")
+
+    #Helper functions for parsing
+    include("parsinghelpers.jl")
+    
+    # Database functionality
+    include("DBserver.jl")
+    include("DBtable.jl")
+    #include("dbinit.jl")
 end
 
-
+#=
 include("Assoc_orig.jl") # Associative Array
 include("WriteCSV.jl") #load Assoc from CSV file
 include("ReadCSV.jl") #Dump Assoc into a CSV file
@@ -63,7 +114,7 @@ include("searchsortedmapping.jl")
 include("DBserver.jl")
 include("DBtable.jl")
 include("dbinit.jl")
-
+=#
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
