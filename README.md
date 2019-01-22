@@ -18,7 +18,7 @@ Current Status: Many of the functionalities of core D4M have been implemented. D
 
 ## Requirements
 
-D4M.jl is written and tested to work with Julia v0.6. It requires the `JLD2` package for saving and loading associative arrays and the `PyPlot` package for plotting spy plots. For database connectivity, it relies on JavaCall. See the Database Use section of this document for more information.
+D4M.jl is written and tested to work with Julia v1.0. The final Julia 0.6 compatible version of D4M is available in "Releases" or on the julia-0.6 branch. It requires the `JLD` package for saving and loading associative arrays and the `PyPlot` package for plotting spy plots. For database connectivity, it relies on `JavaCall`. See the Database Use section of this document for more information.
 
 ## Installation
 
