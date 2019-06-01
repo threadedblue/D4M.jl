@@ -2,6 +2,8 @@
 #Module for D4M
 module D4M
 
+    print("using a local editing copy of D4M")
+
     using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
 
     import SparseArrays: nnz, diag
