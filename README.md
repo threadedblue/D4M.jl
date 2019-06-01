@@ -90,7 +90,7 @@ For more examples of how you can use D4M.jl, check out the examples in the examp
 
 ## Database Use
 
-Use of the database connection capabilites requires Graphulo. Graphulo is available on this page: <https://github.com/Accla/graphulo.>
+Use of the database connection capabilites requires Graphulo. Graphulo is available on this page: <https://github.com/Accla/graphulo>.
 
 We have provided the jars that were used to test this version of D4M.jl, but you can provide your own if you would like to include a different version of Graphulo. To do this, build Graphulo according to the instructions on that page. There should be two jars and one zip file in the "target" directory after you build Graphulo. The jar ending with "alldeps.jar" is the server side jar meant to go with your Accumulo instance. The other jar should be placed in the "lib" folder in the D4M.jl package directory and the zip file should be unzipped into the D4M.jl package directory. The resulting "libext" directory contains dependency jars.
 
