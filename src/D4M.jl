@@ -2,7 +2,7 @@
 #Module for D4M
 module D4M
 
-    print("using a local editing copy of D4M, test 2")
+    print("using n8kim1 version of D4M.jl, found on github")
 
     using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
 
