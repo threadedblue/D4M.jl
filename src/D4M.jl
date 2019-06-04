@@ -40,6 +40,10 @@ module D4M
     #Helper functions for parsing
     include("parsinghelpers.jl")
 
+    #Test to make sure you're using this package, not the official release
+    include("localtest.jl")
+
+
     if haskey(ENV,"JAVA_HOME")
         using JavaCall
         export dbsetup, ls, delete, addColCombiner,
