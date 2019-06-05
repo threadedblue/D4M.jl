@@ -2,8 +2,6 @@
 #Module for D4M
 module D4M
 
-    print("using n8kim1 version of D4M.jl, found on github")
-
     using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
 
     import SparseArrays: nnz, diag
@@ -40,8 +38,8 @@ module D4M
     #Helper functions for parsing
     include("parsinghelpers.jl")
 
-    #Test to make sure you're using this package, not the official release
-    include("localtest.jl")
+    #Displays what version is being used
+    include("versiontest.jl")
 
 
     if haskey(ENV,"JAVA_HOME")
