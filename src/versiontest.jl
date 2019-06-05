@@ -1,3 +1,3 @@
 function testversion()
-    println("using windows 10 version")
+    println("using n8kim1 github version")
 end
