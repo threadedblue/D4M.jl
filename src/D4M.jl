@@ -25,10 +25,6 @@ module D4M
             getadj, getrow, getcol, getval, find,
             #saveassoc, loadassoc,
             OutDegree, InDegree
-            #dbsetup, ls, 
-            #nnz, delete, addColCombiner,
-            #put, putTriple, getiterator,
-            #getsplits, addsplits
 
     #Helper functions for working with strings and string arrays
     include("stringarrayhelpers.jl")
@@ -38,22 +34,33 @@ module D4M
     #Helper functions for parsing
     include("parsinghelpers.jl")
 
-    #Displays what version is being used
+    #Reflects any changes in verstiontest; used to debug usage of Revise
     include("versiontest.jl")
+    export testD4Mver
 
 
     if haskey(ENV,"JAVA_HOME")
-        using JavaCall
-        export dbsetup, ls, delete, addColCombiner,
-            put, putTriple, getiterator,
-            getsplits, addsplits
-
         # Database functionality
         include("DBserver.jl")
         include("DBtable.jl")
+        # Grapulo Calls
+        include("Graphulo/bfs.jl")
+        include("Graphulo/tablemult.jl")
+                
+        
+        using JavaCall
+        # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
+        export dbinit, dbsetup, ls, getindex, 
+            nnz, delete, toDBstring, addColCombiner,
+            put, putTriple, getiterator,
+            getsplits, addsplits
+        export adjbfs, edgebfs, singlebfs
+        export tablemult
+
+        println("Database capabilities loaded!")
 
     else
-        print("Not loading database capabilities. If you would like to connect to a database, please set JAVA_HOME.")
+        println("Not loading database capabilities. If you would like to connect to a database, please set JAVA_HOME.")
 
     end
 
