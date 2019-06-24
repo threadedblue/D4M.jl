@@ -7,6 +7,7 @@ struct DBserver
     user::String
     pass::String
     dbType::String
+    Graphulo
 end
 
 using JavaCall
@@ -45,22 +46,28 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
     if isdir(config) # Config dir
         dbdir = config*"/databases/"*instance
         f = open(dbdir*"/accumulo_user_password.txt","r")
-        pword = read(f, String)#readstring(f)
+        pword = readstring(f)
+        username = "AccumuloUser"
         f = open(dbdir*"/dnsname","r")
-        hostname = replace(read(f, String),"\n"=>"")*":2181"
-        DB = DBserver(instance,hostname,"AccumuloUser",pword,"BigTableLike")
+        hostname = replace(readstring(f),"\n","")*":2181"
     else # Conifg file
         f = open(config)
         conf = readlines(config)
         conf = Dict(l[1] => l[2] for l in split.(conf,"="))
-
-        DB = DBserver(conf["instance"],conf["hostname"],conf["username"],conf["password"],"BigTableLike")
+        instance = conf["instance"]
+        hostname = conf["hostname"]
+        username = conf["username"]
+        pword = conf["password"]
     end
+
     if ~JavaCall.isloaded()
         println("Starting up JVM for DB operations")
         dbinit()
     end
-    return DB
+
+    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
+    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
+    return DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
 end
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
