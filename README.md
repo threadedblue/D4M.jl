@@ -95,9 +95,9 @@ Various parts of this implementation has been completed and compared with the or
 
 Use of the database connection capabilites requires Graphulo. Graphulo is available on this page: <https://github.com/Accla/graphulo>.
 
-We have provided the jars that were used to test this version of D4M.jl, 
+We have provided the Graphulo jars that were used to test this version of D4M.jl. The jar in `lib/` ending with `alldeps.jar` is the server-side jar, and must be present in the Accumulo installation's `lib/ext/` directory.
 
-If you would like to include a different version of Graphulo, you can provide your own jars. To do this, build Graphulo according to the instructions on that page. There should be two jars and one zip file in the "target" directory after you build Graphulo. The jar ending with "alldeps.jar" is the server side jar meant to go with your Accumulo instance. The other jar should be placed in the "lib" folder in the D4M.jl package directory and the zip file should be unzipped into the D4M.jl package directory. The resulting "libext" directory contains dependency jars.
+If you would like to include a different version of Graphulo, you can provide your own jars. To do this, build Graphulo according to the instructions on that page. There should be two jars and one zip file in the `target/` directory after you build Graphulo. The jar ending with `alldeps.jar` is the server side jar meant to go with your Accumulo instance. The other jar should be placed in the `lib` folder in the D4M.jl package directory. Finally, the zip file should be unzipped into the D4M.jl package directory; the resulting `libext` directory contains dependency jars.
 
 D4M.jl does rely on the JavaCall package to call the Graphulo functions that enable database communication. In order for JavaCall to initialize the JVM, the JAVA_HOME environment variable must be set and the above jars must be on the classpath before initializing the JVM. Note that as of now, the JavaCall package does not allow anything to be added to the classpath after intializing the JVM, and the JVM cannot be "unitialized" except by exiting Julia.
 
