@@ -46,7 +46,7 @@ using SparseArrays
 
 function find(A::Assoc)
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         row, col, val = findnz(SparseMatrixCSC(A.A))
     else
         row, col, val = findnz(A.A)

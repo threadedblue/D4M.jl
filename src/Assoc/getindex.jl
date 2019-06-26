@@ -136,7 +136,7 @@ function >(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = searchsortedlast(getval(A),E)
     end
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
     else
         rowkey, colkey, valkey = findnz(A.A)
@@ -165,7 +165,7 @@ function <(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = searchsortedfirst(A.val,E)
     end
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
     else
         rowkey, colkey, valkey = findnz(A.A)
@@ -198,7 +198,7 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
         end
     end
     
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
     else
         rowkey, colkey, valkey = findnz(A.A)

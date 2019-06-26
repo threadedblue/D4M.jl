@@ -167,7 +167,7 @@ nnz: Return the number of nonzeros in an Associative Array
 =#
 function nnz(A::Assoc)
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         return nnz(A.A.parent)
     else
         return nnz(A.A)
