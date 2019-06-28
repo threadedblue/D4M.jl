@@ -37,15 +37,16 @@ function tablemult(AT::DBtableType,B::DBtableType,Cname::AbstractString,CTname::
         Bname = B.name
     end
 
-    # if noadd
-    #     # TODO check if C and CT in the database
-    #     if any(ls(DB) .== Cname)
-    #         delete(Cname)
-    #     end
-    #     if ~isempty(CTname)
-    #         delete(CTname)
-    #     end
-    # end
+    if clear
+        if ispresent(DB, Cname)
+            delete(DB[Cname])
+        end
+        if ~isempty(CTname)
+            if ispresent(DB, CTname)
+                delete(DB[CTname])
+            end
+        end
+    end
 
     jcall(DB.Graphulo,"TableMult", jlong, 
         (JString,JString,JString,JString,JString,JString,JString,jint,jint,jboolean,), 

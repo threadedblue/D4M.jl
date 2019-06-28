@@ -57,8 +57,14 @@ function delete(table::DBtable)
         output = join(convert(Array{AbstractString},input),"\n")*"\n"
     elseif isa(input,Colon)
         output = ":"
-    elseif isa(input,StartsWith) # creates an array
+    elseif isa(input,StartsWith)
+        # StartsWith supports one element, without a comma at the end,
+        # as well as a comma-delimited list with a comma at the end
         str = input.inputString
+        if ~(str[end] == ',')
+            str = string(str, ",")
+        end
+
         output = ""
         del = str[end:end]
         idx1 = 1
@@ -238,7 +244,7 @@ ValidType = Union{UnionArray,AbstractString,Array,Number}
 putTriple(table::DBtableType,r::ValidType,c::ValidType,v::ValidType) = putTriple(table,ingestprep(r),ingestprep(c),ingestprep(v))
 
 # The put function deconstructs A and calls putTriple
-function put(table::DBtableType,A::Assoc)
+function put(table::DBtableType,A::Assoc; clear::Bool=false)
     r,c,v = find(A)
     putTriple(table,r,c,v)
 end

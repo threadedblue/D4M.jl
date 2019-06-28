@@ -67,7 +67,8 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
 
     g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
     Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
-    return DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
+    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
+    return DB
 end
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
@@ -124,3 +125,17 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     
 end
 
+# Returns whether a table with the given name exists in Accumulo
+function ispresent(DB::DBserver,tableName1::String)
+    return any(ls(DB) .== tableName1)
+end
+
+# Deletes all tables, except for the 4 default ones in the Accumulo database.
+function deleteall(DB::DBserver)
+    defaultnames = ["accumulo.metadata", "accumulo.replication", "accumulo.root", "trace"]
+    for name in ls(DB)
+        if ~(any(defaultnames .== name))
+            delete(DB[String(name)])
+        end
+    end
+end
