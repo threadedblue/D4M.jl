@@ -245,6 +245,20 @@ putTriple(table::DBtableType,r::ValidType,c::ValidType,v::ValidType) = putTriple
 
 # The put function deconstructs A and calls putTriple
 function put(table::DBtableType,A::Assoc; clear::Bool=false)
+    DB = table.DB
+
+    if clear
+        if isa(table,DBtablePair)
+            if ispresent(DB, table.name1) && ispresent(DB, table.name2)
+                delete(table)
+            end
+        else
+            if ispresent(DB, table.name)
+                delete(table)
+            end
+        end
+    end
+
     r,c,v = find(A)
     putTriple(table,r,c,v)
 end
