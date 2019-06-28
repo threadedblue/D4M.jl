@@ -57,7 +57,7 @@ function delete(table::DBtable)
         output = join(convert(Array{AbstractString},input),"\n")*"\n"
     elseif isa(input,Colon)
         output = ":"
-    elseif isa(input,StartsWith)
+    elseif isa(input,StartsWith) # creates an array
         str = input.inputString
         output = ""
         del = str[end:end]

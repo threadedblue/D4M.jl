@@ -123,3 +123,4 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     return DBtablePair(DB, tableName1, tableName2, "", 0, 0, "", 5e5, queryObj,opsObj)
     
 end
+
