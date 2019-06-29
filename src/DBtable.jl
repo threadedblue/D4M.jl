@@ -315,3 +315,22 @@ function getsplits(table::DBtableType)
         return splits
     end
 end
+
+# Printing methods: query the Assoc array, and then print that underlying array
+# print: print Assoc in a way that mimics the Sparse Array print.
+function print(table::DBtable)
+    A = table[:,:]
+    print(A)
+end
+
+# printFull : print Assoc in tabular form.
+function printFull(table::DBtable)
+    A = table[:,:]
+    printFull(A)
+end
+
+# printTriple : return A in triple String form: (r,c) v 
+function printTriple(table::DBtable)
+    A = table[:,:]
+    printTriple(A)
+end
