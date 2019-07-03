@@ -24,7 +24,9 @@ module D4M
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,
             #saveassoc, loadassoc,
-            OutDegree, InDegree
+            OutDegree, InDegree,
+            and, plus, minus, *, bounded,
+            removediag, adjbfs
 
     #Helper functions for working with strings and string arrays
     include("stringarrayhelpers.jl")
