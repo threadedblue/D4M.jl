@@ -33,31 +33,50 @@ end
 # Deletes specified DB table
 # TODO: add check whether want to delete
 function delete(table::DBtable)
-    jcall(table.tableOps,"deleteTable", Nothing, (JString,), table.name)
+    name = table.name
+    DB = table.DB
+    if  ispresent(DB, name)
+        jcall(table.tableOps, "deleteTable", Nothing, (JString,), name)
+    else
+        println("Table (name " * name * ") already does not exist in Accumulo")
+    end
     return nothing
- end
+end
  
- function delete(table::DBtablePair)
-     jcall(table.tableOps,"deleteTable", Nothing, (JString,), table.name1)
-     jcall(table.tableOps,"deleteTable", Nothing, (JString,), table.name2)
-     return nothing
- end
+function delete(table::DBtablePair)
+    name1 = table.name1
+    name2 = table.name2
+    DB = table.DB
+
+    if  ispresent(DB, name1)
+        jcall(table.tableOps, "deleteTable", Nothing, (JString,), name1)
+    else
+        println("Table 1 (name " * name1 * ") already does not exist in Accumulo")
+    end
+    if  ispresent(DB, name2)
+        jcall(table.tableOps, "deleteTable", Nothing, (JString,), name2)
+    else
+        println("Table 2 (name " * name2 * ") already does not exist in Accumulo")
+    end
+
+    return nothing
+end
 
  # Helper function to convert Assoc fields to an Accumulo-friendly string
- function toDBstring(input)
+function toDBstring(input)
     StringArray = Array{T} where T <: AbstractString
     NumericArray = Array{T} where T <: Number
     UnionArray = Array{T} where T <: Union{AbstractString,Number}
     
-    if isa(input,StringArray)
-        output = join(input,"\n")*"\n"
-    elseif isa(input,NumericArray)
-        output = join(string.(input),"\n")*"\n"
-    elseif isa(input,UnionArray)
-        output = join(convert(Array{AbstractString},input),"\n")*"\n"
-    elseif isa(input,Colon)
+    if isa(input, StringArray)
+        output = join(input, "\n") * "\n"
+    elseif isa(input, NumericArray)
+        output = join(string.(input), "\n") * "\n"
+    elseif isa(input, UnionArray)
+        output = join(convert(Array{AbstractString}, input), "\n") * "\n"
+    elseif isa(input, Colon)
         output = ":"
-    elseif isa(input,StartsWith)
+    elseif isa(input, StartsWith)
         # StartsWith supports one element, without a comma at the end,
         # as well as a comma-delimited list with a comma at the end
         str = input.inputString
@@ -68,12 +87,12 @@ function delete(table::DBtable)
         output = ""
         del = str[end:end]
         idx1 = 1
-        idx2 = findnext(del,str,idx1+1)
+        idx2 = findnext(del, str, idx1 + 1)
 
-        while ~isa(idx2,Nothing)
-            output = output*str[idx1:idx2[1]]*":"*del*str[idx1:idx2[1]-1]*Char(127)*del
-            idx1 = idx2[1]+1
-            idx2 = findnext(del,str,idx1)
+        while ~isa(idx2, Nothing)
+            output = output * str[idx1:idx2[1]] * ":" * del * str[idx1:idx2[1] - 1] * Char(127) * del
+            idx1 = idx2[1] + 1
+            idx2 = findnext(del, str, idx1)
         end
     else
         output = input
@@ -84,63 +103,63 @@ end
 
 # Base getindex function- i and j are d4m formatted strings (delimitered)
 DBtableType = Union{DBtable,DBtablePair}
-function getindex(table::DBtableType,i::AbstractString,j::AbstractString)
+function getindex(table::DBtableType, i::AbstractString, j::AbstractString)
     
-    jcall(table.d4mQuery,"setCloudType", Nothing, (JString,), table.DB.dbType)
-    jcall(table.d4mQuery,"setLimit", Nothing, (jint,), table.numLimit)
-    jcall(table.d4mQuery,"reset", Nothing, (),)
+    jcall(table.d4mQuery, "setCloudType", Nothing, (JString,), table.DB.dbType)
+    jcall(table.d4mQuery, "setLimit", Nothing, (jint,), table.numLimit)
+    jcall(table.d4mQuery, "reset", Nothing, (), )
     
     dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
     
-    if i!=":" || j==":" || isa(table,DBtable)
+    if i != ":" || j == ":" || isa(table, DBtable)
         
-        if isa(table,DBtablePair)
-            jcall(table.d4mQuery,"setTableName", Nothing, (JString,), table.name1)
+        if isa(table, DBtablePair)
+            jcall(table.d4mQuery, "setTableName", Nothing, (JString,), table.name1)
         end
-        jcall(table.d4mQuery,"doMatlabQuery",dbResultSet,(JString,JString,JString,JString,),i,j,table.columnfamily,table.security)
+        jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString,), i, j, table.columnfamily, table.security)
 
-        r = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
-        c = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
+        r = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
+        c = jcall(table.d4mQuery, "getColumnReturnString", JString, (), )
         
     else # Search transpose table if column query
-        jcall(table.d4mQuery,"setTableName", Nothing, (JString,), table.name2)
-        jcall(table.d4mQuery,"doMatlabQuery",dbResultSet,(JString,JString,JString,JString,),j,i,table.columnfamily,table.security)
+        jcall(table.d4mQuery, "setTableName", Nothing, (JString,), table.name2)
+        jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString,), j, i, table.columnfamily, table.security)
 
-        c = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
-        r = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
+        c = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
+        r = jcall(table.d4mQuery, "getColumnReturnString", JString, (), )
     end
     
-    v = jcall(table.d4mQuery,"getValueReturnString", JString, (),)
+    v = jcall(table.d4mQuery, "getValueReturnString", JString, (), )
     
-    return deepCondense(Assoc(r,c,v))
+    return deepCondense(Assoc(r, c, v))
     
 end
 
 UnionArray = Array{Union{AbstractString,Number}}
 ValidQueryTypes = Union{Colon,AbstractString,Array,UnionArray,StartsWith}
 
-getindex(table::DBtableType,i::ValidQueryTypes,j::ValidQueryTypes) = getindex(table,toDBstring(i),toDBstring(j))
+getindex(table::DBtableType, i::ValidQueryTypes, j::ValidQueryTypes) = getindex(table, toDBstring(i), toDBstring(j))
 
 # Query iterator functionality
-function getiterator(table::DBtableType,nelements::Number)
+function getiterator(table::DBtableType, nelements::Number)
 
     ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
     opsObj = ops((JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.DB.user, table.DB.pass)
     
-    if isa(table,DBtablePair)
+    if isa(table, DBtablePair)
         d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
         queryObj = d4mQuery((JString, JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.name1, table.DB.user, table.DB.pass)
 
         Ti = DBtablePair(table.DB, table.name1, table.name2, table.security,
         nelements, table.numRow, table.columnfamily, table.putBytes,
-        queryObj,opsObj)
+        queryObj, opsObj)
     else
         d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
         queryObj = d4mQuery((JString, JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.name, table.DB.user, table.DB.pass)
         
         Ti = DBtable(table.DB, table.name, table.security,
         nelements, table.numRow, table.columnfamily, table.putBytes,
-        queryObj,opsObj)
+        queryObj, opsObj)
     end
     
     return Ti
@@ -151,32 +170,32 @@ function getindex(table::DBtableType)
     
     #T.d4mQuery.next();
     #dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
-    jcall(table.d4mQuery,"next",Nothing,(),)
+    jcall(table.d4mQuery, "next", Nothing, (), )
     
     # check if transpose table query- if so flip the r and c results.
-    tablename = jcall(table.d4mQuery,"getTableName", JString, (),)
+    tablename = jcall(table.d4mQuery, "getTableName", JString, (), )
     
-    if isa(table,DBtablePair) && tablename == table.name2
-        c = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
-        r = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
+    if isa(table, DBtablePair) && tablename == table.name2
+        c = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
+        r = jcall(table.d4mQuery, "getColumnReturnString", JString, (), )
     else
-        r = jcall(table.d4mQuery,"getRowReturnString", JString, (),)
-        c = jcall(table.d4mQuery,"getColumnReturnString", JString, (),)
+        r = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
+        c = jcall(table.d4mQuery, "getColumnReturnString", JString, (), )
     end
     
-    v = jcall(table.d4mQuery,"getValueReturnString", JString, (),)
+    v = jcall(table.d4mQuery, "getValueReturnString", JString, (), )
     
-    return deepCondense(Assoc(r,c,v))
+    return deepCondense(Assoc(r, c, v))
     
 end
 
 # Helper function for ingest
-function searchall(str::String,c::Char)
-    idx = search(str,c)
+function searchall(str::String, c::Char)
+    idx = search(str, c)
     allIdx = idx
 
     while idx < endof(str)
-        idx = search(str,c,idx+1)
+        idx = search(str, c, idx + 1)
         allIdx = [allIdx idx]
     end
 
@@ -185,18 +204,18 @@ end
 
 # putTriple is the main db ingest function
 DBtableType = Union{DBtable,DBtablePair}
-function putTriple(table::DBtableType,r::UnionArray,c::UnionArray,v::UnionArray)
+function putTriple(table::DBtableType, r::UnionArray, c::UnionArray, v::UnionArray)
     
     # Find chunk size for ingest
     chunkBytes = table.putBytes
     numTriples = length(r);
-    avgBytePerTriple = (sum(length.(r)) + sum(length.(c)) + sum(length.(v)))/numTriples;
-    chunkSize = min(max(1,round(Integer,chunkBytes/avgBytePerTriple)),numTriples);
+    avgBytePerTriple = (sum(length.(r)) + sum(length.(c)) + sum(length.(v))) / numTriples;
+    chunkSize = min(max(1, round(Integer, chunkBytes / avgBytePerTriple)), numTriples);
     
     # In Matlab D4M this is inside the loop- do we need to make a new object each time?
     dbInsert = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbInsert"
     
-    if isa(table,DBtablePair)
+    if isa(table, DBtablePair)
         insertObj = dbInsert((JString, JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.name1, table.DB.user, table.DB.pass)
         insertObjT = dbInsert((JString, JString, JString, JString, JString,), table.DB.instanceName, table.DB.host, table.name2, table.DB.user, table.DB.pass)
     else
@@ -205,16 +224,16 @@ function putTriple(table::DBtableType,r::UnionArray,c::UnionArray,v::UnionArray)
         
     # Insert each chunk
     for i in 1:chunkSize:numTriples
-        iNext = min(i + chunkSize,numTriples);
+        iNext = min(i + chunkSize, numTriples);
         rr = toDBstring(r[i:iNext]);
         cc = toDBstring(c[i:iNext]);
         vv = toDBstring(v[i:iNext]);
         
-        jcall(insertObj,"doProcessing",Nothing,(JString,JString,JString,JString,JString,),rr, cc, vv, table.columnfamily, table.security)
+        jcall(insertObj, "doProcessing", Nothing, (JString, JString, JString, JString, JString,), rr, cc, vv, table.columnfamily, table.security)
         
         # Insert transpose into transpose table if DBtablePair
-        if isa(table,DBtablePair)
-            jcall(insertObjT,"doProcessing",Nothing,(JString,JString,JString,JString,JString,),cc, rr, vv, table.columnfamily, table.security)
+        if isa(table, DBtablePair)
+            jcall(insertObjT, "doProcessing", Nothing, (JString, JString, JString, JString, JString,), cc, rr, vv, table.columnfamily, table.security)
         end
     end
     
@@ -225,12 +244,12 @@ function ingestprep(input)
     NumericArray = Array{T} where T <: Number
     UnionArray = Array{Union{AbstractString,Number}}
     
-    if isa(input,StringArray)
-        output = convert(UnionArray,input)
-    elseif isa(input,NumericArray)
+    if isa(input, StringArray)
+        output = convert(UnionArray, input)
+    elseif isa(input, NumericArray)
         output = string.(input)
-    elseif isa(input,AbstractString)
-        output = split(input,input[end],limit=NumStr(input))
+    elseif isa(input, AbstractString)
+        output = split(input, input[end], limit = NumStr(input))
     else
         output = input
     end
@@ -241,14 +260,14 @@ end
 UnionArray = Array{Union{AbstractString,Number}}
 #StringOrNumArray = Union{AbstractString,Array,Number}
 ValidType = Union{UnionArray,AbstractString,Array,Number}
-putTriple(table::DBtableType,r::ValidType,c::ValidType,v::ValidType) = putTriple(table,ingestprep(r),ingestprep(c),ingestprep(v))
+putTriple(table::DBtableType, r::ValidType, c::ValidType, v::ValidType) = putTriple(table, ingestprep(r), ingestprep(c), ingestprep(v))
 
 # The put function deconstructs A and calls putTriple
-function put(table::DBtableType,A::Assoc; clear::Bool=false)
+function put(table::DBtableType, A::Assoc; clear::Bool = false)
     DB = table.DB
 
     if clear
-        if isa(table,DBtablePair)
+        if isa(table, DBtablePair)
             if ispresent(DB, table.name1) && ispresent(DB, table.name2)
                 delete(table)
             end
@@ -259,8 +278,8 @@ function put(table::DBtableType,A::Assoc; clear::Bool=false)
         end
     end
 
-    r,c,v = find(A)
-    putTriple(table,r,c,v)
+    r, c, v = find(A)
+    putTriple(table, r, c, v)
 end
 
 #addColCombiner: Adds combiners to specific column names.
@@ -270,13 +289,13 @@ end
     #      IF D4M_API_JAVA.jar is installed on the Accumulo instance, you can
     #      specify "min_decimal", "max_decimal", or "sum_decimal"
     #      to obtain the ability to combine on decimals
-function addColCombiner(table::DBtable,colNames=":,",combineType="sum")   
-        jcall(table.tableOps,"designateCombiningColumns", Nothing, (JString, JString, JString, JString,), table.name, colNames, combineType, table.columnfamily)
+function addColCombiner(table::DBtable, colNames = ":,", combineType = "sum")   
+    jcall(table.tableOps, "designateCombiningColumns", Nothing, (JString, JString, JString, JString,), table.name, colNames, combineType, table.columnfamily)
 end
 
 # nnz returns the number of entries in specified table
 function nnz(table::DBtableType)
-    if isa(table,DBtablePair)
+    if isa(table, DBtablePair)
         tname = table.name1
     else
         tname = table.name
@@ -285,32 +304,32 @@ function nnz(table::DBtableType)
     arrayList = @jimport "java.util.ArrayList"
     list = @jimport "java.util.List"
     
-    tableList = arrayList((),)
-    jcall(tableList,"add",jboolean,(JObject,),tname)
+    tableList = arrayList((), )
+    jcall(tableList, "add", jboolean, (JObject,), tname)
     
-    jcall(table.tableOps,"getNumberOfEntries",jlong,(list,),tableList)
+    jcall(table.tableOps, "getNumberOfEntries", jlong, (list,), tableList)
 end
 
 function addsplits(table::DBtable, splitstring)
-    jcall(table.tableOps,"addSplits", Nothing, (JString,JString,), table.name, splitstring)
+    jcall(table.tableOps, "addSplits", Nothing, (JString, JString,), table.name, splitstring)
 end
 
 function addsplits(table::DBtablePair, splitstring, splitstringT)
 
-    jcall(table.tableOps,"addSplits", Nothing, (JString,JString,), table.name1, splitstring)
-    jcall(table.tableOps,"addSplits", Nothing, (JString,JString,), table.name2, splitstringT)
+    jcall(table.tableOps, "addSplits", Nothing, (JString, JString,), table.name1, splitstring)
+    jcall(table.tableOps, "addSplits", Nothing, (JString, JString,), table.name2, splitstringT)
     
 end
 
 function getsplits(table::DBtableType)
 
-    if isa(table,DBtablePair)
-        splits = jcall(table.tableOps,"getSplitsString", JString, (JString,), table.name1)
-        splitsT = jcall(table.tableOps,"getSplitsString", JString, (JString,), table.name2)
+    if isa(table, DBtablePair)
+        splits = jcall(table.tableOps, "getSplitsString", JString, (JString,), table.name1)
+        splitsT = jcall(table.tableOps, "getSplitsString", JString, (JString,), table.name2)
 
-        return splits,splitsT
+        return splits, splitsT
     else
-        splits = jcall(table.tableOps,"getSplitsString", JString, (JString,), table.name)
+        splits = jcall(table.tableOps, "getSplitsString", JString, (JString,), table.name)
 
         return splits
     end
@@ -318,19 +337,19 @@ end
 
 # Printing methods: query the Assoc array, and then print that underlying array
 # print: print Assoc in a way that mimics the Sparse Array print.
-function print(table::DBtable)
+function print(table::DBtableType)
     A = table[:,:]
     print(A)
 end
 
 # printFull : print Assoc in tabular form.
-function printFull(table::DBtable)
+function printFull(table::DBtableType)
     A = table[:,:]
     printFull(A)
 end
 
 # printTriple : return A in triple String form: (r,c) v 
-function printTriple(table::DBtable)
+function printTriple(table::DBtableType)
     A = table[:,:]
     printTriple(A)
 end

@@ -35,7 +35,7 @@ function dbinit()
         System = @jimport java.lang.System
         cpath = jcall(System, "getProperty", JString, (JString,), "java.class.path")
 
-        if ~contains(cpath, "graphulo")
+        if ~occursin(cpath, "graphulo")
             println("Required libraries for database operations missing from Java classpath. Restart Julia and intialize jvm using dbinit().")
         end
     end
