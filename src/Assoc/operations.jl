@@ -23,7 +23,7 @@ function and(A::Assoc, B::Assoc)
     rowMapping = searchsortedmapping(ABrow,B.row)
     colMapping = searchsortedmapping(ABcol,B.col)
     BB = LinearAlgebra.fillstored!(copy(B.A[rowMapping,colMapping]),1)
-    BB = round.(Int64,BB)find
+    BB = round.(Int64,BB)
 
     ABA = AA .& BB 
     ABA = ABA * 1.0

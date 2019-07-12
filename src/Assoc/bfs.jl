@@ -1,22 +1,28 @@
 # TODO make consistent with Graphulo's degree count, which only adds 1 (like logical)
 
-function removediag(A::Assoc)
+function removediag(Ainput::Assoc)
     # A helper function to remove the diagonal of a square Assoc.
+    # TODO make something that's not a cheap workaround
 
     # First, find the diagonal
     Adiag = []
-    for v in 1:length(A.row)
+    for v in 1:length(Ainput.row)
         # TODO check that there is an entry, before trying to index into it
-        push!(Adiag, find(A[v, v])[3][1])
+        push!(Adiag, find(Ainput[v, v])[3][1])
     end
-    AdiagAssoc = Assoc(A.row, A.col, Adiag)
+    AdiagAssoc = Assoc(Ainput.row, Ainput.col, Adiag)
 
     # Then, subtract this from the original matrix
-    Anodiag = A - AdiagAssoc
+    Anodiag = Ainput - AdiagAssoc
+
+    # Finally, remove any zeroes from the SparseArray
+    dropzeros!(Anodiag.A)
+
     return Anodiag
 end
 
 function adjbfs(A::Assoc, v0::AbstractString, numsteps::Number, minDegree = 1::Number, maxDegree = 2^31 - 1::Number; takeunion = false, nodiag = false)
+    # TODO use native outdeg / indeg methods
     # (Try to) Automatically compute the outdegrees.
     # If nodiag is true, then the diagonal of the adjacency matrix will be ignored. (Handy when the diagonal represents edge counts, rather than self-loops)
     if nodiag
