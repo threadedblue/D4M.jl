@@ -58,11 +58,11 @@ module D4M
         export tablemult # tablemult
 
         println("Database capabilities loaded!")
-
     else
         println("Not loading database capabilities. If you would like to connect to a database, please set JAVA_HOME.")
-
     end
+
+    println("D4M loaded!")
 
 end
 
