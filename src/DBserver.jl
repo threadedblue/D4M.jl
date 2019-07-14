@@ -49,8 +49,8 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
         pword = read(f, String)
         username = "AccumuloUser"
         f = open(dbdir*"/dnsname","r")
-        hostname = replace(read(f, String),"\n","")*":2181"
-    else # Conifg file
+        hostname = replace(read(f, String),"\n" => "")*":2181"
+    else # Config file
         f = open(config)
         conf = readlines(config)
         conf = Dict(l[1] => l[2] for l in split.(conf,"="))
