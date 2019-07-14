@@ -46,10 +46,10 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
     if isdir(config) # Config dir
         dbdir = config*"/databases/"*instance
         f = open(dbdir*"/accumulo_user_password.txt","r")
-        pword = readstring(f)
+        pword = read(f, String)
         username = "AccumuloUser"
         f = open(dbdir*"/dnsname","r")
-        hostname = replace(readstring(f),"\n","")*":2181"
+        hostname = replace(read(f, String),"\n","")*":2181"
     else # Conifg file
         f = open(config)
         conf = readlines(config)
