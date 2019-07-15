@@ -54,7 +54,7 @@ module D4M
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
         export dbinit, dbsetup, ls, getindex, ispresent, deleteall # DBserver
         export delete, toDBstring, getindex, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
-        export adjbfs, edgebfs, singlebfs # BFS
+        export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
         export tablemult # tablemult
 
         println("Database capabilities loaded!")

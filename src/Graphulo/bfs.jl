@@ -2,7 +2,7 @@ using JavaCall
 
 DBtableType = Union{DBtable,DBtablePair}
 
-function makedegreetable(A::DBtableType, Rtable = ""::AbstractString, countColumns = true::Bool, colq = ""::AbstractString)
+function makedegreetable(A::DBtableType, Rname = ""::AbstractString, countColumns = true::Bool, colq = ""::AbstractString)
     # /**
     # * Create a degree table from an existing table.
     # * @param table Name of original table.
@@ -11,19 +11,29 @@ function makedegreetable(A::DBtableType, Rtable = ""::AbstractString, countColum
     # * @param countColumns True means degrees are the <b>number of entries in each row</b>.
     # *                     False means degrees are the <b>sum or weights of entries in each row</b>.
     # * @param colq The name of the degree column in Degtable. Default is "".
-    # * @return The number of rows in the original table.
-    # */
+
+    # Returns a database table struct.
+
     # public long generateDegreeTable(String table, String Degtable, boolean countColumns, String colq) 
 
     if isa(A, DBtablePair)
-        Atable = A.name1
+        Aname = A.name1
     else
-        Atable = A.name
+        Aname = A.name
     end
 
     jcall(A.DB.Graphulo, "generateDegreeTable", jlong, 
         (JString, JString, jboolean, JString,), 
-        Atable, Rtable, countColumns, colq)
+        Aname, Rname, countColumns, colq)
+
+
+    DB = A.DB
+    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
+    opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
+    d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
+    queryObj = d4mQuery((JString, JString, JString, JString, JString,), DB.instanceName, DB.host, Rname, DB.user, DB.pass)
+    
+    return DBtable(DB, Rname, "", 0, 0, "", 5e5, queryObj,opsObj)
 end
 
 function adjbfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = ""::AbstractString, RtableTranspose = ""::AbstractString, minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
