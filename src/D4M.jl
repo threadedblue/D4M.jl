@@ -19,7 +19,7 @@ module D4M
             ReadCSV, WriteCSV,
             print, printFull, printTriple,
             norow, nocol,
-            logical, str2num,
+            logical, str2num,  convertassoc, parseassoc,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,
@@ -36,9 +36,9 @@ module D4M
     #Helper functions for parsing
     include("parsinghelpers.jl")
 
-    #Reflects any changes in verstiontest; used to debug usage of Revise
-    include("versiontest.jl")
-    export testD4Mver
+    #Reflects any changes in version; used to debug usage of Revise
+    include("version.jl")
+    export D4Mver
 
 
     if haskey(ENV,"JAVA_HOME")

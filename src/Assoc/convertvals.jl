@@ -10,11 +10,31 @@ logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],Linear
 
 function str2num(A::Assoc)
     r,c,v = find(A)
-    v = Meta.parse.(v) # this won't work for string values- find numeric strings first, convert all others to 1
+    v = parse.(Int, v) # this won't work for string values- find numeric strings first, convert all others to 1
     A = Assoc(r,c,v)
 end
 
 # TODO: Write num2str
+
+#=
+convert all entries to a certain type
+=#
+
+function convertassoc(type::DataType, A::Assoc)
+    valnew = convert.(type, A.val)
+    valnew2 = Array{Union{AbstractString,Number},1}(valnew)
+    return putVal(A, valnew2)
+end
+
+#=
+If entries are strings, parse them into a number type
+=#
+
+function parseassoc(type::DataType, A::Assoc)
+    valnew = parse.(type, A.val)
+    valnew2 = Array{Union{AbstractString,Number},1}(valnew)
+    return putVal(A, valnew2)
+end
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
