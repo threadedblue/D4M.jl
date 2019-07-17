@@ -28,13 +28,12 @@ module D4M
             and, plus, minus, *, bounded,
             removediag, adjbfs
 
-    #Helper functions for working with strings and string arrays
-    include("stringarrayhelpers.jl")
-
     include("Assoc.jl") # Associative Array
 
     #Helper functions for parsing
     include("parsinghelpers.jl")
+    #Helper functions for working with strings and string arrays
+    include("stringarrayhelpers.jl")
 
     #Reflects any changes in version; used to debug usage of Revise
     include("version.jl")
@@ -43,11 +42,11 @@ module D4M
 
     if haskey(ENV,"JAVA_HOME")
         # Database functionality
-        include("DBserver.jl")
-        include("DBtable.jl")
+        include("DB/DBserver.jl")
+        include("DB/DBtable.jl")
         # Grapulo Calls
-        include("Graphulo/bfs.jl")
-        include("Graphulo/tablemult.jl")
+        include("DB/bfs.jl")
+        include("DB/tablemult.jl")
                 
         
         using JavaCall
