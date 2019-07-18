@@ -102,6 +102,8 @@ struct StartsWith
     inputString::AbstractString
 end
 
+# returns an array of indices; 
+# the corresponding subarray of getrow/getcol is what's called for by startswith
 function StartsWithHelper(Ar::Array{Union{AbstractString,Number}},S::StartsWith)
     str_list = []
     if S.inputString[end] == ','

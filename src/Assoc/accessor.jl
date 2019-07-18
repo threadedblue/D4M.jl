@@ -2,10 +2,13 @@
 #=
 Protected Accessor Function for User.
 =#
+# gets the sparse matrix
 function getadj(A::Assoc)
     return copy(A.A)
 end
 
+# getcol, getrow, getval return range objects if possible
+# if not, they return copies of the col, rw, val parts of Assoc's struct
 function getcol(A::Assoc)
     if isempty(A)
         return Union{AbstractString, Number}[]

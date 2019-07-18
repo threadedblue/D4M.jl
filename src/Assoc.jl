@@ -62,6 +62,8 @@ struct Assoc
             valIn = Array{Union{AbstractString,Number},1}([valIn])
         end
 
+        # row, col, and val are always searchsortedfirst
+        # i, j, and v are passed into the sparse constructor
         i = rowIn;
         j = colIn;
         v = valIn;
