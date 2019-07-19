@@ -1,5 +1,6 @@
-
 #Compiled Data from Examples#
 EntityCopy.csv
 A.csv
-example/3Scaling/2ParallelDatabase/data/*
+examples/3Scaling/2ParallelDatabase/data/*
+examples/2Apps/*
+.ipynb_checkpoints

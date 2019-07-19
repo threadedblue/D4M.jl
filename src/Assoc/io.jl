@@ -1,4 +1,5 @@
-using SparseArrays#, LinearAlgebra
+# shouldn't this require JLD???
+using SparseArrays, DelimitedFiles
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc,fname,del=',',eol='\n')
@@ -57,7 +58,7 @@ function ReadCSV(fname,del=',',eol='\n')
         end
         return Assoc(row,col,val,(+))
     else #2D associative?
-    #Currently Ignoring
+    # TODO implement this special case (currently ignoring, for now)
         return
     end
 end
@@ -65,7 +66,7 @@ end
 #=
 Writing and Reading JLD Files
 Assoc Serialized for saving
-Note that saving would convert row and col types to number.
+NOTE: saving would convert row and col types to number.
 =#
 
 # Delimiter for saving- using new line is safer than comma!

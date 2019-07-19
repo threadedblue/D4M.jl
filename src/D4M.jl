@@ -59,6 +59,8 @@ module D4M
         println("Database capabilities loaded!")
     else
         println("Not loading database capabilities. If you would like to connect to a database, please set JAVA_HOME.")
+        println("After setting JAVA_HOME, run:")
+        println("D4Mpkg = Base.PkgId(\"D4M\"); Base.compilecache(D4Mpkg)")
     end
 
     println("D4M loaded!")

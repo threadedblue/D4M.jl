@@ -37,7 +37,10 @@ function dbinit()
     cpath = jcall(System, "getProperty", JString, (JString,), "java.class.path")
 
     if ~occursin("graphulo", cpath)
-        println("Required libraries for database operations missing from Java classpath. Restart Julia and intialize jvm using dbinit().")
+        println("Required Graphulo libraries for database operations missing from Java classpath.")
+        println("To fix, add the required libraries (see Database Use in the readme).")
+        println("Then run D4Mpkg = Base.PkgId(\"D4M\"); Base.compilecache(D4Mpkg)")
+        println("and try dbinit() again.")
     end
 end
 

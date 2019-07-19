@@ -3,22 +3,26 @@
 
 # String manipulation helper functions useful for parsing
 function SplitStr(s12, sep)
-    #Given an array of joint array with a separater for each string in the array,
-    #Split the array in two array with onside of the array on each array.
-    #Assuem that separator is always inside the elements of s12
-    
-        strsplit = [split(x,sep)[y] for x in s12, y in 1:2]
-        return strsplit[:,1],strsplit[:,2]
-    
+    # Given an array of strings, each of which has two substrings joined with a separator,
+    # Split the array in two arrays, with each substring in its corresponding array.
+    # Assume that separator is always inside the elements of s12
+    # Example:
+    # input SplitStr(["abc,def", "123,456", "qwe,rty"], ",")
+    # output SubString{String}["abc", "123", "qwe"], SubString{String}["def", "456", "rty"])
+    strsplit = [split(x, sep)[y] for x in s12, y in 1:2]
+    return strsplit[:,1], strsplit[:,2]
 end
 
 function NumStr(stringA)
-    return length(split(stringA[1:end-1],stringA[end]))
+    # Returns the number of elements in a last-char-delimited string
+    return length(split(stringA[1:end - 1], stringA[end]))
 end
 
-function CatStr(s1::Array,sep::AbstractString,s2::Array)
-    #Assume s1 and s2 are arrays of String
-    #Also sep is a string 
+function CatStr(s1::Array, sep::AbstractString, s2::Array)
+    # Element-wise concatenation of two arrays of strings,
+    # adding sep between each element
+    # Assume s1 and s2 are arrays of String
+    # Also sep is a string 
     s12 = s1 .* [sep] .* s2  
     return s12
 end
@@ -33,16 +37,16 @@ Also returns the mapping from the original ordering in the given sequence to the
 Dev Note: 
  * TODO Current the backward mapping doesn't exist, but it doesn't seems to be utilized.
 =#
-function StrUnique(inputString::AbstractString, csv= false)
+function StrUnique(inputString::AbstractString, csv = false)
     #TODO backwardMapping from unique string to index is not implemented, because there doesn't seem to be a application for such an array
     #Note: The unique output is sorted.
     separator = inputString[end]
     if(csv == true)
         separator = ','
     end
-    strA = split(inputString,separator)
+    strA = split(inputString, separator)
     if inputString[end] == separator
-        strA = strA[1:end-1]
+        strA = strA[1:end - 1]
     end
 
     uniqueSeq = unique(strA)
@@ -51,11 +55,11 @@ function StrUnique(inputString::AbstractString, csv= false)
         uniqueSeq = uniqueSeq[2:end]
     end
 
-    forwardMapping =[ searchsortedfirst(uniqueSeq,x) for x in strA]
+    forwardMapping = [ searchsortedfirst(uniqueSeq, x) for x in strA]
 
-    backwardMapping = zeros(1,length(forwardMapping))
+    backwardMapping = zeros(1, length(forwardMapping))
 
-    return uniqueSeq,backwardMapping,forwardMapping
+    return uniqueSeq, backwardMapping, forwardMapping
 end
 
 function searchsortedmapping(A::Array, B::Array)
@@ -66,7 +70,7 @@ function searchsortedmapping(A::Array, B::Array)
 
     while (temp_index_A <= length(A)) 
         if A[temp_index_A] == B[temp_index_B]
-            push!(AtoB,temp_index_B)
+            push!(AtoB, temp_index_B)
             temp_index_A += 1
             temp_index_B += 1
         else
@@ -84,7 +88,7 @@ function sortedintersect(A::Array, B::Array)
 
     while (temp_index_A <= length(A)) & (temp_index_B <= length(B))
         if A[temp_index_A] == B[temp_index_B]
-            push!(ABintersect,A[temp_index_A])
+            push!(ABintersect, A[temp_index_A])
             temp_index_A += 1
             temp_index_B += 1
         elseif A[temp_index_A] < B[temp_index_B]
@@ -118,7 +122,7 @@ function sortedintersectmapping(A::Array, B::Array)
         end
     end
 
-    return Amap,Bmap
+    return Amap, Bmap
 end
 
 function sortedunion(A::Array, B::Array)
@@ -128,20 +132,20 @@ function sortedunion(A::Array, B::Array)
 
     while (temp_index_A <= length(A)) || (temp_index_B <= length(B))
         if (temp_index_A > length(A))
-            push!(ABintersect,B[temp_index_B])
+            push!(ABintersect, B[temp_index_B])
             temp_index_B += 1
         elseif (temp_index_B > length(B))
-            push!(ABintersect,A[temp_index_A])
+            push!(ABintersect, A[temp_index_A])
             temp_index_A += 1
         elseif (A[temp_index_A] == B[temp_index_B])
-            push!(ABintersect,A[temp_index_A])
+            push!(ABintersect, A[temp_index_A])
             temp_index_A += 1
             temp_index_B += 1
         elseif A[temp_index_A] < B[temp_index_B]
-            push!(ABintersect,A[temp_index_A])
+            push!(ABintersect, A[temp_index_A])
             temp_index_A += 1
         else
-            push!(ABintersect,B[temp_index_B])
+            push!(ABintersect, B[temp_index_B])
             temp_index_B += 1
         end
     end
