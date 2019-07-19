@@ -1,5 +1,6 @@
 function D4Mver()
-    println("version 0.1.6")
+    println("version 0.1.7")
+
 end
 
 # BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
