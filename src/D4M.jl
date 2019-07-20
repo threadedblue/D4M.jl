@@ -47,6 +47,7 @@ module D4M
         # Grapulo Calls
         include("DB/bfs.jl")
         include("DB/tablemult.jl")
+        include("DB/jaccard.jl")
                 
         
         using JavaCall
@@ -55,6 +56,7 @@ module D4M
         export delete, toDBstring, getindex, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
         export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
         export tablemult # tablemult
+        export jaccard # jaccard
 
         println("Database capabilities loaded!")
     else

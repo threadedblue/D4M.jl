@@ -54,6 +54,7 @@ function adjbfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = "
 
 end
 
+# Rows are edges, columns are nodes
 function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = ""::AbstractString, RtableTranspose = ""::AbstractString, minDegree = 0::Number, maxDegree = 2^31 - 1::Number, EDegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false)
 
 
