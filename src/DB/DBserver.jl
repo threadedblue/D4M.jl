@@ -45,6 +45,20 @@ function dbinit()
     end
 end
 
+function dbsetup(instance::AbstractString, hostname::AbstractString, username::AbstractString, pword::AbstractString)
+    # Setup with arguments; insecure but convenient.
+
+    if ~JavaCall.isloaded()
+        println("Starting up JVM for DB operations")
+        dbinit()
+    end
+
+    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
+    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
+    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
+    return DB
+end
+
 function dbsetup(instance, config="/home/gridsan/tools/groups/")
     # Note default value for config location is the MIT Supercloud default location
     if isdir(config) # Config dir
@@ -64,29 +78,7 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
         pword = conf["password"]
     end
 
-    if ~JavaCall.isloaded()
-        println("Starting up JVM for DB operations")
-        dbinit()
-    end
-
-    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
-    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
-    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
-    return DB
-end
-
-function dbsetup(instance::String, hostname::String, username::String, pword::String)
-    # Setup with arguments; insecure but convenient.
-
-    if ~JavaCall.isloaded()
-        println("Starting up JVM for DB operations")
-        dbinit()
-    end
-
-    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
-    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
-    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
-    return DB
+    return dbsetup(instance, hostname, username, pword)
 end
 
 # ls returns a list of tables that exist in the DBserver DB.
