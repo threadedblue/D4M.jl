@@ -27,7 +27,7 @@ function dbinit()
     if ~JavaCall.isloaded()
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar"))
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar"))
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","examples","Accumulo Demo"))
         JavaCall.init()
     else
         println("JVM already initialized")
@@ -74,6 +74,21 @@ function dbsetup(instance, config="/home/gridsan/tools/groups/")
     DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
     return DB
 end
+
+function dbsetup(instance::String, hostname::String, username::String, pword::String)
+    # Setup with arguments; insecure but convenient.
+
+    if ~JavaCall.isloaded()
+        println("Starting up JVM for DB operations")
+        dbinit()
+    end
+
+    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
+    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
+    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
+    return DB
+end
+
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
     dbInfo = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbInfo"

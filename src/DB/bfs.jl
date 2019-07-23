@@ -67,18 +67,26 @@ function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = 
         Etable = A.name
     end
     
-
+    JAuthorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
+    emptyAuth = JAuthorizations((), )
+    JIteratorSetting = @jimport "org.apache.accumulo.core.client.IteratorSetting"
+    emptyIteratorSetting = JIteratorSetting((jint, JString, JString), 500, "c", "cname")
+    # We want to pass a null IteratorSetting as an argument; JavaCall hates this
+    # here's a workaround: 
+    emptyIteratorSetting.ptr = C_NULL
+    JMutableLong = @jimport "org.apache.commons.lang.mutable.MutableLong"
+    emptyMutableLong = JMutableLong((), )
 
     startPrefixes = ","
     endPrefixes = ","
-    plusOp = []
+    plusOp = emptyIteratorSetting
     EScanIteratorPriority = -1
-    Eauthorizations = []
-    EDegauthorizations = []
-    newVisibility = []
+    Eauthorizations = emptyAuth
+    EDegauthorizations = emptyAuth
+    newVisibility = "" # TODO use null or empty string as default?
     useNewTimestamp = true
     outputUnion = true
-    numEntriesWritten = []
+    numEntriesWritten = emptyMutableLong
 
     #=
     JString, JString, jint, JString, JString, JString, JString, JString, JString, jboolean, jint, jint, IteratorSetting, jint,
@@ -88,16 +96,12 @@ function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = 
     maxDegree, plusOp, EScanIteratorPriority, Eauthorizations, EDegauthorizations, newVisibility, useNewTimestamp, outputUnion, numEntriesWritten
     =#
     
-    Authorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
-    IteratorSetting = @jimport "org.apache.accumulo.core.client.IteratorSetting"
-    MutableLong = @jimport "org.apache.commons.lang.mutable.MutableLong"
-    
     jcall(A.DB.Graphulo, "EdgeBFS", JString, 
             (JString, JString, jint, JString, JString, 
                 JString, JString, JString, JString, 
-                jboolean, jint, jint, IteratorSetting, 
-                jint, Authorizations, Authorizations, 
-                JString, jboolean, jboolean, MutableLong,), 
+                jboolean, jint, jint, JIteratorSetting, 
+                jint, JAuthorizations, JAuthorizations, 
+                JString, jboolean, jboolean, JMutableLong,), 
             Etable, v0, numsteps, Rtable, RtableTranspose, 
             startPrefixes, endPrefixes, EDegtable, degColumn, 
             degInColQ, minDegree, maxDegree, plusOp, 
