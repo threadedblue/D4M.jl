@@ -150,3 +150,13 @@ function deleteall(DB::DBserver)
         end
     end
 end
+
+# Deletes all tables, withh a given prefix, except for the 4 default ones in the Accumulo database.
+function deleteprefix(DB::DBserver, prefix::AbstractString)
+    defaultnames = ["accumulo.metadata", "accumulo.replication", "accumulo.root", "trace"]
+    for name in ls(DB)
+        if ~(any(defaultnames .== name)) && startswith(name, prefix)
+                delete(DB[String(name)])
+        end
+    end
+end

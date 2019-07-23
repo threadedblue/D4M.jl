@@ -21,7 +21,7 @@ function jaccard(A::DBtableType, ADegtable = ""::AbstractString, Rtable = ""::Ab
 
     JAuthorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
     emptyauth = JAuthorizations(  (), )
-    newVisibility = ""
+    newVisibility = "" # TODO default or null
 
     if isa(A, DBtablePair)
         Aname = A.name1
