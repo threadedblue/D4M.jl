@@ -33,7 +33,5 @@ function jaccard(A::DBtableType, ADegtable = ""::AbstractString, Rtable = ""::Ab
     return jcall(DB.Graphulo,"Jaccard", jlong, 
         (JString,JString,JString,JString,JAuthorizations,JString,), 
         Aname,ADegtable,Rtable,toDBstring(filterRowCol),emptyauth, newVisibility)
-    
-    # Return a binding to the table???
 
 end

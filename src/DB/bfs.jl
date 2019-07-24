@@ -1,7 +1,5 @@
 using JavaCall
 
-DBtableType = Union{DBtable,DBtablePair}
-
 function makedegreetable(A::DBtableType, Rname = ""::AbstractString, countColumns = true::Bool, colq = ""::AbstractString)
     # /**
     # * Create a degree table from an existing table.

@@ -10,7 +10,9 @@ logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],Linear
 
 function str2num(A::Assoc)
     r,c,v = find(A)
-    v = parse.(Int, v) # this won't work for string values- find numeric strings first, convert all others to 1
+    v = parse.(Int, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
+    # option to keep as is, or convert, i guess?
+    # check out AI4
     A = Assoc(r,c,v)
 end
 
