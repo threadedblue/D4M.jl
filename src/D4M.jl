@@ -48,7 +48,7 @@ module D4M
         include("DB/bfs.jl")
         include("DB/tablemult.jl")
         include("DB/jaccard.jl")
-                
+        include("DB/nmf.jl")    
         
         using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
@@ -57,6 +57,7 @@ module D4M
         export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
         export tablemult # tablemult
         export jaccard # jaccard
+        export nmf # NMF
 
         println("Database capabilities loaded!")
     else
