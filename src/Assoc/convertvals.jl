@@ -13,6 +13,16 @@ function str2num(A::Assoc)
     v = parse.(Int, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
     # option to keep as is, or convert, i guess?
     # check out AI4
+    # TODO floats
+    A = Assoc(r,c,v)
+end
+
+function str2float(A::Assoc)
+    r,c,v = find(A)
+    v = parse.(Float64, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
+    # option to keep as is, or convert, i guess?
+    # check out AI4
+    # TODO floats
     A = Assoc(r,c,v)
 end
 
