@@ -56,7 +56,7 @@ function ReadCSV(fname,del=',',eol='\n')
                 end
             end
         end
-        return Assoc(row,col,val,(+))
+        return Assoc(string.(row),string.(col),val,(+))
     else #2D associative?
     # TODO implement this special case (currently ignoring, for now)
         return

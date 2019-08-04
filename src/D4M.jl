@@ -19,7 +19,7 @@ module D4M
             ReadCSV, WriteCSV,
             print, printFull, printTriple,
             norow, nocol,
-            logical, str2num,  convertassoc, parseassoc,
+            logical, str2num, str2float, convertassoc, parseassoc,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,

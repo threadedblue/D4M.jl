@@ -80,8 +80,8 @@ function toDBstring(input)
         # StartsWith supports one element, without a comma at the end,
         # as well as a comma-delimited list with a comma at the end
         str = input.inputString
-        if ~(str[end] == ',')
-            str = string(str, ",")
+        if ~(str[end] == '\n')
+            str = string(str, "\n")
         end
 
         output = ""
