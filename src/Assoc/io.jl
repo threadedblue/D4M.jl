@@ -36,12 +36,12 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
     close(iostream)
 end
 
-function ReadCSV(fname,del=',',eol='\n')
+function ReadCSV(fname,del=',',eol='\n'; quotes=true)
 
     if filesize(fname) <= 1
         return Assoc("","","")
     end
-    inDim = readdlm(fname,del,eol)
+    inDim = readdlm(fname,del,eol, quotes=quotes)
     rowN,colN = size(inDim)
     row = [];
     col = [];
