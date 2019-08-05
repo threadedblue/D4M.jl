@@ -1,6 +1,6 @@
 using JavaCall
 
-function makedegreetable(A::DBtableType, Rname = ""::AbstractString, countColumns = true::Bool, colq = ""::AbstractString)
+function makedegreetable(A::DBtableType, Rname::AbstractString; countColumns = true::Bool, colq = ""::AbstractString)
     # /**
     # * Create a degree table from an existing table.
     # * @param table Name of original table.
@@ -34,7 +34,7 @@ function makedegreetable(A::DBtableType, Rname = ""::AbstractString, countColumn
     return DBtable(DB, Rname, "", 0, 0, "", 5e5, queryObj,opsObj)
 end
 
-function adjbfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = ""::AbstractString, RtableTranspose = ""::AbstractString, minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
+function adjbfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
 
 
 #    (String Atable, String v0, int k, String Rtable, String RtableTranspose,
@@ -53,7 +53,7 @@ function adjbfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = "
 end
 
 # Rows are edges, columns are nodes
-function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = ""::AbstractString, RtableTranspose = ""::AbstractString, minDegree = 0::Number, maxDegree = 2^31 - 1::Number, EDegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false)
+function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, EDegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ= false::Bool)
 
 
     #    (String Atable, String v0, int k, String Rtable, String RtableTranspose,
@@ -108,7 +108,7 @@ function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = 
     
 end
     
-function singlebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = ""::AbstractString, RtableTranspose = ""::AbstractString, minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false)
+function singlebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable = ""::AbstractString, RtableTranspose = ""::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false)
 
 
     #    (String Atable, String v0, int k, String Rtable, String RtableTranspose,

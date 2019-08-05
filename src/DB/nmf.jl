@@ -1,6 +1,6 @@
 using JavaCall
 
-function nmf(A::D4M.DBtable, AT::D4M.DBtable, k::Number, Wtable::AbstractString, WTtable ::AbstractString, Htable::AbstractString, HTtable::AbstractString, maxiter::Number, forceDelete::Bool, cutoffThreshold::Number, maxColsPerTopic::Number)
+function nmf(A::D4M.DBtable, AT::D4M.DBtable, k::Number, Wtable::AbstractString, WTtable ::AbstractString, Htable::AbstractString, HTtable::AbstractString, maxiter::Number; forceDelete::Bool=true, cutoffThreshold::Number=0, maxColsPerTopic::Number=0)
 
 # Original Java docstring:
 # /**

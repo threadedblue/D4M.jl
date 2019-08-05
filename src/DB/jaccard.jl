@@ -1,6 +1,6 @@
 using JavaCall
 
-function jaccard(A::DBtableType, ADegtable = ""::AbstractString, Rtable = ""::AbstractString; filterRowCol::ValidQueryTypes="")
+function jaccard(A::DBtableType, ADegtable::AbstractString, Rtable::AbstractString; filterRowCol::ValidQueryTypes="")
 
 # Original Java docstring:
 # /**
