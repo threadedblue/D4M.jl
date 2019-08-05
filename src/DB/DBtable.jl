@@ -36,6 +36,7 @@ function delete(table::DBtable)
     name = table.name
     DB = table.DB
     if  ispresent(DB, name)
+        println("Deleting " * name * " in " * DB.instanceName)
         jcall(table.tableOps, "deleteTable", Nothing, (JString,), name)
     else
         println("Table (name " * name * ") already does not exist in Accumulo")
@@ -49,11 +50,13 @@ function delete(table::DBtablePair)
     DB = table.DB
 
     if  ispresent(DB, name1)
+        println("Deleting " * name1 * " in " * DB.instanceName)
         jcall(table.tableOps, "deleteTable", Nothing, (JString,), name1)
     else
         println("Table 1 (name " * name1 * ") already does not exist in Accumulo")
     end
     if  ispresent(DB, name2)
+        println("Deleting " * name2 * " in " * DB.instanceName)
         jcall(table.tableOps, "deleteTable", Nothing, (JString,), name2)
     else
         println("Table 2 (name " * name2 * ") already does not exist in Accumulo")

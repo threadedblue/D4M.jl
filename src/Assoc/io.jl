@@ -3,7 +3,8 @@ using SparseArrays, DelimitedFiles
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc,fname,del=',',eol='\n')
-    #Because of potential memory issues, the Assoc will not be converted to dense matrix, but instead directly printed onto the file.
+    #Because of potential memory issues, the Assoc will not be converted to dense matrix.
+    # Instead the dense form is directly printed onto the file.
     
     iostream = open(fname,"w")
     
@@ -15,7 +16,7 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
     
     write(iostream,eol)
     
-    valMap = !isempty(A.val) #Check if val needs to be mapped.
+    valMap = !isempty(A.val) && !(A.val ==[1.0]) #Check if val needs to be mapped.
     #For each row write in row
     for r = 1:size(A.row,1)
         print(iostream,A.row[r])
@@ -27,7 +28,7 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
                 else #Mappping not needed.
                     print(iostream,A.A[r,c])
                 end
-                end
+            end
         end
         write(iostream,eol)
         flush(iostream) #Clear buffer for each line.

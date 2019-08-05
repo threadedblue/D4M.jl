@@ -16,7 +16,7 @@ module D4M
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
             col2type, val2col,
-            ReadCSV, WriteCSV,
+            ReadCSV, WriteCSV, writeas, readas,
             print, printFull, printTriple,
             norow, nocol,
             logical, str2num, str2float, convertassoc, parseassoc,
@@ -25,7 +25,7 @@ module D4M
             getadj, getrow, getcol, getval, find,
             #saveassoc, loadassoc,
             OutDegree, InDegree,
-            and, plus, minus, *, bounded,
+            and, plus, minus, *, bounded, strictbounded,
             removediag, adjbfs
 
     include("Assoc.jl") # Associative Array
