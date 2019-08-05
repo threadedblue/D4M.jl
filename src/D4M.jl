@@ -52,7 +52,7 @@ module D4M
         
         using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
-        export dbinit, dbsetup, ls, getindex, ispresent, deleteall, deleteprefix # DBserver
+        export dbinit, dbsetup, ls, getindex, ispresent, deleteall, deleteprefix, deletename # DBserver
         export delete, toDBstring, getindex, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
         export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
         export tablemult # tablemult

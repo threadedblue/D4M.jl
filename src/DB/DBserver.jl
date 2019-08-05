@@ -137,8 +137,19 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
 end
 
 # Returns whether a table with the given name exists in Accumulo
-function ispresent(DB::DBserver,tableName1::String)
+function ispresent(DB::DBserver, tableName1::String)
     return any(ls(DB) .== tableName1)
+end
+
+# Deletes a table with the given name.
+function deletename(DB::DBserver, name::AbstractString)
+    defaultnames = ["accumulo.metadata", "accumulo.replication", "accumulo.root", "trace"]
+    # TODO check if default
+    if ispresent(DB, name)
+        delete(DB[String(name)])
+    else
+        println("Table with name " * name * " does not exist in " * DB.instanceName)
+    end
 end
 
 # Deletes all tables, except for the 4 default ones in the Accumulo database.

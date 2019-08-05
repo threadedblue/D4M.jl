@@ -39,7 +39,7 @@ function delete(table::DBtable)
         println("Deleting " * name * " in " * DB.instanceName)
         jcall(table.tableOps, "deleteTable", Nothing, (JString,), name)
     else
-        println("Table (name " * name * ") already does not exist in Accumulo")
+        println("Table (name " * name * ") already does not exist in " * DB.instanceName)
     end
     return nothing
 end
@@ -53,13 +53,13 @@ function delete(table::DBtablePair)
         println("Deleting " * name1 * " in " * DB.instanceName)
         jcall(table.tableOps, "deleteTable", Nothing, (JString,), name1)
     else
-        println("Table 1 (name " * name1 * ") already does not exist in Accumulo")
+        println("Table 1 (name " * name1 * ") already does not exist in " * DB.instanceName)
     end
     if  ispresent(DB, name2)
         println("Deleting " * name2 * " in " * DB.instanceName)
         jcall(table.tableOps, "deleteTable", Nothing, (JString,), name2)
     else
-        println("Table 2 (name " * name2 * ") already does not exist in Accumulo")
+        println("Table 2 (name " * name2 * ") already does not exist in " * DB.instanceName)
     end
 
     return nothing
@@ -283,7 +283,10 @@ function put(table::DBtableType, A::Assoc; clear::Bool = false)
     end
 
     r, c, v = find(A)
-    putTriple(table, r, c, v)
+    # automatically convert any integral floats to actual integers
+    # Graphulo has some problems with floats
+    v2 = map(x-> isinteger(x) ? convert(Integer, x) : x, v)
+    putTriple(table, r, c, v2)
 end
 
 #addColCombiner: Adds combiners to specific column names.
