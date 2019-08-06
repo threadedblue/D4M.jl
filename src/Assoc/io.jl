@@ -1,4 +1,4 @@
-using SparseArrays, DelimitedFiles, JLD
+using SparseArrays, DelimitedFiles, JLD, SparseArrays
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc,fname,del=',',eol='\n')
@@ -191,7 +191,7 @@ end
 
 function ReadJLD(fname)
     d = load(fname)
-    AssocSerial = d["Assoc"]
+    AssocSerial = d["AssocSerial"]
     return readas(AssocSerial)
 end
 
