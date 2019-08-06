@@ -2,7 +2,7 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
+    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles, JLD
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
@@ -16,7 +16,7 @@ module D4M
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
             col2type, val2col,
-            ReadCSV, WriteCSV, writeas, readas,
+            ReadCSV, WriteCSV, writeas, readas, WriteJLD, ReadJLD,
             print, printFull, printTriple,
             norow, nocol,
             logical, str2num, str2float, convertassoc, parseassoc,

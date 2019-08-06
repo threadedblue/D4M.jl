@@ -281,6 +281,20 @@ function put(table::DBtableType, A::Assoc; clear::Bool = false)
             end
         end
     end
+    
+    if isa(table, DBtablePair)
+        if ~ispresent(DB, table.name1)
+            println("Creating "* table.name1 *" in "*DB.instanceName);
+        end
+        if ~ispresent(DB, table.name2)
+            println("Creating " * table.name2 * " in "*DB.instanceName);
+        end
+    else
+        if ~ispresent(DB, table.name)
+            println("Creating "* table.name *" in "*DB.instanceName);
+        end
+    end
+
 
     r, c, v = find(A)
     # automatically convert any integral floats to actual integers

@@ -120,11 +120,11 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     # Create new tables if they don't exist
     if ~any(ls(DB) .== tableName1) || ~any(ls(DB) .== tableName2)
         if ~any(ls(DB) .== tableName1)
-            println("Creating "*tableName1*" in "*DB.instanceName);
+            println("Creating "*tableName1*" in "*DB.instanceName)
             jcall(opsObj,"createTable", Nothing, (JString,), tableName1)
         end
         if ~any(ls(DB) .== tableName2)
-            println("Creating "*tableName2*" in "*DB.instanceName);
+            println("Creating "*tableName2*" in "*DB.instanceName)
             jcall(opsObj,"createTable", Nothing, (JString,), tableName2)
         end
     end
