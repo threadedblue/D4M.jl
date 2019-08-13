@@ -4,7 +4,7 @@ module D4M
 
     using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles, JLD
 
-    import SparseArrays: nnz, diag
+    import SparseArrays: nnz, diag, convert
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
@@ -16,7 +16,8 @@ module D4M
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
             col2type, val2col,
-            ReadCSV, WriteCSV, writeas, readas, WriteJLD, ReadJLD,
+            ReadCSV, WriteCSV, WriteJLD, ReadJLD,
+            # writeas, readas, 
             print, printFull, printTriple,
             norow, nocol,
             logical, str2num, str2float, convertassoc, parseassoc,
@@ -49,6 +50,7 @@ module D4M
         include("DB/tablemult.jl")
         include("DB/jaccard.jl")
         include("DB/nmf.jl")    
+        include("DB/ktruss.jl")
         
         using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
@@ -58,6 +60,7 @@ module D4M
         export tablemult # tablemult
         export jaccard # jaccard
         export nmf # NMF
+        export ktruss # ktruss
 
         println("Database capabilities loaded!")
     else

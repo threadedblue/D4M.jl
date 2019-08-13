@@ -144,8 +144,9 @@ end
 # Deletes a table with the given name.
 function deletename(DB::DBserver, name::AbstractString)
     defaultnames = ["accumulo.metadata", "accumulo.replication", "accumulo.root", "trace"]
-    # TODO check if default
-    if ispresent(DB, name)
+    if any(defaultnames .== name)
+        println("Table with name " * name * " is a default table")
+    else if ispresent(DB, name)
         delete(DB[String(name)])
     else
         println("Table with name " * name * " does not exist in " * DB.instanceName)

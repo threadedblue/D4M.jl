@@ -1,4 +1,4 @@
-using SparseArrays, DelimitedFiles, JLD, SparseArrays
+using SparseArrays, DelimitedFiles, JLD
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc,fname,del=',',eol='\n')

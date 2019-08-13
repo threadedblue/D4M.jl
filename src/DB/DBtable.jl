@@ -266,6 +266,15 @@ UnionArray = Array{Union{AbstractString,Number}}
 ValidType = Union{UnionArray,AbstractString,Array,Number}
 putTriple(table::DBtableType, r::ValidType, c::ValidType, v::ValidType) = putTriple(table, ingestprep(r), ingestprep(c), ingestprep(v))
 
+function isinteger2(x)
+    if isa(x, AbstractString)
+        return false
+    elseif isinteger(x)
+        return true
+    end
+    return false
+end
+
 # The put function deconstructs A and calls putTriple
 function put(table::DBtableType, A::Assoc; clear::Bool = false)
     DB = table.DB
@@ -299,7 +308,7 @@ function put(table::DBtableType, A::Assoc; clear::Bool = false)
     r, c, v = find(A)
     # automatically convert any integral floats to actual integers
     # Graphulo has some problems with floats
-    v2 = map(x-> isinteger(x) ? convert(Integer, x) : x, v)
+    v2 = map(x-> isinteger2(x) ? convert(Integer, x) : x, v)
     putTriple(table, r, c, v2)
 end
 
