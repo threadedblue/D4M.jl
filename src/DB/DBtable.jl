@@ -106,7 +106,7 @@ end
 
 # Base getindex function- i and j are d4m formatted strings (delimitered)
 DBtableType = Union{DBtable,DBtablePair}
-DBtableTypeOrString = Union{DBtableType, AbstractString}
+DBtableTypeorString = Union{DBtableType, AbstractString}
 function getindex(table::DBtableType, i::AbstractString, j::AbstractString)
     
     jcall(table.d4mQuery, "setCloudType", Nothing, (JString,), table.DB.dbType)

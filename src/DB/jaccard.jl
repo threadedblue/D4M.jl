@@ -1,6 +1,6 @@
 using JavaCall
 
-function jaccard(A::DBtableType, ADegtable::AbstractString, Rtable::AbstractString; filterRowCol::ValidQueryTypes="")
+function jaccard(A::DBtableTypeorString, ADeg::DBtableTypeorString, Rname::AbstractString; filterRowCol::ValidQueryTypes="")
 
 # Original Java docstring:
 # /**
@@ -25,13 +25,24 @@ function jaccard(A::DBtableType, ADegtable::AbstractString, Rtable::AbstractStri
 
     if isa(A, DBtablePair)
         Aname = A.name1
-    else
+    elseif isa(A, DBtable)
         Aname = A.name
+    else
+        Aname = A
     end
+
+    if isa(ADeg, DBtablePair)
+        ADegname = ADeg.name1
+    elseif isa(ADeg, DBtable)
+        ADegname = ADeg.name
+    else
+        ADegname = ADeg
+    end
+
     DB = A.DB
 
     return jcall(DB.Graphulo,"Jaccard", jlong, 
         (JString,JString,JString,JString,JAuthorizations,JString,), 
-        Aname,ADegtable,Rtable,toDBstring(filterRowCol),emptyauth, newVisibility)
+        Aname,ADegname,Rname,toDBstring(filterRowCol),emptyauth, newVisibility)
 
 end

@@ -1,6 +1,6 @@
 using JavaCall
 
-function ktrussadj(A::DBtableType, Rtable::AbstractString, k::Number, filterRowCol::AbstractString, forceDelete::Bool; maxiter = 2^31 - 1::Number)
+function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number, filterRowCol::AbstractString, forceDelete::Bool; maxiter = 2^31 - 1::Number)
 # /**
 # * From input <b>unweighted, undirected</b> adjacency table Aorig, put the k-Truss
 # * of Aorig in Rfinal.
@@ -26,9 +26,11 @@ function ktrussadj(A::DBtableType, Rtable::AbstractString, k::Number, filterRowC
 #                      int maxiter) {
 
     if isa(A, DBtablePair)
-        Atable = A.name1
+        Aname = A.name1
+    elseif isa(A, DBtable)
+        Aname = A.name
     else
-        Atable = A.name
+        Aname = A
     end
 
     JAuthorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
@@ -37,11 +39,11 @@ function ktrussadj(A::DBtableType, Rtable::AbstractString, k::Number, filterRowC
 
     result = jcall(DB.Graphulo,"kTrussAdj", jlong, 
         (JString, JString, jint, JString, jboolean, JAuthorizations, JString, jint), 
-        Atable, Rtable, k, toDBstring(filterRowCol), forceDelete, emptyAuth, newVisibility, maxiter)
+        Aname, Rname, k, toDBstring(filterRowCol), forceDelete, emptyAuth, newVisibility, maxiter)
 
 end
 
-function ktrussedge(E::DBtableType, ET::DBtableType, Rtable::AbstractString, RTtable::AbstractString, k::Number, edgeFilter::AbstractString, forceDelete::Bool)
+function ktrussedge(E::DBtableTypeorString, ET::DBtableTypeorString, Rname::AbstractString, RTname::AbstractString, k::Number, edgeFilter::AbstractString, forceDelete::Bool)
     # /**
     # * From input <b>unweighted, undirected</b> incidence table Eorig, put the k-Truss
     # * of Eorig in Rfinal.  Needs transpose ETorig, and can output transpose of k-Truss subgraph too.
@@ -62,15 +64,19 @@ function ktrussedge(E::DBtableType, ET::DBtableType, Rtable::AbstractString, RTt
     # String edgeFilter, boolean forceDelete, Authorizations Eauthorizations)
 
     if isa(E, DBtablePair)
-        Etable = E.name1
+        Ename = E.name1
+    elseif isa(E, DBtable)
+        Ename = E.name
     else
-        Etable = E.name
+        Ename = E
     end
 
     if isa(ET, DBtablePair)
-        ETtable = ET.name1
+        ETname = ET.name1
+    elseif isa(E, DBtable)
+        ETname = ET.name
     else
-        ETtable = ET.name
+        ETname = ET
     end
 
     JAuthorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
@@ -79,6 +85,6 @@ function ktrussedge(E::DBtableType, ET::DBtableType, Rtable::AbstractString, RTt
 
     result = jcall(DB.Graphulo,"kTrussEdge", jlong, 
         (JString, JString, JString, JString, jint, JString, jboolean, JAuthorizations, JString, jint), 
-        Etable, ETtable, Rtable, RTtable, k, toDBstring(edgeFilte), forceDelete, emptyAuth)
+        Ename, ETname, Rname, RTname, k, toDBstring(edgeFilter), forceDelete, emptyAuth)
 
 end

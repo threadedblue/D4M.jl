@@ -1,6 +1,6 @@
 using JavaCall
 
-function nmf(A::D4M.DBtable, AT::D4M.DBtable, k::Number, Wtable::AbstractString, WTtable ::AbstractString, Htable::AbstractString, HTtable::AbstractString, maxiter::Number; forceDelete::Bool=true, cutoffThreshold::Number=0, maxColsPerTopic::Number=0)
+function nmf(A::DBtableTypeorString, AT::DBtableTypeorString, k::Number, Wname::AbstractString, WTname ::AbstractString, Hname::AbstractString, HTname::AbstractString, maxiter::Number; forceDelete::Bool=true, cutoffThreshold::Number=0, maxColsPerTopic::Number=0)
 
 # Original Java docstring:
 # /**
@@ -27,22 +27,26 @@ function nmf(A::D4M.DBtable, AT::D4M.DBtable, k::Number, Wtable::AbstractString,
 #                  final int K, final int maxiter,
 #                  boolean forceDelete, double cutoffThreshold, int maxColsPerTopic) 
 
-    if isa(A, D4M.DBtablePair)
+    if isa(A, DBtablePair)
         Aname = A.name1
-    else
+    elseif isa(A, DBtable)
         Aname = A.name
+    else
+        Aname = A
     end
 
-    if isa(AT, D4M.DBtablePair)
+    if isa(AT, DBtablePair)
         ATname = AT.name1
-    else
+    elseif isa(AT, DBtable)
         ATname = AT.name
+    else
+        ATname = AT
     end
 
     DB = A.DB
 
     return jcall(DB.Graphulo,"NMF", jdouble, 
         (JString,JString,JString,JString,JString,JString,jint,jint,jboolean,jdouble,jint,), 
-        Aname, ATname, Wtable, WTtable, Htable, HTtable, k, maxiter, forceDelete, cutoffThreshold, maxColsPerTopic)
+        Aname, ATname, Wname, WTname, Hname, HTname, k, maxiter, forceDelete, cutoffThreshold, maxColsPerTopic)
 
 end

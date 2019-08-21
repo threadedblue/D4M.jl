@@ -8,21 +8,10 @@ using SparseArrays,LinearAlgebra
 
 logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],LinearAlgebra.fillstored!(dropzeros!(copy(A.A)),1))
 
-function str2num(A::Assoc)
+function str2num(type::Type{Number}, A::Assoc)
     r,c,v = find(A)
-    v = parse.(Int, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
-    # option to keep as is, or convert, i guess?
-    # check out AI4
-    # TODO floats
-    A = Assoc(r,c,v)
-end
-
-function str2float(A::Assoc)
-    r,c,v = find(A)
-    v = parse.(Float64, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
-    # option to keep as is, or convert, i guess?
-    # check out AI4
-    # TODO floats
+    v = parse.(type, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
+    # TODO do mixed types of values exist? If so, use them
     A = Assoc(r,c,v)
 end
 

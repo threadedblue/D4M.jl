@@ -25,18 +25,22 @@ function tablemult(AT::DBtableType,B::DBtableType,Cname::AbstractString,CTname::
 
     DB = AT.DB
 
-    if isa(AT,DBtablePair)
+    if isa(AT, DBtablePair)
         ATname = AT.name1
-    else
+    elseif isa(AT, DBtable)
         ATname = AT.name
-    end
-
-    if isa(B,DBtablePair)
-        Bname = B.name1
     else
-        Bname = B.name
+        ATname = AT
     end
 
+    if isa(B, DBtablePair)
+        Bname = B.name1
+    elseif isa(B, DBtable)
+        Bname = B.name
+    else
+        Bname = B
+    end
+    
     if clear
         if ispresent(DB, Cname)
             delete(DB[Cname])

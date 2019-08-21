@@ -1,6 +1,6 @@
 using JavaCall
 
-function makedegreetable(A::DBtableType, Rname::AbstractString; countColumns = true::Bool, colq = ""::AbstractString)
+function makedegreetable(A::DBtableTypeorString, Rname::AbstractString; countColumns = true::Bool, colq = ""::AbstractString)
     # /**
     # * Create a degree table from an existing table.
     # * @param table Name of original table.
@@ -16,8 +16,10 @@ function makedegreetable(A::DBtableType, Rname::AbstractString; countColumns = t
 
     if isa(A, DBtablePair)
         Aname = A.name1
-    else
+    elseif isa(A, DBtable)
         Aname = A.name
+    else
+        Aname = A
     end
 
     jcall(A.DB.Graphulo, "generateDegreeTable", jlong, 
@@ -34,35 +36,39 @@ function makedegreetable(A::DBtableType, Rname::AbstractString; countColumns = t
     return DBtable(DB, Rname, "", 0, 0, "", 5e5, queryObj,opsObj)
 end
 
-function adjbfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
+function adjbfs(A::DBtableTypeorString, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
 
 
 #    (String Atable, String v0, int k, String Rtable, String RtableTranspose,
 #    String ADegtable, String degColumn, boolean degInColQ, int minDegree, int maxDegree)
 
     if isa(A, DBtablePair)
-        Atable = A.name1
+        Aname = A.name1
+    elseif isa(A, DBtable)
+        Aname = A.name
     else
-        Atable = A.name
+        Aname = A
     end
 
     jcall(A.DB.Graphulo, "AdjBFS", JString, 
         (JString, JString, jint, JString, JString, JString, JString, jboolean, jint, jint,), 
-        Atable, v0, numsteps, Rtable, RtableTranspose, ADegtable, degColumn, degInColQ, minDegree, maxDegree)
+        Aname, v0, numsteps, Rtable, RtableTranspose, ADegtable, degColumn, degInColQ, minDegree, maxDegree)
 
 end
 
 # Rows are edges, columns are nodes
-function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, EDegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ= false::Bool)
+function edgebfs(E::DBtableTypeorString, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, EDegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ= false::Bool)
 
 
     #    (String Atable, String v0, int k, String Rtable, String RtableTranspose,
     #    String ADegtable, String degColumn, boolean degInColQ, int minDegree, int maxDegree)
     
-    if isa(A, DBtablePair)
-        Etable = A.name1
+    if isa(E, DBtablePair)
+        Ename = E.name1
+    elseif isa(E, DBtable)
+        Ename = E.name
     else
-        Etable = A.name
+        Ename = E
     end
     
     JAuthorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
@@ -100,7 +106,7 @@ function edgebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable::A
                 jboolean, jint, jint, JIteratorSetting, 
                 jint, JAuthorizations, JAuthorizations, 
                 JString, jboolean, jboolean, JMutableLong,), 
-            Etable, v0, numsteps, Rtable, RtableTranspose, 
+            Ename, v0, numsteps, Rtable, RtableTranspose, 
             startPrefixes, endPrefixes, EDegtable, degColumn, 
             degInColQ, minDegree, maxDegree, plusOp, 
             EScanIteratorPriority, Eauthorizations, EDegauthorizations, 
