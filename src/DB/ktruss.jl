@@ -1,6 +1,6 @@
 using JavaCall
 
-function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number, filterRowCol::AbstractString, forceDelete::Bool; maxiter = 2^31 - 1::Number)
+function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number; filterRowCol::AbstractString="", forceDelete::Bool=true, maxiter = 2^31 - 1::Number)
 # /**
 # * From input <b>unweighted, undirected</b> adjacency table Aorig, put the k-Truss
 # * of Aorig in Rfinal.
@@ -43,7 +43,7 @@ function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number, fil
 
 end
 
-function ktrussedge(E::DBtableTypeorString, ET::DBtableTypeorString, Rname::AbstractString, RTname::AbstractString, k::Number, edgeFilter::AbstractString, forceDelete::Bool)
+function ktrussedge(E::DBtableTypeorString, ET::DBtableTypeorString, Rname::AbstractString, RTname::AbstractString, k::Number; edgeFilter::AbstractString="", forceDelete::Bool=true)
     # /**
     # * From input <b>unweighted, undirected</b> incidence table Eorig, put the k-Truss
     # * of Eorig in Rfinal.  Needs transpose ETorig, and can output transpose of k-Truss subgraph too.

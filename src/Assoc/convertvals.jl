@@ -8,9 +8,18 @@ using SparseArrays,LinearAlgebra
 
 logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],LinearAlgebra.fillstored!(dropzeros!(copy(A.A)),1))
 
+
+function parsehelper(type, v)
+    parsed = tryparse(type, v)
+    if parsed===nothing
+        return 1
+    end
+    return parsed
+end
+
 function str2num(type::Type{Number}, A::Assoc)
     r,c,v = find(A)
-    v = parse.(type, v) # TODO this won't work for string values- find numeric strings first, convert all others to 1
+    v = parsehelper.(type, v)
     # TODO do mixed types of values exist? If so, use them
     A = Assoc(r,c,v)
 end
@@ -21,20 +30,10 @@ end
 convert all entries to a certain type
 =#
 
-function convertassoc(type::DataType, A::Assoc)
-    valnew = convert.(type, A.val)
-    valnew2 = Array{Union{AbstractString,Number},1}(valnew)
-    return putVal(A, valnew2)
-end
-
-#=
-If entries are strings, parse them into a number type
-=#
-
-function parseassoc(type::DataType, A::Assoc)
-    valnew = parse.(type, A.val)
-    valnew2 = Array{Union{AbstractString,Number},1}(valnew)
-    return putVal(A, valnew2)
+function convertassoc(type, A::Assoc)
+    r,c,v = find(A)
+    v = convert.(type, v)
+    A = Assoc(r,c,v)
 end
 
 ########################################################
