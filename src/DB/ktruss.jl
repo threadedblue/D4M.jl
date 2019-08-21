@@ -41,7 +41,7 @@ function ktrussadj(A::DBtableType, Rtable::AbstractString, k::Number, filterRowC
 
 end
 
-function ktrussedge()
+function ktrussedge(E::DBtableType, ET::DBtableType, Rtable::AbstractString, RTtable::AbstractString, k::Number, edgeFilter::AbstractString, forceDelete::Bool)
     # /**
     # * From input <b>unweighted, undirected</b> incidence table Eorig, put the k-Truss
     # * of Eorig in Rfinal.  Needs transpose ETorig, and can output transpose of k-Truss subgraph too.
@@ -60,5 +60,25 @@ function ktrussedge()
     # *          Returns -1 if k < 2 since there is no point in counting the number of edges.
     # *  public long kTrussEdge(String Eorig, String ETorig, String Rfinal, String RTfinal, int k,
     # String edgeFilter, boolean forceDelete, Authorizations Eauthorizations)
+
+    if isa(E, DBtablePair)
+        Etable = E.name1
+    else
+        Etable = E.name
+    end
+
+    if isa(ET, DBtablePair)
+        ETtable = ET.name1
+    else
+        ETtable = ET.name
+    end
+
+    JAuthorizations = @jimport "org.apache.accumulo.core.security.Authorizations"
+    emptyAuth = JAuthorizations((), )
+    newVisibility = ""
+
+    result = jcall(DB.Graphulo,"kTrussEdge", jlong, 
+        (JString, JString, JString, JString, jint, JString, jboolean, JAuthorizations, JString, jint), 
+        Etable, ETtable, Rtable, RTtable, k, toDBstring(edgeFilte), forceDelete, emptyAuth)
 
 end
