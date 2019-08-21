@@ -26,14 +26,6 @@ function makedegreetable(A::DBtableTypeorString, Rname::AbstractString; countCol
         (JString, JString, jboolean, JString,), 
         Aname, Rname, countColumns, colq)
 
-
-    DB = A.DB
-    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
-    opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
-    d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
-    queryObj = d4mQuery((JString, JString, JString, JString, JString,), DB.instanceName, DB.host, Rname, DB.user, DB.pass)
-    
-    return DBtable(DB, Rname, "", 0, 0, "", 5e5, queryObj,opsObj)
 end
 
 function adjbfs(A::DBtableTypeorString, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
@@ -100,7 +92,7 @@ function edgebfs(E::DBtableTypeorString, v0::AbstractString, numsteps::Number, R
     maxDegree, plusOp, EScanIteratorPriority, Eauthorizations, EDegauthorizations, newVisibility, useNewTimestamp, outputUnion, numEntriesWritten
     =#
     
-    jcall(A.DB.Graphulo, "EdgeBFS", JString, 
+    return jcall(A.DB.Graphulo, "EdgeBFS", JString, 
             (JString, JString, jint, JString, JString, 
                 JString, JString, JString, JString, 
                 jboolean, jint, jint, JIteratorSetting, 
@@ -126,7 +118,7 @@ function singlebfs(A::DBtableType, v0::AbstractString, numsteps::Number, Rtable 
         Atable = A.name
     end
     
-    jcall(A.DB.Graphulo, "AdjBFS", JString, 
+    return jcall(A.DB.Graphulo, "AdjBFS", JString, 
             (JString, JString, jint, JString, JString, JString, JString, jboolean, jint, jint,), 
             Atable, v0, numsteps, Rtable, RtableTranspose, ADegtable, degColumn, degInColQ, minDegree, maxDegree)
     

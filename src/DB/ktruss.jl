@@ -16,7 +16,7 @@ function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number; fil
 # * @param RNewVisibility Visibility label for new entries created. Null means no visibility label.
 # * @param maxiter A bound on the number of iterations. The algorithm will halt
 # *                either at convergence or after reaching the maximum number of iterations.
-# *                Note that if the algorithm stops before convergence, the result may not be correct.
+# *                Notemitimmy that if the algorithm stops before convergence, the result may not be correct.
 # * @return nnz of the kTruss subgraph, which is 2* the number of edges in the kTruss subgraph.
 # *          Returns -1 if k < 2 since there is no point in counting the number of edges.
 # */
@@ -37,10 +37,10 @@ function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number; fil
     emptyAuth = JAuthorizations((), )
     newVisibility = ""
 
-    result = jcall(DB.Graphulo,"kTrussAdj", jlong, 
+    return jcall(DB.Graphulo,"kTrussAdj", jlong, 
         (JString, JString, jint, JString, jboolean, JAuthorizations, JString, jint), 
         Aname, Rname, k, toDBstring(filterRowCol), forceDelete, emptyAuth, newVisibility, maxiter)
-
+        
 end
 
 function ktrussedge(E::DBtableTypeorString, ET::DBtableTypeorString, Rname::AbstractString, RTname::AbstractString, k::Number; edgeFilter::AbstractString="", forceDelete::Bool=true)
@@ -83,7 +83,7 @@ function ktrussedge(E::DBtableTypeorString, ET::DBtableTypeorString, Rname::Abst
     emptyAuth = JAuthorizations((), )
     newVisibility = ""
 
-    result = jcall(DB.Graphulo,"kTrussEdge", jlong, 
+    return jcall(DB.Graphulo,"kTrussEdge", jlong, 
         (JString, JString, JString, JString, jint, JString, jboolean, JAuthorizations, JString, jint), 
         Ename, ETname, Rname, RTname, k, toDBstring(edgeFilter), forceDelete, emptyAuth)
 
