@@ -1,4 +1,6 @@
 using JavaCall
+DBtableTypeorString = Union{DBtableType, AbstractString}
+
 #=
 tablemult : matrix multiply between two Accumulo tables.
 =#
@@ -21,7 +23,7 @@ Key/Value Inputs:
 Ouptut:
 Returns a binding to the new table (or table pair if transpose table is specified)
 =#
-function tablemult(AT::DBtableType,B::DBtableType,Cname::AbstractString,CTname::AbstractString=""; rowfilter::ValidQueryTypes="",colfilterAT::ValidQueryTypes="",colfilterB::ValidQueryTypes="", clear::Bool=false)
+function tablemult(AT::DBtableTypeorString,B::DBtableTypeorString,Cname::AbstractString,CTname::AbstractString=""; rowfilter::ValidQueryTypes="",colfilterAT::ValidQueryTypes="",colfilterB::ValidQueryTypes="", clear::Bool=false)
 
     DB = AT.DB
 

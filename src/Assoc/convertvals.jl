@@ -17,11 +17,19 @@ function parsehelper(type, v)
     return parsed
 end
 
-function str2num(type::Type{Number}, A::Assoc)
+function str2num(A::Assoc, type::Type=Int)
+    if ~(type<:Number)
+        println("Type not number")
+    return nothing
+    end
     r,c,v = find(A)
     v = parsehelper.(type, v)
     # TODO do mixed types of values exist? If so, use them
     A = Assoc(r,c,v)
+end
+
+function str2num(type::Type, A::Assoc)
+    return str2num(A, type)
 end
 
 # TODO: Write num2str
@@ -30,7 +38,7 @@ end
 convert all entries to a certain type
 =#
 
-function convertassoc(type, A::Assoc)
+function convertvals(type, A::Assoc)
     r,c,v = find(A)
     v = convert.(type, v)
     A = Assoc(r,c,v)

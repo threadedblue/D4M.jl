@@ -27,7 +27,6 @@ function dbinit()
     if ~JavaCall.isloaded()
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar"))
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","examples","Accumulo Demo"))
         JavaCall.init()
     else
         println("JVM already initialized")
@@ -40,8 +39,7 @@ function dbinit()
     if ~occursin("graphulo", cpath)
         println("Required Graphulo libraries for database operations missing from Java classpath.")
         println("To fix, add the required libraries (see Database Use in the readme).")
-        println("Then run D4Mpkg = Base.PkgId(\"D4M\"); Base.compilecache(D4Mpkg)")
-        println("and try dbinit() again.")
+        println("Then restart Julia, and intialize jvm using dbinit().")
     end
 end
 

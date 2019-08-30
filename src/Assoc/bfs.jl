@@ -3,7 +3,8 @@ function adjbfs(A::Assoc, v0::AbstractString, numsteps::Number, minDegree = 1::N
     # compute the outdegrees.
     # If nodiag is true, then the diagonal of the adjacency matrix will be ignored. (Handy when the diagonal represents edge counts, rather than self-loops)
     if nodiag
-        Anodiag = Assoc(A.row,A.col,A.val,dropzeros!(A-diag(A)))
+        Anodiag = A-diag(A)
+        Anodiag = Assoc(Anodiag.row,Anodiag.col,Anodiag.val,dropzeros!(Anodiag.A))
         Adeg = sum(Anodiag, 1)
     else
         Anodiag = A

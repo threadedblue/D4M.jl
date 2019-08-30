@@ -106,7 +106,6 @@ end
 
 # Base getindex function- i and j are d4m formatted strings (delimitered)
 DBtableType = Union{DBtable,DBtablePair}
-DBtableTypeorString = Union{DBtableType, AbstractString}
 function getindex(table::DBtableType, i::AbstractString, j::AbstractString)
     
     jcall(table.d4mQuery, "setCloudType", Nothing, (JString,), table.DB.dbType)
@@ -207,9 +206,11 @@ function searchall(str::String, c::Char)
 end
 
 # putTriple is the main db ingest function
-DBtableType = Union{DBtable,DBtablePair}
 function putTriple(table::DBtableType, r::UnionArray, c::UnionArray, v::UnionArray)
-    
+    # automatically convert any integral floats to actual integers
+    # Graphulo has some problems with floats
+    v = map(x-> isinteger2(x) ? convert(Integer, x) : x, v)
+
     # Find chunk size for ingest
     chunkBytes = table.putBytes
     numTriples = length(r);
@@ -276,40 +277,11 @@ function isinteger2(x)
 end
 
 # The put function deconstructs A and calls putTriple
-function put(table::DBtableType, A::Assoc; clear::Bool = false)
+function put(table::DBtableType, A::Assoc)
     DB = table.DB
 
-    if clear
-        if isa(table, DBtablePair)
-            if ispresent(DB, table.name1) && ispresent(DB, table.name2)
-                delete(table)
-            end
-        else
-            if ispresent(DB, table.name)
-                delete(table)
-            end
-        end
-    end
-    
-    if isa(table, DBtablePair)
-        if ~ispresent(DB, table.name1)
-            println("Creating "* table.name1 *" in "*DB.instanceName);
-        end
-        if ~ispresent(DB, table.name2)
-            println("Creating " * table.name2 * " in "*DB.instanceName);
-        end
-    else
-        if ~ispresent(DB, table.name)
-            println("Creating "* table.name *" in "*DB.instanceName);
-        end
-    end
-
-
     r, c, v = find(A)
-    # automatically convert any integral floats to actual integers
-    # Graphulo has some problems with floats
-    v2 = map(x-> isinteger2(x) ? convert(Integer, x) : x, v)
-    putTriple(table, r, c, v2)
+    putTriple(table, r, c, v)
 end
 
 #addColCombiner: Adds combiners to specific column names.
@@ -363,23 +335,4 @@ function getsplits(table::DBtableType)
 
         return splits
     end
-end
-
-# Printing methods: query the Assoc array, and then print that underlying array
-# print: print Assoc in a way that mimics the Sparse Array print.
-function print(table::DBtableType)
-    A = table[:,:]
-    print(A)
-end
-
-# printFull : print Assoc in tabular form.
-function printFull(table::DBtableType)
-    A = table[:,:]
-    printFull(A)
-end
-
-# printTriple : return A in triple String form: (r,c) v 
-function printTriple(table::DBtableType)
-    A = table[:,:]
-    printTriple(A)
 end

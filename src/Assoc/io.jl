@@ -1,4 +1,4 @@
-using SparseArrays, DelimitedFiles, JLD
+using SparseArrays
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc,fname,del=',',eol='\n')
@@ -179,20 +179,6 @@ function readas(serData::AssocSerial)
     val = Array{Union{AbstractString,Number}}(val)
     
     return Assoc(row,col,val,serData.A)
-end
-
-# Wrapper methods for complete JLD functionality.
-# Save and load a single Assoc into/from a JLD file.
-# (can expand to more)
-function WriteJLD(A::Assoc, fname)
-    AssocSerial = writeas(A)
-    save(fname, "AssocSerial", AssocSerial)
-end
-
-function ReadJLD(fname)
-    d = load(fname)
-    AssocSerial = d["AssocSerial"]
-    return readas(AssocSerial)
 end
 
 function readmat(fname)

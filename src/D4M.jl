@@ -4,7 +4,7 @@ module D4M
 
     using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
 
-    import SparseArrays: nnz, diag, convert
+    import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
@@ -16,18 +16,17 @@ module D4M
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
             col2type, val2col,
-            ReadCSV, WriteCSV, WriteJLD, ReadJLD,
+            ReadCSV, WriteCSV, 
             # writeas, readas, 
             print, printFull, printTriple,
             norow, nocol,
-            logical, str2num, convertassoc,
+            logical, str2num, convertvals,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,
             #saveassoc, loadassoc,
-            OutDegree, InDegree,
-            and, plus, minus, *, bounded, strictbounded,
-            removediag, adjbfs
+            OutDegree, InDegree, diag,
+            bounded, strictbounded, adjbfs
 
     include("Assoc.jl") # Associative Array
 
@@ -35,11 +34,6 @@ module D4M
     include("parsinghelpers.jl")
     #Helper functions for working with strings and string arrays
     include("stringarrayhelpers.jl")
-
-    #Reflects any changes in version; used to debug usage of Revise
-    include("version.jl")
-    export D4Mver
-
 
     if haskey(ENV,"JAVA_HOME")
         # Database functionality
@@ -54,24 +48,18 @@ module D4M
         
         using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
-        export dbsetup, ls, ispresent # DBserver
+        export dbsetup, ls # DBserver
         export delete, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
         export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
         export tablemult # tablemult
         export jaccard # jaccard
         export nmf # NMF
         export ktrussadj, ktrussedge # ktruss
-
-
-        println("Database capabilities loaded!")
     else
         println("Not loading database capabilities. If you would like to connect to a database, please set JAVA_HOME.")
         println("After setting JAVA_HOME, run:")
         println("D4Mpkg = Base.PkgId(\"D4M\"); Base.compilecache(D4Mpkg)")
     end
-
-    println("D4M loaded!")
-
 end
 
 

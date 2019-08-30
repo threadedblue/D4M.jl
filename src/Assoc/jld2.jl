@@ -3,8 +3,6 @@ using JLD2, SparseArrays
 #=
 Assoc Serialized for saving using JLD2
 Note that saving would convert row and col types to number.
-Unused by default??? Untested and not a dependency.
-If you'd like to use it, install JLD2 (not a dep at the moment)
 =#
 
 # Delimiter for saving- using new line is safer than comma!

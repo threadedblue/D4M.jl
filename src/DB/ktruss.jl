@@ -1,4 +1,5 @@
 using JavaCall
+DBtableTypeorString = Union{DBtableType, AbstractString}
 
 function ktrussadj(A::DBtableTypeorString, Rname::AbstractString, k::Number; filterRowCol::AbstractString="", forceDelete::Bool=true, maxiter = 2^31 - 1::Number)
 # /**

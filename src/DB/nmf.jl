@@ -1,4 +1,5 @@
 using JavaCall
+DBtableTypeorString = Union{DBtableType, AbstractString}
 
 function nmf(A::DBtableTypeorString, AT::DBtableTypeorString, k::Number, Wname::AbstractString, WTname ::AbstractString, Hname::AbstractString, HTname::AbstractString, maxiter::Number; forceDelete::Bool=true, cutoffThreshold::Number=0, maxColsPerTopic::Number=0)
 

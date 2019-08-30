@@ -1,4 +1,5 @@
 using JavaCall
+DBtableTypeorString = Union{DBtableType, AbstractString}
 
 function makedegreetable(A::DBtableTypeorString, Rname::AbstractString; countColumns = true::Bool, colq = ""::AbstractString)
     # /**

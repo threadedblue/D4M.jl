@@ -1,4 +1,5 @@
 using JavaCall
+DBtableTypeorString = Union{DBtableType, AbstractString}
 
 function jaccard(A::DBtableTypeorString, ADeg::DBtableTypeorString, Rname::AbstractString; filterRowCol::ValidQueryTypes="")
 
