@@ -1,4 +1,4 @@
 function D4Mver()
-    println("version 0.6.2")
+    println("version 0.6.3")
 
 end

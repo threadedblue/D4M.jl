@@ -2,7 +2,7 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles, JLD
+    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
 
     import SparseArrays: nnz, diag, convert
     import Base: &, ==, >, <, -, *, +, /
@@ -20,7 +20,7 @@ module D4M
             # writeas, readas, 
             print, printFull, printTriple,
             norow, nocol,
-            logical, str2num, convertassoc, parseassoc,
+            logical, str2num, convertassoc,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,
@@ -54,8 +54,8 @@ module D4M
         
         using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
-        export dbinit, dbsetup, ls, getindex, ispresent, deleteall, deleteprefix, deletename # DBserver
-        export delete, toDBstring, getindex, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz, DBtableTypeorString # DBtable
+        export dbsetup, ls, ispresent # DBserver
+        export delete, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
         export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
         export tablemult # tablemult
         export jaccard # jaccard
