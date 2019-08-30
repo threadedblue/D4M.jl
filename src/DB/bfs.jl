@@ -1,34 +1,6 @@
 using JavaCall
 DBtableTypeorString = Union{DBtableType, AbstractString}
 
-function makedegreetable(A::DBtableTypeorString, Rname::AbstractString; countColumns = true::Bool, colq = ""::AbstractString)
-    # /**
-    # * Create a degree table from an existing table.
-    # * @param table Name of original table.
-    # * @param Degtable Name of degree table. Created if it does not exist.
-    # *                 Use a combiner if you want to sum in the new degree entries into an existing table.
-    # * @param countColumns True means degrees are the <b>number of entries in each row</b>.
-    # *                     False means degrees are the <b>sum or weights of entries in each row</b>.
-    # * @param colq The name of the degree column in Degtable. Default is "".
-
-    # Returns a database table struct.
-
-    # public long generateDegreeTable(String table, String Degtable, boolean countColumns, String colq) 
-
-    if isa(A, DBtablePair)
-        Aname = A.name1
-    elseif isa(A, DBtable)
-        Aname = A.name
-    else
-        Aname = A
-    end
-
-    jcall(A.DB.Graphulo, "generateDegreeTable", jlong, 
-        (JString, JString, jboolean, JString,), 
-        Aname, Rname, countColumns, colq)
-
-end
-
 function adjbfs(A::DBtableTypeorString, v0::AbstractString, numsteps::Number, Rtable::AbstractString, RtableTranspose::AbstractString; minDegree = 0::Number, maxDegree = 2^31 - 1::Number, ADegtable = ""::AbstractString, degColumn = ""::AbstractString, degInColQ = false::Bool)
 
 
