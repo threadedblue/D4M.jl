@@ -206,10 +206,7 @@ function searchall(str::String, c::Char)
 end
 
 # putTriple is the main db ingest function
-function putTriple(table::DBtableType, r::UnionArray, c::UnionArray, v2::UnionArray)
-    # automatically convert any integral floats to actual integers
-    # Graphulo has some problems with floats
-    v = map(x-> isinteger2(x) ? convert(Integer, x) : x, v2)
+function putTriple(table::DBtableType, r::UnionArray, c::UnionArray, v::UnionArray)
 
     # Find chunk size for ingest
     chunkBytes = table.putBytes
@@ -265,7 +262,10 @@ end
 UnionArray = Array{Union{AbstractString,Number}}
 #StringOrNumArray = Union{AbstractString,Array,Number}
 ValidType = Union{UnionArray,AbstractString,Array,Number}
-putTriple(table::DBtableType, r::ValidType, c::ValidType, v::ValidType) = putTriple(table, ingestprep(r), ingestprep(c), ingestprep(v))
+
+putTriple(table::DBtableType, r::ValidType, c::ValidType, v::ValidType) = putTriple(table, ingestprep(r), ingestprep(c), map(x-> isinteger2(x) ? convert(Integer, x) : x, v))
+# ^ automatically convert any integral floats (of value) to actual integers
+# Graphulo has some problems with floats
 
 function isinteger2(x)
     if isa(x, AbstractString)
