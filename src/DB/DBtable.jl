@@ -263,7 +263,7 @@ UnionArray = Array{Union{AbstractString,Number}}
 #StringOrNumArray = Union{AbstractString,Array,Number}
 ValidType = Union{UnionArray,AbstractString,Array,Number}
 
-putTriple(table::DBtableType, r::ValidType, c::ValidType, v::ValidType) = putTriple(table, ingestprep(r), ingestprep(c), map(x-> isinteger2(x) ? convert(Integer, x) : x, v))
+putTriple(table::DBtableType, r::ValidType, c::ValidType, v::ValidType) = putTriple(table, ingestprep(r), ingestprep(c), ingestprep(map(x-> isinteger2(x) ? convert(Integer, x) : x, v)))
 # ^ automatically convert any integral floats (of value) to actual integers
 # Graphulo has some problems with floats
 
