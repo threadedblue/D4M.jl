@@ -337,6 +337,7 @@ function getsplits(table::DBtableType)
     end
 end
 
+DBtableTypeorString = Union{DBtableType, AbstractString}
 function makedegreetable(A::DBtableTypeorString, Rname::AbstractString; countColumns = true::Bool, colq = ""::AbstractString)
     # /**
     # * Create a degree table from an existing table.
