@@ -2,6 +2,7 @@
 EntityCopy.csv
 A.csv
 examples/3Scaling/2ParallelDatabase/data/*
+examples/2Apps/1EntityAnalysis/Entity.jld
 
 # Notebook Checkpoints
 .ipynb_checkpoints
