@@ -206,10 +206,10 @@ function searchall(str::String, c::Char)
 end
 
 # putTriple is the main db ingest function
-function putTriple(table::DBtableType, r::UnionArray, c::UnionArray, v::UnionArray)
+function putTriple(table::DBtableType, r::UnionArray, c::UnionArray, v2::UnionArray)
     # automatically convert any integral floats to actual integers
     # Graphulo has some problems with floats
-    v = map(x-> isinteger2(x) ? convert(Integer, x) : x, v)
+    v = map(x-> isinteger2(x) ? convert(Integer, x) : x, v2)
 
     # Find chunk size for ingest
     chunkBytes = table.putBytes
@@ -278,8 +278,6 @@ end
 
 # The put function deconstructs A and calls putTriple
 function put(table::DBtableType, A::Assoc)
-    DB = table.DB
-
     r, c, v = find(A)
     putTriple(table, r, c, v)
 end
