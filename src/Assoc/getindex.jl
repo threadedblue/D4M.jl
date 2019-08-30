@@ -89,9 +89,9 @@ PreviousTypes = Union{PreviousTypes,AbstractString}
 
 
 #Variations by Regex
-getindex(A::Assoc, i::Regex, j::PreviousTypes)  = getindex(A, findall( x -> ismatch(i,x),A.row), j)
-getindex(A::Assoc, i::PreviousTypes, j::Regex)  = getindex(A, i, findall( x -> ismatch(j,x),A.col))
-getindex(A::Assoc, i::Regex, j::Regex)          = getindex(A, findall( x -> ismatch(i,x),A.row), findall( x -> ismatch(j,x),A.col))
+getindex(A::Assoc, i::Regex, j::PreviousTypes)  = getindex(A, findall( x -> occursin(i,x),A.row), j)
+getindex(A::Assoc, i::PreviousTypes, j::Regex)  = getindex(A, i, findall( x -> occursin(j,x),A.col))
+getindex(A::Assoc, i::Regex, j::Regex)          = getindex(A, findall( x -> occursin(i,x),A.row), findall( x -> occursin(j,x),A.col))
 
 
 PreviousTypes = Union{PreviousTypes,Regex}
@@ -102,6 +102,8 @@ struct StartsWith
     inputString::AbstractString
 end
 
+# returns an array of indices; 
+# the corresponding subarray of getrow/getcol is what's called for by startswith
 function StartsWithHelper(Ar::Array{Union{AbstractString,Number}},S::StartsWith)
     str_list = []
     if S.inputString[end] == ','
@@ -136,7 +138,7 @@ function >(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = searchsortedlast(getval(A),E)
     end
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
     else
         rowkey, colkey, valkey = findnz(A.A)
@@ -165,7 +167,7 @@ function <(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = searchsortedfirst(A.val,E)
     end
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
     else
         rowkey, colkey, valkey = findnz(A.A)
@@ -198,7 +200,7 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
         end
     end
     
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
     else
         rowkey, colkey, valkey = findnz(A.A)
@@ -218,6 +220,67 @@ end
 
 ==(E::Union{AbstractString,Number},A::Assoc) = (A == E)
 
+function bounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{AbstractString,Number})
+    if (isa(E1,Number) & (A.val ==[1.0])  )
+        tarIndex1 = E1
+    else
+        tarIndex1 = searchsortedfirst(A.val,E1)
+    end
+
+    if (isa(E2,Number) & (A.val ==[1.0])  )
+        tarIndex2 = E2
+    else
+        tarIndex2 = searchsortedfirst(A.val,E2)
+    end
+
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
+        rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
+    else
+        rowkey, colkey, valkey = findnz(A.A)
+    end
+    mapping = findall( x-> tarIndex1 <= x <= tarIndex2, valkey)
+    rows, cols, vals = find(A)
+
+    outA = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    if A.val==[1.0]
+        outA = putVal(outA,A.val)
+    end
+    
+    return outA
+end
+
+function strictbounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{AbstractString,Number})
+    if (isa(E1,Number) & (A.val ==[1.0])  )
+        tarIndex1 = E1
+    else
+        tarIndex1 = searchsortedfirst(A.val,E1)
+    end
+
+    if (isa(E2,Number) & (A.val ==[1.0])  )
+        tarIndex2 = E2
+    else
+        tarIndex2 = searchsortedfirst(A.val,E2)
+    end
+
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
+        rowkey, colkey, valkey = findnz(SparseMatrixCSC(A.A))
+    else
+        rowkey, colkey, valkey = findnz(A.A)
+    end
+    mapping = findall( x-> tarIndex1 < x < tarIndex2, valkey)
+    rows, cols, vals = find(A)
+
+    outA = Assoc(rows[mapping],cols[mapping],vals[mapping])
+
+    if A.val==[1.0]
+        outA = putVal(outA,A.val)
+    end
+    
+    return outA
+end
+
+
 #=
 diag : Output the diagonal of input Assoc A.
 Outputs the Assoc with only the diagonal elements of A.
@@ -225,9 +288,9 @@ Outputs the Assoc with only the diagonal elements of A.
 function diag(A::Assoc)
     # Check if numeric values first
     if A.val == [1.0]
-        return Assoc(A.row,A.col,A.val,dropzeros!(sparse(diagm(diag(A.A)))))
+        return Assoc(A.row,A.col,A.val,dropzeros!(sparse(diagm(0 => diag(A.A)))))
     else
-        return deepCondense(Assoc(A.row,A.col,A.val,sparse(diagm(diag(A.A)))))
+        return deepCondense(Assoc(A.row,A.col,A.val,sparse(diagm(0 => diag(A.A)))))
     end
 end
 

@@ -275,15 +275,13 @@ function CatValMul(A::Assoc,B::Assoc)
         A = A[:,AB]
         B = B[AB,:]
         rrr,ccc,vvv = findnz(getadj(A*B))
-        ABVal = Array(Union{AbstractString,Number},length(rrr))
+        ABVal = Array{Union{AbstractString,Number},1}(undef, length(rrr))
         for i in 1:length(rrr)
             r = rrr[i]
             c = ccc[i]
             ABIntersect = sortedintersect(getcol(A[r,:]),getrow(B[:,c]))
-            ABValList = Array{Union{AbstractString,Number},1}
-            print(ABIntersect)
+            ABValList = Array{Union{AbstractString,Number},1}(undef, 0)
             for x in ABIntersect
-                print(x)
                 push!(ABValList,getval(A[r,x*","])[1])
                 push!(ABValList,getval(B[x*",",c])[1])
             end

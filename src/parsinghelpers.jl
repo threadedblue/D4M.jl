@@ -1,7 +1,7 @@
-# Functions that convert between r,c,v and r,c|v,1 style Associative Arrays
+# Functions that convert between r, c, v and r, c|v, 1 style Associative Arrays
 
 function col2type(A,splitSep)
-
+  # Inverse of val2col (see below for more info) 
   r,c,v = find(A)
   cType, cVal = SplitStr(c,splitSep)
   return Assoc(r,Array{Union{AbstractString,Number}}(cType),Array{Union{AbstractString,Number}}(cVal));

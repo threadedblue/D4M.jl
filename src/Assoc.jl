@@ -62,6 +62,8 @@ struct Assoc
             valIn = Array{Union{AbstractString,Number},1}([valIn])
         end
 
+        # row, col, and val are always searchsortedfirst
+        # i, j, and v are passed into the sparse constructor
         i = rowIn;
         j = colIn;
         v = valIn;
@@ -167,7 +169,7 @@ nnz: Return the number of nonzeros in an Associative Array
 =#
 function nnz(A::Assoc)
 
-    if isa(A.A,LinearAlgebra.Adjoint)
+    if isa(A.A,LinearAlgebra.Adjoint) || isa(A.A, LinearAlgebra.Transpose)
         return nnz(A.A.parent)
     else
         return nnz(A.A)
@@ -197,6 +199,7 @@ include("./Assoc/convert.jl")
 include("./Assoc/broadcast.jl")
 include("./Assoc/io.jl")
 include("./Assoc/convertvals.jl")
+include("./Assoc/bfs.jl")
 #include("./Assoc_orig/find.jl")
 #include("./Assoc_orig/no.jl")
 #include("./Assoc_orig/isempty.jl")

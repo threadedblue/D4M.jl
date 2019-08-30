@@ -1,8 +1,9 @@
-using SparseArrays#, LinearAlgebra
+using SparseArrays
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc,fname,del=',',eol='\n')
-    #Because of potential memory issues, the Assoc will not be converted to dense matrix, but instead directly printed onto the file.
+    #Because of potential memory issues, the Assoc will not be converted to dense matrix.
+    # Instead the dense form is directly printed onto the file.
     
     iostream = open(fname,"w")
     
@@ -14,7 +15,7 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
     
     write(iostream,eol)
     
-    valMap = !isempty(A.val) #Check if val needs to be mapped.
+    valMap = !isempty(A.val) && !(A.val ==[1.0]) #Check if val needs to be mapped.
     #For each row write in row
     for r = 1:size(A.row,1)
         print(iostream,A.row[r])
@@ -26,7 +27,7 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
                 else #Mappping not needed.
                     print(iostream,A.A[r,c])
                 end
-                end
+            end
         end
         write(iostream,eol)
         flush(iostream) #Clear buffer for each line.
@@ -35,12 +36,12 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
     close(iostream)
 end
 
-function ReadCSV(fname,del=',',eol='\n')
+function ReadCSV(fname,del=',',eol='\n'; quotes=true)
 
     if filesize(fname) <= 1
         return Assoc("","","")
     end
-    inDim = readdlm(fname,del,eol)
+    inDim = readdlm(fname,del,eol, quotes=quotes)
     rowN,colN = size(inDim)
     row = [];
     col = [];
@@ -55,9 +56,9 @@ function ReadCSV(fname,del=',',eol='\n')
                 end
             end
         end
-        return Assoc(row,col,val,(+))
+        return Assoc(string.(row),string.(col),val,(+))
     else #2D associative?
-    #Currently Ignoring
+    # TODO implement this special case (currently ignoring, for now)
         return
     end
 end
@@ -65,7 +66,7 @@ end
 #=
 Writing and Reading JLD Files
 Assoc Serialized for saving
-Note that saving would convert row and col types to number.
+NOTE: saving would convert row and col types to number.
 =#
 
 # Delimiter for saving- using new line is safer than comma!
@@ -179,7 +180,6 @@ function readas(serData::AssocSerial)
     
     return Assoc(row,col,val,serData.A)
 end
-
 
 function readmat(fname)
     

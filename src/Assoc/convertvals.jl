@@ -8,13 +8,41 @@ using SparseArrays,LinearAlgebra
 
 logical(A::Assoc) = Assoc(copy(A.row),copy(A.col),promote([1.0],A.val)[1],LinearAlgebra.fillstored!(dropzeros!(copy(A.A)),1))
 
-function str2num(A::Assoc)
+
+function parsehelper(type, v)
+    parsed = tryparse(type, v)
+    if parsed===nothing
+        return 1
+    end
+    return parsed
+end
+
+function str2num(A::Assoc, type::Type=Int)
+    if ~(type<:Number)
+        println("Type not number")
+    return nothing
+    end
     r,c,v = find(A)
-    v = Meta.parse.(v) # this won't work for string values- find numeric strings first, convert all others to 1
+    v = parsehelper.(type, v)
+    # TODO do mixed types of values exist? If so, use them
     A = Assoc(r,c,v)
 end
 
+function str2num(type::Type, A::Assoc)
+    return str2num(A, type)
+end
+
 # TODO: Write num2str
+
+#=
+convert all entries to a certain type
+=#
+
+function convertvals(type, A::Assoc)
+    r,c,v = find(A)
+    v = convert.(type, v)
+    A = Assoc(r,c,v)
+end
 
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
