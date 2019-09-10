@@ -80,12 +80,10 @@ function toDBstring(input)
     elseif isa(input, Colon)
         output = ":"
     elseif isa(input, StartsWith)
-        # StartsWith supports one element, without a comma at the end,
-        # as well as a comma-delimited list with a comma at the end
+        # StartsWith supports one element, with a delimiter at the end,
+        # as well as a delimited list with a delimiter at the end
+
         str = input.inputString
-        if ~(str[end] == '\n')
-            str = string(str, "\n")
-        end
 
         output = ""
         del = str[end:end]
