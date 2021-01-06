@@ -1,3 +1,6 @@
+### This is a fork of the accla/D4M.jl project.  It is intended for use in a parallel/distributed manner where no graphical output is required.  Hence any code that supports plotting is either removed or soon will be.
+
+
 # Julia-D4M
 
 D4M.jl is a library for Julia that allows unstructured data to be represented as triples in sparse matrices (Associative Arrays) and can be manipulated using standard linear algebraic operations.
