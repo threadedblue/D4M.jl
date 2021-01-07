@@ -10,6 +10,7 @@ struct DBserver
     Graphulo
 end
 
+ENV["JULIA_COPY_STACKS"]=1
 using JavaCall
 
 # dbsetup calls the DBserver constructor given configuration information.
@@ -24,10 +25,14 @@ using JavaCall
 #   See example configuration file for formatting.
 
 function dbinit()
+    if ~haskey(ENV,"ACCUMULO_HOME")
+        println("ACCUMULO_HOME environment variable must be set.")
+        return
+    end 
     if ~JavaCall.isloaded()
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar"))
-        JavaCall.init()
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),ENV["ACCUMULO_HOME"],"lib","*"))
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"./lib","graphulo-3.2.0.jar"))
+        JavaCall.init("-Xmx128M")
     else
         println("JVM already initialized")
     end
