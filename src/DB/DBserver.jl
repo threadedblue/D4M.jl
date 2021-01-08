@@ -25,14 +25,14 @@ using JavaCall
 #   See example configuration file for formatting.
 
 function dbinit()
-    if ~haskey(ENV,"ACCUMULO_HOME")
-        println("ACCUMULO_HOME environment variable must be set.")
-        return
-    end 
     if ~JavaCall.isloaded()
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),ENV["ACCUMULO_HOME"],"lib","*"))
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"./lib","graphulo-3.2.0.jar"))
-        JavaCall.init("-Xmx128M")
+        libext = joinpath(dirname(pathof(@__MODULE__)), "libext")
+        println(string(isdir(libext)) * " " * libext)
+        lib = joinpath(dirname(pathof(@__MODULE__)), "lib", "graphulo-3.2.0.jar")
+        println(string(isfile(lib)) * " " * lib)
+        JavaCall.addClassPath(joinpath(libext, "*"))
+        JavaCall.addClassPath(lib)
+        JavaCall.init(["-Xmx128M"])
     else
         println("JVM already initialized")
     end
@@ -55,14 +55,14 @@ function dbsetup(instance::AbstractString, hostname::AbstractString, username::A
         println("Starting up JVM for DB operations")
         dbinit()
     end
-
-    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
+    println(joinpath(instance, hostname, username, pword))
+    g = @jimport "edu.mit.ll.cloud.connection.Graphulo"
     Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
-    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
+    DB = DBserver(instance,hostname,username,pword,"BigTableLike", Graphulo)
     return DB
 end
 
-function dbsetup(instance, config="/home/gridsan/tools/groups/")
+function dbsetup(config="/home/gridsan/tools/groups/")
     # Note default value for config location is the MIT Supercloud default location
     if isdir(config) # Config dir
         dbdir = config*"/databases/"*instance
@@ -86,6 +86,7 @@ end
 
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
+    println("DB.instanceName3=" * DB.instanceName)
     dbInfo = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbInfo"
     dbInfoObj = dbInfo((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
     
@@ -116,7 +117,7 @@ end
 # getindex returns a binding to a table. If the table does it exist, it creates the table.
 # When a second table name is provided, a database table pair is returned.
 function getindex(DB::DBserver,tableName1::String,tableName2::String)
-    
+    println("DB.instanceName2=" * DB.instanceName)
     ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
     opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
     
