@@ -2,7 +2,7 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
+    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles, Logging
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
@@ -45,8 +45,9 @@ module D4M
         include("DB/jaccard.jl")
         include("DB/nmf.jl")    
         include("DB/ktruss.jl")
-        
-        using JavaCall
+
+ #       ENV["JULIA_COPY_STACKS"]=1
+ #       using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
         export dbinit, dbsetup, ls # DBserver
         export delete, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable

@@ -10,7 +10,6 @@ struct DBserver
     Graphulo
 end
 
-ENV["JULIA_COPY_STACKS"]=1
 using JavaCall
 
 # dbsetup calls the DBserver constructor given configuration information.
@@ -27,9 +26,7 @@ using JavaCall
 function dbinit()
     if ~JavaCall.isloaded()
         libext = joinpath(dirname(pathof(@__MODULE__)), "libext")
-        println(string(isdir(libext)) * " " * libext)
         lib = joinpath(dirname(pathof(@__MODULE__)), "lib", "graphulo-3.2.0.jar")
-        println(string(isfile(lib)) * " " * lib)
         JavaCall.addClassPath(joinpath(libext, "*"))
         JavaCall.addClassPath(lib)
         JavaCall.init(["-Xmx128M"])
@@ -86,7 +83,6 @@ end
 
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
-    println("DB.instanceName3=" * DB.instanceName)
     dbInfo = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbInfo"
     dbInfoObj = dbInfo((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
     
@@ -117,7 +113,7 @@ end
 # getindex returns a binding to a table. If the table does it exist, it creates the table.
 # When a second table name is provided, a database table pair is returned.
 function getindex(DB::DBserver,tableName1::String,tableName2::String)
-    println("DB.instanceName2=" * DB.instanceName)
+
     ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
     opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
     
