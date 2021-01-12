@@ -127,7 +127,7 @@ function getindex(table::DBtableType, i::AbstractString, j::AbstractString)
         @debug "3==>"
         jcall(table.d4mQuery, "setTableName", Nothing, (JString,), table.name2)
         @debug "3.1==>" * "i=" * i * " j=" * j
-         jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString), j, i, table.columnfamily, table.security, table.limit)
+         jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString), j, i, table.columnfamily, table.security, table.numLimit)
         @debug "3.2==>"
  
         c = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
