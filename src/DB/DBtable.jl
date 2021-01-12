@@ -105,7 +105,7 @@ end
 # Base getindex function- i and j are d4m formatted strings (delimitered)
 DBtableType = Union{DBtable,DBtablePair}
 function getindex(table::DBtableType, i::AbstractString, j::AbstractString)
-    @debug "getindex(table::DBtableType, i::AbstractString, j::AbstractString)==>"    
+    @info "getindex(table::DBtableType, i::AbstractString, j::AbstractString)==>table.numLimit"    
     jcall(table.d4mQuery, "setCloudType", Nothing, (JString,), table.DB.dbType)
     jcall(table.d4mQuery, "setLimit", Nothing, (jint,), table.numLimit)
     jcall(table.d4mQuery, "reset", Nothing, (), )
