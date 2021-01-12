@@ -11,7 +11,7 @@ module D4M
     import PyPlot: spy
     import JLD: writeas, readas
 
-    export  Assoc,
+    export  Assoc, DBtablePair,
             StartsWith,
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
