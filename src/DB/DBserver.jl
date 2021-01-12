@@ -114,7 +114,7 @@ end
 
 # getindex returns a binding to a table. If the table does it exist, it creates the table.
 # When a second table name is provided, a database table pair is returned.
-function getindex(DB::DBserver,tableName1::String,tableName2::String)
+function getindex(DB::DBserver,tableName1::String,tableName2::String, limit::Number)
 
     ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
     opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
@@ -134,7 +134,7 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
     queryObj = d4mQuery((JString, JString, JString, JString, JString,), DB.instanceName, DB.host, tableName1, DB.user, DB.pass)
     
-    return DBtablePair(DB, tableName1, tableName2, "", 0, 0, "", 5e5, queryObj, opsObj)
+    return DBtablePair(DB, tableName1, tableName2, "", limit, 0, "", 5e5, queryObj, opsObj)
     
 end
 
