@@ -22,6 +22,7 @@ using JavaCall
 #   Assumes username is AccumuloUser.
 # When provided a configuration file, will read in and use the configuration in the file.
 #   See example configuration file for formatting.
+@info "DBserver==>1"
 
 function dbinit()
     if ~JavaCall.isloaded()
@@ -29,7 +30,10 @@ function dbinit()
         lib = joinpath(dirname(pathof(@__MODULE__)), "lib", "graphulo-3.2.0.jar")
         JavaCall.addClassPath(joinpath(libext, "*"))
         JavaCall.addClassPath(lib)
-        JavaCall.init(["-Xmx128M"])
+        JavaCall.addOpts("-Dcom.github.fommil.netlib.BLAS=com.github.fommil.netlib.F2jBLAS")
+        JavaCall.addOpts("-Dcom.github.fommil.netlib.LAPACK=com.github.fommil.netlib.F2jLAPACK")
+        JavaCall.addOpts("-Dcom.github.fommil.netlib.ARPACK=com.github.fommil.netlib.F2jARPACK")
+        JavaCall.init(["-Xmx2048M"])
     else
         println("JVM already initialized")
     end
@@ -52,7 +56,8 @@ function dbsetup(instance::AbstractString, hostname::AbstractString, username::A
         println("Starting up JVM for DB operations")
         dbinit()
     end
-    println(joinpath(instance, hostname, username, pword))
+    @info joinpath(instance, hostname, username, pword)
+#    g = JavaCall.classforname("edu.mit.ll.cloud.connection.Graphulo")
     g = @jimport "edu.mit.ll.cloud.connection.Graphulo"
     Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
     DB = DBserver(instance,hostname,username,pword,"BigTableLike", Graphulo)
@@ -132,7 +137,7 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
     queryObj = d4mQuery((JString, JString, JString, JString, JString,), DB.instanceName, DB.host, tableName1, DB.user, DB.pass)
     
-    return DBtablePair(DB, tableName1, tableName2, "", 0, 0, "", 5e5, queryObj,opsObj)
+    return DBtablePair(DB, tableName1, tableName2, "", 0, 0, "", 5e5, queryObj, opsObj)
     
 end
 

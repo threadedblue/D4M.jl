@@ -1,7 +1,7 @@
 
 #Module for D4M
 module D4M
-
+@info "D4M==>1"
     using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles, Logging
 
     import SparseArrays: nnz, diag
@@ -35,6 +35,7 @@ module D4M
     #Helper functions for working with strings and string arrays
     include("stringarrayhelpers.jl")
 
+    @info "D4M==>2"
     if haskey(ENV,"JAVA_HOME")
         # Database functionality
         include("DB/DBserver.jl")
@@ -46,9 +47,9 @@ module D4M
         include("DB/nmf.jl")    
         include("DB/ktruss.jl")
 
- #       ENV["JULIA_COPY_STACKS"]=1
- #       using JavaCall
+  #       using JavaCall
         # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
+    @info "D4M==>3"
         export dbinit, dbsetup, ls # DBserver
         export delete, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
         export makedegreetable, adjbfs, edgebfs, singlebfs # BFS

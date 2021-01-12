@@ -173,7 +173,7 @@ end
 
 # The getindex function to get the next few elements for an iterator table object
 function getindex(table::DBtableType)
-    @info "getindex(table::DBtableType)==>"
+
     #T.d4mQuery.next();
     #dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
     jcall(table.d4mQuery, "next", Nothing, (), )
