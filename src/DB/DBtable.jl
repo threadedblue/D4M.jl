@@ -1,5 +1,5 @@
 using SparseArrays, JavaCall
-@debug "DBTable==>"
+
 # DBtable contains the table binding information, as well as the
 # d4mQuery Java object for the table.
 struct DBtable
@@ -113,29 +113,27 @@ function getindex(table::DBtableType, i::AbstractString, j::AbstractString)
     dbResultSet = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbResultSet"
     
     if i != ":" || j == ":" || isa(table, DBtable)
-        @debug "1==>"
+
         if isa(table, DBtablePair)
             jcall(table.d4mQuery, "setTableName", Nothing, (JString,), table.name1)
         end
-        @debug "2==>"
+
         jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString,), i, j, table.columnfamily, table.security)
 
         r = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
         c = jcall(table.d4mQuery, "getColumnReturnString", JString, (), )
         
     else # Search transpose table if column query
-        @debug "3==>"
+
         jcall(table.d4mQuery, "setTableName", Nothing, (JString,), table.name2)
-        @debug "3.1==>" * "i=" * i * " j=" * j
-         jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString), j, i, table.columnfamily, table.security)
-        @debug "3.2==>"
- 
+
+        jcall(table.d4mQuery, "doMatlabQuery", dbResultSet, (JString, JString, JString, JString), j, i, table.columnfamily, table.security)
+
         c = jcall(table.d4mQuery, "getRowReturnString", JString, (), )
         r = jcall(table.d4mQuery, "getColumnReturnString", JString, (), )
     end
     
     v = jcall(table.d4mQuery, "getValueReturnString", JString, (), )
-    @debug "4==>"
 
     return deepCondense(Assoc(r, c, v))
     

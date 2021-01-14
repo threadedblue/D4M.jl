@@ -22,7 +22,6 @@ using JavaCall
 #   Assumes username is AccumuloUser.
 # When provided a configuration file, will read in and use the configuration in the file.
 #   See example configuration file for formatting.
-@info "DBserver==>1"
 
 function dbinit()
     if ~JavaCall.isloaded()

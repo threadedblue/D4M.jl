@@ -1,7 +1,7 @@
 using SparseArrays
 
 # Writing and Reading CSV Files
-function WriteCSV(A::Assoc,fname,del=',',eol='\n')
+function WriteCSV(A::Assoc, fname, del=',', eol='\n')
     #Because of potential memory issues, the Assoc will not be converted to dense matrix.
     # Instead the dense form is directly printed onto the file.
     
@@ -13,7 +13,7 @@ function WriteCSV(A::Assoc,fname,del=',',eol='\n')
         print(iostream,A.col[c])
     end
     
-    write(iostream,eol)
+    write(iostream, eol)
     
     valMap = !isempty(A.val) && !(A.val ==[1.0]) #Check if val needs to be mapped.
     #For each row write in row
