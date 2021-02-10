@@ -20,7 +20,7 @@ module D4M
             # writeas, readas, 
             print, printFull, printTriple,
             norow, nocol,
-            logical, str2num, convertvals,
+            logical, str2num, num2str, convertvals,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,

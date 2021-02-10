@@ -129,7 +129,7 @@ getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(get
 PreviousTypes = Union{PreviousTypes,StartsWith}
 
 #=
-> : get a new Assoc where all of the elements of input Assoc mataches the given Element.
+> : get a new Assoc where all of the elements of input Assoc matches the given Element.
 =#
 function >(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )
@@ -158,7 +158,7 @@ end
 >(E::Union{AbstractString,Number},A::Assoc) = (A < E)
 
 #=
-< : get a new Assoc where all of the elements of input Assoc mataches the given Element.
+< : get a new Assoc where all of the elements of input Assoc matches the given Element.
 =#
 function <(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )

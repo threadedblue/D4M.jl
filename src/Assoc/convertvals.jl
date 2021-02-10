@@ -32,7 +32,12 @@ function str2num(type::Type, A::Assoc)
     return str2num(A, type)
 end
 
-# TODO: Write num2str
+# Converts numeric values to strings 
+function num2str(A::Assoc)::Assoc
+	r, c, v = find(A)
+	v1 = string.(v)
+	return Assoc(r, c, v1)
+end
 
 #=
 convert all entries to a certain type
