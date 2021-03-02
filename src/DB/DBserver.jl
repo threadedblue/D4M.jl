@@ -51,7 +51,7 @@ function dbsetup(instance::AbstractString, hostname::AbstractString, username::A
         dbinit()
     end
 
-    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
+#    g = @jimport "edu.mit.ll.graphulo.MatlabGraphulo"
 #    Graphulo = g((JString, JString, JString, JString,), instance, hostname, username, pword)
 #    DB = DBserver(instance,hostname,username,pword,"BigTableLike",Graphulo)
     DB = DBserver(instance,hostname,username,pword,"BigTableLike")
