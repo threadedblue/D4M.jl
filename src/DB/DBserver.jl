@@ -116,7 +116,7 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     
     ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
     opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
-    
+    println("instance=" * DB.instanceName)
     # Create new tables if they don't exist
     if ~any(ls(DB) .== tableName1) || ~any(ls(DB) .== tableName2)
         if ~any(ls(DB) .== tableName1)
