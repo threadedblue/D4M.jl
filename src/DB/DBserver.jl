@@ -7,7 +7,7 @@ struct DBserver
     user::String
     pass::String
     dbType::String
-    Graphulo
+#    Graphulo
 end
 
 using JavaCall
