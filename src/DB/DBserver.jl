@@ -24,10 +24,10 @@ using JavaCall
 #   See example configuration file for formatting.
 
 function dbinit()
-    println("D4MDir=" * joinpath(dirname(pathof(D4M)),"..","..","libext","*"))
+    println("D4MDir=" * joinpath(dirname(pathof(D4M)),"..","libext"))
     if ~JavaCall.isloaded()
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","..","libext","*"))
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","..","lib","graphulo-3.0.0.jar"))
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
+        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar"))
         JavaCall.init()
     else
         println("JVM already initialized")
