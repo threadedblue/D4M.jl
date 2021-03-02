@@ -24,7 +24,7 @@ using JavaCall
 #   See example configuration file for formatting.
 
 function dbinit()
-    println("D4MDir=" * joinpath(dirname(pathof(D4M)),"..","libext"))
+
     if ~JavaCall.isloaded()
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.2.0.jar"))
@@ -84,8 +84,9 @@ end
 # ls returns a list of tables that exist in the DBserver DB.
 function ls(DB::DBserver)
     dbInfo = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbInfo"
+    println("instance=" * DB.instanceName)
     dbInfoObj = dbInfo((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
-    
+    println("dbInfoObj=", dbInfoObj)
     tables = jcall(dbInfoObj, "getTableList", JString, (),)
     
     return split(tables[1:end-1],tables[end])
@@ -116,7 +117,7 @@ function getindex(DB::DBserver,tableName1::String,tableName2::String)
     
     ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
     opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
-    println("instance=" * DB.instanceName)
+
     # Create new tables if they don't exist
     if ~any(ls(DB) .== tableName1) || ~any(ls(DB) .== tableName2)
         if ~any(ls(DB) .== tableName1)
