@@ -24,7 +24,7 @@ using JavaCall
 #   See example configuration file for formatting.
 
 function dbinit()
-    println(dirname(pathof(D4M)))
+    println("D4MDir=" * dirname(pathof(D4M)))
     if ~JavaCall.isloaded()
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","..","libext","*"))
         JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","..","lib","graphulo-3.0.0.jar"))
