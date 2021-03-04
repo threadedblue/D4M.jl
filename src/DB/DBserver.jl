@@ -26,8 +26,10 @@ using JavaCall
 function dbinit()
 
     if ~JavaCall.isloaded()
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","libext","*"))
-        JavaCall.addClassPath(joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.2.0.jar"))
+        libext = joinpath(dirname(pathof(D4M)),"..","libext","*")
+        lib = joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.2.0.jar")
+        JavaCall.addClassPath(libext)
+        JavaCall.addClassPath(lib)
         JavaCall.init()
     else
         println("JVM already initialized")
@@ -41,7 +43,12 @@ function dbinit()
         println("Required Graphulo libraries for database operations missing from Java classpath.")
         println("To fix, add the required libraries (see Database Use in the readme).")
         println("Then restart Julia, and intialize jvm using dbinit().")
-    end
+
+        # Check that graphulo is accessable. 
+        if ~isfile(lib)
+            println("graphulo-3.2.0.jar is not accesssable.")
+        end
+   end
 end
 
 function dbsetup(instance::AbstractString, hostname::AbstractString, username::AbstractString, pword::AbstractString)
