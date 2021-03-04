@@ -45,7 +45,9 @@ function dbinit()
         println("Then restart Julia, and intialize jvm using dbinit().")
 
         # Check that graphulo is accessable. 
-        if ~isfile(lib)
+        if isfile(lib)
+            println("graphulo-3.2.0.jar is accesssable.")
+        else
             println("graphulo-3.2.0.jar is not accesssable.")
         end
    end
