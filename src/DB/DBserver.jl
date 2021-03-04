@@ -43,14 +43,13 @@ function dbinit()
         println("Required Graphulo libraries for database operations missing from Java classpath.")
         println("To fix, add the required libraries (see Database Use in the readme).")
         println("Then restart Julia, and intialize jvm using dbinit().")
-
-        # Check that graphulo is accessable. 
-        if isfile(lib)
-            println("graphulo-3.2.0.jar is accesssable.")
-        else
-            println("graphulo-3.2.0.jar is not accesssable.")
-        end
    end
+    # Check that graphulo is accessable. 
+    if isfile(lib)
+        println("graphulo-3.2.0.jar is accesssable.")
+    else
+        println("graphulo-3.2.0.jar is not accesssable.")
+    end
 end
 
 function dbsetup(instance::AbstractString, hostname::AbstractString, username::AbstractString, pword::AbstractString)
