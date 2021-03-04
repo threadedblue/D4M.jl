@@ -59,25 +59,14 @@ function dbsetup(instance::AbstractString, hostname::AbstractString, username::A
     return DB
 end
 
-function dbsetup(instance, config="/home/gridsan/tools/groups/")
-    # Note default value for config location is the MIT Supercloud default location
-    if isdir(config) # Config dir
-        dbdir = config*"/databases/"*instance
-        f = open(dbdir*"/accumulo_user_password.txt","r")
-        pword = read(f, String)
-        username = "AccumuloUser"
-        f = open(dbdir*"/dnsname","r")
-        hostname = replace(read(f, String),"\n" => "")*":2181"
-    else # Config file
-        f = open(config)
-        conf = readlines(config)
-        conf = Dict(l[1] => l[2] for l in split.(conf,"="))
-        instance = conf["instance"]
-        hostname = conf["hostname"]
-        username = conf["username"]
-        pword = conf["password"]
-    end
-
+function dbsetup(config::String = "conf/db.conf")
+    f = open(config)
+    conf = readlines(config)
+    conf = Dict(l[1] => l[2] for l in split.(conf,"="))
+    instance = conf["instance"]
+    hostname = conf["hostname"]
+    username = conf["username"]
+    pword = conf["password"]
     return dbsetup(instance, hostname, username, pword)
 end
 
