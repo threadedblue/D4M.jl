@@ -84,9 +84,9 @@ end
 # getindex returns a binding to a table. If the table does it exist, it creates the table.
 # A database table struct is returned.
 function getindex(DB::DBserver, tableName::String)
-    
-    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
-    opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
+
+    # ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
+    # opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
     
     # if ~any(ls(DB) .== tableName) # Create new table if it doesn't exist
     #     println("Creating "*tableName*" in "*DB.instanceName);
@@ -103,9 +103,9 @@ end
 # getindex returns a binding to a table. If the table does it exist, it creates the table.
 # When a second table name is provided, a database table pair is returned.
 function getindex(DB::DBserver, tableName1::String, tableName2::String, limit::Int)
-    
-    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
-    opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
+
+    # ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
+    # opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
 
     # Create new tables if they don't exist
     # if ~any(ls(DB) .== tableName1) || ~any(ls(DB) .== tableName2)
