@@ -27,7 +27,7 @@ function dbinit()
 
     libext = joinpath(dirname(pathof(D4M)),"..","libext","*")
     lib = joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.2.0.jar")
-if ~JavaCall.isloaded()
+    if ~JavaCall.isloaded()
         JavaCall.addClassPath(libext)
         JavaCall.addClassPath(lib)
         JavaCall.init()
@@ -43,12 +43,12 @@ if ~JavaCall.isloaded()
         println("Required Graphulo libraries for database operations missing from Java classpath.")
         println("To fix, add the required libraries (see Database Use in the readme).")
         println("Then restart Julia, and intialize jvm using dbinit().")
-   end
+    end
     # Check that graphulo is accessable. 
     if isfile(lib)
-        println("graphulo-3.2.0.jar is accesssable.")
+        println(lib * " is accesssable.")
     else
-        println("graphulo-3.2.0.jar is NOT accesssable.")
+        println(lib * " is NOT accesssable.")
     end
 end
 
