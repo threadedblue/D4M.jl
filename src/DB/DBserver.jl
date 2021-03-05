@@ -48,7 +48,7 @@ if ~JavaCall.isloaded()
     if isfile(lib)
         println("graphulo-3.2.0.jar is accesssable.")
     else
-        println("graphulo-3.2.0.jar is not accesssable.")
+        println("graphulo-3.2.0.jar is NOT accesssable.")
     end
 end
 
@@ -93,8 +93,8 @@ end
 # A database table struct is returned.
 function getindex(DB::DBserver, tableName::String)
 
-    # ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
-    # opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
+    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
+    opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
     
     # if ~any(ls(DB) .== tableName) # Create new table if it doesn't exist
     #     println("Creating "*tableName*" in "*DB.instanceName);
@@ -104,7 +104,7 @@ function getindex(DB::DBserver, tableName::String)
     d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
     queryObj = d4mQuery((JString, JString, JString, JString, JString,), DB.instanceName, DB.host, tableName, DB.user, DB.pass)
     
-    return DBtable(DB, tableName, "", 0, 0, "", 5e5, queryObj,opsObj)
+    return DBtable(DB, tableName, "", 0, 0, "", 5e5, queryObj, opsObj)
     
 end
 
@@ -112,8 +112,8 @@ end
 # When a second table name is provided, a database table pair is returned.
 function getindex(DB::DBserver, tableName1::String, tableName2::String, limit::Int)
 
-    # ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
-    # opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
+    ops = @jimport "edu.mit.ll.d4m.db.cloud.D4mDbTableOperations"
+    opsObj = ops((JString, JString, JString, JString,), DB.instanceName, DB.host, DB.user, DB.pass)
 
     # Create new tables if they don't exist
     # if ~any(ls(DB) .== tableName1) || ~any(ls(DB) .== tableName2)
@@ -130,7 +130,7 @@ function getindex(DB::DBserver, tableName1::String, tableName2::String, limit::I
     d4mQuery = @jimport "edu.mit.ll.d4m.db.cloud.D4mDataSearch"
     queryObj = d4mQuery((JString, JString, JString, JString, JString,), DB.instanceName, DB.host, tableName1, DB.user, DB.pass)
     
-    return DBtablePair(DB, tableName1, tableName2, "", limit, 0, "", 5e5, queryObj,opsObj)
+    return DBtablePair(DB, tableName1, tableName2, "", limit, 0, "", 5e5, queryObj, opsObj)
     
 end
 
