@@ -11,9 +11,9 @@ end
 function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\n')
    #Because of potential memory issues, the Assoc will not be converted to dense matrix.
     # Instead the dense form is directly printed onto the file.
-    iostream::IOStream
+    global iostream::IOStream
     if typeof(output) == String
-       global iostream = open(output,"w")
+       iostream = open(output,"w")
     end
 
     #First write column
