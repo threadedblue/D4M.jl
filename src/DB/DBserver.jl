@@ -25,8 +25,10 @@ using JavaCall
 
 function dbinit()
 
-    libext = joinpath(dirname(pathof(D4M)),"..","libext","*")
-    lib = joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.2.0.jar")
+    libext = joinpath(dirname(pathof(@__MODULE__)), "libext")
+    lib = joinpath(dirname(pathof(@__MODULE__)), "lib", "graphulo-3.2.0.jar")
+    # libext = joinpath(dirname(pathof(D4M)),"..","libext","*")
+    # lib = joinpath(dirname(pathof(D4M)),"..","lib","graphulo-3.0.0.jar")
     if ~JavaCall.isloaded()
         JavaCall.addClassPath(libext)
         JavaCall.addClassPath(lib)

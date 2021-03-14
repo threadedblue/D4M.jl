@@ -47,14 +47,14 @@ end
 
 function ReadCSV(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes = true)
 
-    iostream::IOStream
-    inDim::Array{String}
+    # iostream::IOStream
+    # inDim::Array{String}
     if typeof(input) == String
         global iostream = open(input,"r")
         if filesize(iostream) <= 1
             return Assoc("","","")
         end
-        inDim = readdlm(fname,del,eol, quotes=quotes)
+        inDim = readdlm(iostream, del, eol, quotes=quotes)
     end
 
     rowN,colN = size(inDim)
