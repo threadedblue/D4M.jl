@@ -1,13 +1,13 @@
 
 #Module for D4M
 module D4M
-    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles, Logging
+    using LinearAlgebra, SparseArrays, DelimitedFiles, Logging
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
-    import PyPlot: spy
+
     import JLD: writeas, readas
 
     export  Assoc, DBtable, DBtablePair,
