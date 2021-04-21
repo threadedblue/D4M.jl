@@ -1,5 +1,4 @@
 #import Base.isless
-#import PyPlot
 #using SparseArrays
 #Allow sorting between Numbers and Strings
 isless(A::Number,B::AbstractString) = false
@@ -193,7 +192,6 @@ include("./Assoc/condense.jl")
 include("./Assoc/operations.jl")
 include("./Assoc/print.jl")
 include("./Assoc/accessor.jl")
-include("./Assoc/spy.jl")
 include("./Assoc/put.jl")
 include("./Assoc/convert.jl")
 include("./Assoc/broadcast.jl")
