@@ -1,5 +1,4 @@
 #import Base.isless
-#import PyPlot
 #using SparseArrays
 #Allow sorting between Numbers and Strings
 isless(A::Number,B::AbstractString) = false
