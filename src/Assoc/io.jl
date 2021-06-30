@@ -1,6 +1,10 @@
 using SparseArrays
 
-# Writing and Reading CSV Files
+"""
+WriteCSV(A::Assoc, fname, del=',', eol='\n')
+
+Writes an Assoc to a CSV or other delimited file.
+"""
 function WriteCSV(A::Assoc, fname, del=',', eol='\n')
     #Because of potential memory issues, the Assoc will not be converted to dense matrix.
     # Instead the dense form is directly printed onto the file.
@@ -35,7 +39,11 @@ function WriteCSV(A::Assoc, fname, del=',', eol='\n')
     #Close stream.
     close(iostream)
 end
+"""
+ReadCSV(fname,del=',',eol='\n'; quotes=true)
 
+REads an Assoc from a CSV or other delimited file.
+"""
 function ReadCSV(fname,del=',',eol='\n'; quotes=true)
 
     if filesize(fname) <= 1

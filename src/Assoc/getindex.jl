@@ -4,8 +4,11 @@ using LinearAlgebra
 # This is the getindex function for Assoc, the Associate Array.
 #import Base.getindex
 StringOrNumArray  = Union{AbstractString,Array,Number}
+"""
+getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
 
-#The Base getindex function which most higher level function would call upon.
+The Base getindex function which most higher level function would call upon.
+"""
 function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     #Check if A is empty
     if isempty(A.A)
@@ -128,9 +131,9 @@ getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(get
 
 PreviousTypes = Union{PreviousTypes,StartsWith}
 
-#=
+"""
 > : get a new Assoc where all of the elements of input Assoc matches the given Element.
-=#
+"""
 function >(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )
         tarIndex = E
@@ -157,9 +160,9 @@ end
 
 >(E::Union{AbstractString,Number},A::Assoc) = (A < E)
 
-#=
+"""
 < : get a new Assoc where all of the elements of input Assoc matches the given Element.
-=#
+"""
 function <(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )
         tarIndex = E
@@ -186,9 +189,9 @@ end
 
 <(E::Union{AbstractString,Number},A::Assoc) = (A > E)
 
-#=
+"""
 == : get a new Assoc where all of the elements of input Assoc matches the given Element.
-=#
+"""
 (==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
 function equal(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) && (A.val == [1.0])  ) 
@@ -218,6 +221,9 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
     return Aout
 end
 
+"""
+==(E::Union{AbstractString,Number},A::Assoc)
+"""
 ==(E::Union{AbstractString,Number},A::Assoc) = (A == E)
 
 function bounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{AbstractString,Number})
@@ -280,11 +286,10 @@ function strictbounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{Abs
     return outA
 end
 
-
-#=
-diag : Output the diagonal of input Assoc A.
+"""
+diag(A::Assoc) : Output the diagonal of input Assoc A.
 Outputs the Assoc with only the diagonal elements of A.
-=#
+"""
 function diag(A::Assoc)
     # Check if numeric values first
     if A.val == [1.0]
