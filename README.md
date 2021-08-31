@@ -1,5 +1,14 @@
-### This is a fork of the accla/D4M.jl project.  It is intended for use in a parallel/distributed manner where no graphical output is required.  Hence any code that supports plotting is either removed or soon will be.
+# D4M (Dynamic Distributed Dimensional Data Model)  
 
+### This is a fork of the accla/D4M.jl project.  I have fixed some bugs and made other modiofications so it cam be used in a parallel/distributed manner where no graphical output is required.  Hence any code that supports plotting is either removed or soon will be.  
+&nbsp;    
+
+## D4M Literature  
+### 1. [D4M splash page](https://d4m.mit.edu/)  
+### 2. [D4M Paper](https://arxiv.org/pdf/1407.3859.pdf)  This paper explains D4M.
+### 3. [Mathematics of Big Data](https://mitpress.mit.edu/books/mathematics-big-data)  Link to a book that deals withthe subject comprhensivly subject comprhisively.  
+### 4. [26,000,00,000 Eigen Vector](https://www.rose-hulman.edu/~bryan/googleFinalVersionFixed.pdf) A paper that does not address D4M directly but describes how Google uses the same basic techniques to index the internet. 
+&nbsp;    
 
 # Julia-D4M
 
