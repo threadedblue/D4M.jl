@@ -40,6 +40,12 @@ getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::Array{Union{Abstract
 
 PreviousTypes = Union{PreviousTypes,Array{Union{AbstractString,Number}}}
 
+getindex(A::Assoc,i::Vector{Union{AbstractString,Number}},j::PreviousTypes)                          = getindex(A,findall(x-> x in i,A.row),j)
+getindex(A::Assoc,i::PreviousTypes,j::Vector{Union{AbstractString,Number}})                          = getindex(A,i,findall(x-> x in j,A.col))
+getindex(A::Assoc,i::Vector{Union{AbstractString,Number}},j::Vector{Union{AbstractString,Number}})   = getindex(A,findall(x-> x in i,A.row),findall(x-> x in j,A.col))
+
+PreviousTypes = Union{PreviousTypes,Vector{Union{AbstractString,Number}}}
+
 getindex(A::Assoc,i::Int64,j::PreviousTypes)         = getindex(A,[i],j)
 getindex(A::Assoc,i::PreviousTypes,j::Int64)         = getindex(A,i,[j])
 getindex(A::Assoc,i::Int64,j::Int64)                 = getindex(A,[i],[j])
