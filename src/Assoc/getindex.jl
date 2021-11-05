@@ -60,7 +60,7 @@ PreviousTypes = Union{PreviousTypes,Colon}
 
 getindex(A::Assoc,i::AbstractRange,j::PreviousTypes)         = getindex(A,collect(i),j)
 getindex(A::Assoc,i::PreviousTypes,j::AbstractRange)         = getindex(A,i,collect(j))
-getindex(A::Assoc,i::AbstractRange,j::AbstractRange)                 = getindex(A,collect(i),collect(j))
+getindex(A::Assoc,i::AbstractRange,j::AbstractRange)         = getindex(A,collect(i),collect(j))
 
 PreviousTypes = Union{PreviousTypes,AbstractRange}
 
