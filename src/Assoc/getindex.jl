@@ -4,8 +4,11 @@ using LinearAlgebra
 # This is the getindex function for Assoc, the Associate Array.
 #import Base.getindex
 StringOrNumArray  = Union{AbstractString,Array,Number}
+"""
+getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
 
-#The Base getindex function which most higher level function would call upon.
+The Base getindex function which most higher level function would call upon.
+"""
 function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     #Check if A is empty
     if isempty(A.A)
@@ -37,6 +40,12 @@ getindex(A::Assoc,i::Array{Union{AbstractString,Number}},j::Array{Union{Abstract
 
 PreviousTypes = Union{PreviousTypes,Array{Union{AbstractString,Number}}}
 
+getindex(A::Assoc,i::Vector{String},j::PreviousTypes)  = getindex(A,findall(x-> x in i,A.row),j)
+getindex(A::Assoc,i::PreviousTypes,j::Vector{String})  = getindex(A,i,findall(x-> x in j,A.col))
+getindex(A::Assoc,i::Vector{String},j::Vector{String}) = getindex(A,findall(x-> x in i,A.row),findall(x-> x in j,A.col))
+
+PreviousTypes = Union{PreviousTypes,Vector{String}}
+
 getindex(A::Assoc,i::Int64,j::PreviousTypes)         = getindex(A,[i],j)
 getindex(A::Assoc,i::PreviousTypes,j::Int64)         = getindex(A,i,[j])
 getindex(A::Assoc,i::Int64,j::Int64)                 = getindex(A,[i],[j])
@@ -51,7 +60,7 @@ PreviousTypes = Union{PreviousTypes,Colon}
 
 getindex(A::Assoc,i::AbstractRange,j::PreviousTypes)         = getindex(A,collect(i),j)
 getindex(A::Assoc,i::PreviousTypes,j::AbstractRange)         = getindex(A,i,collect(j))
-getindex(A::Assoc,i::AbstractRange,j::AbstractRange)                 = getindex(A,collect(i),collect(j))
+getindex(A::Assoc,i::AbstractRange,j::AbstractRange)         = getindex(A,collect(i),collect(j))
 
 PreviousTypes = Union{PreviousTypes,AbstractRange}
 
@@ -128,9 +137,9 @@ getindex(A::Assoc,i::StartsWith,j::StartsWith) = getindex(A,StartsWithHelper(get
 
 PreviousTypes = Union{PreviousTypes,StartsWith}
 
-#=
+"""
 > : get a new Assoc where all of the elements of input Assoc matches the given Element.
-=#
+"""
 function >(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )
         tarIndex = E
@@ -157,9 +166,9 @@ end
 
 >(E::Union{AbstractString,Number},A::Assoc) = (A < E)
 
-#=
+"""
 < : get a new Assoc where all of the elements of input Assoc matches the given Element.
-=#
+"""
 function <(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) & (A.val ==[1.0])  )
         tarIndex = E
@@ -186,9 +195,9 @@ end
 
 <(E::Union{AbstractString,Number},A::Assoc) = (A > E)
 
-#=
+"""
 == : get a new Assoc where all of the elements of input Assoc matches the given Element.
-=#
+"""
 (==)(A::Assoc,E::Union{AbstractString,Number}) = equal(A::Assoc,E::Union{AbstractString,Number})
 function equal(A::Assoc, E::Union{AbstractString,Number})
     if (isa(E,Number) && (A.val == [1.0])  ) 
@@ -218,6 +227,9 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
     return Aout
 end
 
+"""
+==(E::Union{AbstractString,Number},A::Assoc)
+"""
 ==(E::Union{AbstractString,Number},A::Assoc) = (A == E)
 
 function bounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{AbstractString,Number})
@@ -280,11 +292,10 @@ function strictbounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{Abs
     return outA
 end
 
-
-#=
-diag : Output the diagonal of input Assoc A.
+"""
+diag(A::Assoc) : Output the diagonal of input Assoc A.
 Outputs the Assoc with only the diagonal elements of A.
-=#
+"""
 function diag(A::Assoc)
     # Check if numeric values first
     if A.val == [1.0]

@@ -1,21 +1,16 @@
 using SparseArrays
 
-function WriteCSV(A::Assoc, del = ',', eol = '\n')
-end
+"""
+WriteCSV(A::Assoc, fname, del=',', eol='\n')
 
-function ReadCSV(iostream::IOBuffer, del = ',', eol = '\n'; quotes = true)
-end
-
-
-# Writing and Reading CSV Files
-function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\n')
-   #Because of potential memory issues, the Assoc will not be converted to dense matrix.
+Writes an Assoc to a CSV or other delimited file.
+"""
+function WriteCSV(A::Assoc, fname, del=',', eol='\n')
+    #Because of potential memory issues, the Assoc will not be converted to dense matrix.
     # Instead the dense form is directly printed onto the file.
-    global iostream
-    if typeof(output) == String
-       iostream = open(output,"w")
-    end
-
+    
+    iostream = open(fname,"w")
+    
     #First write column
     for c = 1:size(A.col,1)
         write(iostream,del) #Separator
@@ -44,19 +39,17 @@ function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\
     #Close stream.
     close(iostream)
 end
+"""
+ReadCSV(fname,del=',',eol='\n'; quotes=true)
 
-function ReadCSV(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes = true)
+REads an Assoc from a CSV or other delimited file.
+"""
+function ReadCSV(fname,del=',',eol='\n'; quotes=true)
 
-    # iostream::IOStream
-    # inDim::Array{String}
-    if typeof(input) == String
-        global iostream = open(input,"r")
-        if filesize(iostream) <= 1
-            return Assoc("","","")
-        end
-        inDim = readdlm(iostream, del, eol, quotes=quotes)
+    if filesize(fname) <= 1
+        return Assoc("","","")
     end
-
+    inDim = readdlm(fname,del,eol, quotes=quotes)
     rowN,colN = size(inDim)
     row = [];
     col = [];

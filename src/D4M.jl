@@ -7,6 +7,7 @@ module D4M
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
+
     import JLD: writeas, readas
 
     export  Assoc, DBtable, DBtablePair,
@@ -18,7 +19,7 @@ module D4M
             # writeas, readas, 
             print, printFull, printTriple,
             norow, nocol,
-            logical, str2num, num2str, convertvals,
+            logical, str2num, convertvals,
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,

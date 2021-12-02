@@ -1,3 +1,5 @@
+*.DS_Store
+.Rhistory
 #Compiled Data from Examples#
 .DS_Store
 EntityCopy.csv
