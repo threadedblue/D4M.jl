@@ -1,7 +1,7 @@
 
 #Module for D4M
 module D4M
-    using LinearAlgebra, SparseArrays, DelimitedFiles, Logging
+    using HTTP, JSON, LinearAlgebra, SparseArrays, DelimitedFiles, Logging
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
@@ -10,7 +10,7 @@ module D4M
 
     import JLD: writeas, readas
 
-    export  Assoc, DBtable, DBtablePair,
+    export  Assoc, DBtable, DBtablePair, JIRA,
             StartsWith,
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
@@ -25,7 +25,8 @@ module D4M
             getadj, getrow, getcol, getval, find,
             #saveassoc, loadassoc,
             OutDegree, InDegree, diag,
-            bounded, strictbounded, adjbfs
+            bounded, strictbounded, adjbfs,
+            getIssues
 
     include("Assoc.jl") # Associative Array
 
