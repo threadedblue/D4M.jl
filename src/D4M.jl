@@ -2,14 +2,13 @@
 #Module for D4M
 module D4M
 
-    using LinearAlgebra, SparseArrays, PyPlot, DelimitedFiles
+    using LinearAlgebra, SparseArrays, DelimitedFiles
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
-    import PyPlot: spy
-    import JLD: writeas, readas
+     import JLD: writeas, readas
 
     export  Assoc,
             StartsWith,
@@ -34,32 +33,6 @@ module D4M
     include("parsinghelpers.jl")
     #Helper functions for working with strings and string arrays
     include("stringarrayhelpers.jl")
-
-    if haskey(ENV,"JAVA_HOME")
-        # Database functionality
-        include("DB/DBserver.jl")
-        include("DB/DBtable.jl")
-        # Grapulo Calls
-        include("DB/bfs.jl")
-        include("DB/tablemult.jl")
-        include("DB/jaccard.jl")
-        include("DB/nmf.jl")    
-        include("DB/ktruss.jl")
-        
-        using JavaCall
-        # be sure to keep adding stuff here, so we don't have to prepend calls w "D4M."
-        export dbsetup, ls # DBserver
-        export delete, addColCombiner, put, putTriple, getiterator, getsplits, addsplits, nnz # DBtable
-        export makedegreetable, adjbfs, edgebfs, singlebfs # BFS
-        export tablemult # tablemult
-        export jaccard # jaccard
-        export nmf # NMF
-        export ktrussadj, ktrussedge # ktruss
-    else
-        println("Not loading database capabilities. If you would like to connect to a database, please set JAVA_HOME.")
-        println("After setting JAVA_HOME, run:")
-        println("D4Mpkg = Base.PkgId(\"D4M\"); Base.compilecache(D4Mpkg)")
-    end
 end
 
 

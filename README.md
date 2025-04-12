@@ -19,10 +19,6 @@ Current Status: Many of the functionalities of core D4M have been implemented. D
 - When citing D4M in publications, please use:
   - [Kepner et al, ICASSP 2012] Dynamic Distributed Dimensional Data Model (D4M) Database and Computation System, J. Kepner, W. Arcand, W. Bergeron, N. Bliss, R. Bond, C. Byun, G. Condon, K. Gregson, M. Hubbell, J. Kurz, A. McCabe, P. Michaleas, A. Prout, A. Reuther, A. Rosa & C. Yee, ICASSP (International Conference on Acoustics, Speech, and Signal Processing), Special session on Signal and Information Processing for "Big Data" (organizers: Bliss & Wolfe), March 25-30, 2012, Kyoto, Japan
 
-## Requirements
-
-D4M.jl is written and tested to work with Julia v1.0. The final Julia 0.6 compatible version of D4M is available in "Releases" or on the julia-0.6 branch. It requires the `JLD` package for saving and loading associative arrays and the `PyPlot` package for plotting spy plots. For database connectivity, it relies on `JavaCall`. See the Database Use section of this document for more information.
-
 ## Installation
 
 You can use the `Pkg.add()` command to install D4M.jl in your package directory:

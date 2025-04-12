@@ -46,6 +46,33 @@ function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\
 end
 
 function ReadCSV(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes = true)
+    # If input is a String, check if it points to a real file
+    if isa(input, String) && isfile(input)
+        # It's a filename! Open the file and read
+        open(input, "r") do io
+            return _readcsv(io, del, eol; quotes=quotes)
+        end
+    elseif isa(input, IOStream)
+        # It's already an open file
+        return _readcsv(input, del, eol; quotes=quotes)
+    elseif isa(input, String)
+        # It's a raw CSV string, parse it directly
+        io = IOBuffer(input)
+        return _readcsv(io, del, eol; quotes=quotes)
+    else
+        error("Unsupported input type for ReadCSV: $(typeof(input))")
+    end
+end
+
+# Internal helper function
+function _readcsv(io::IO, del::Char, eol::Char; quotes=true)
+    # Example logic to parse lines; replace with your real parser
+    lines = readlines(io)
+    parsed = [split(line, del) for line in lines]
+    return parsed
+end
+
+function ReadCSV1(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes = true)
 
     iostream::IOStream
     inDim::Array{String}

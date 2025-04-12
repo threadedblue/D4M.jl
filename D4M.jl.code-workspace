@@ -4,7 +4,10 @@
 			"path": "."
 		},
 		{
-			"path": "../firstWk"
+			"path": "../D4M-db.jl"
+		},
+		{
+			"path": "../D4M-http.jl"
 		}
 	]
 }
