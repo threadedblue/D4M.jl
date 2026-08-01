@@ -1,7 +1,8 @@
-# When run directly from the IDE, activate the package project so `using D4M` resolves.
-# When run via `Pkg.test()`, the environment is already active and this is a no-op.
-if isfile(joinpath(@__DIR__, "..", "Project.toml"))
-    import Pkg; Pkg.activate(joinpath(@__DIR__, ".."); io=devnull)
+# When run directly from the IDE (not via Pkg.test()), D4M won't be on the load path.
+# Detect this by checking whether D4M is findable; if not, add the parent to LOAD_PATH.
+# Pkg.test() already puts D4M in the temp project, so identify_package returns non-nothing.
+if isnothing(Base.identify_package("D4M"))
+    pushfirst!(LOAD_PATH, joinpath(@__DIR__, ".."))
 end
 
 using Test

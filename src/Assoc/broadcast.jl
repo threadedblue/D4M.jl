@@ -86,8 +86,8 @@ function combinedims(bc::Broadcast.Broadcasted{AssocStyle},ABrow,ABcol)
         Arow = searchsortedmapping(bc.args[1].row,ABrow)
         Acol = searchsortedmapping(bc.args[1].col,ABcol)
         newAA[Arow,Acol] = bc.args[1].A
-        A = Assoc(ABrow,ABcol, Array{Union{AbstractString,Number}}([1.0]), newAA) 
-        
+        A = Assoc(ABrow, ABcol, [1.0], newAA)
+
     end
 
     if isa(bc.args[2],Broadcast.Broadcasted{AssocStyle})
@@ -98,7 +98,7 @@ function combinedims(bc::Broadcast.Broadcasted{AssocStyle},ABrow,ABcol)
         Brow = searchsortedmapping(bc.args[2].row,ABrow)
         Bcol = searchsortedmapping(bc.args[2].col,ABcol)
         newBA[Brow,Bcol] = bc.args[2].A
-        B = Assoc(ABrow,ABcol, Array{Union{AbstractString,Number}}([1.0]), newBA)
+        B = Assoc(ABrow, ABcol, [1.0], newBA)
     end
 
     return Broadcast.broadcasted(bc.f,A,B)

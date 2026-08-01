@@ -1,8 +1,6 @@
 # Various ways to get part of an Associative Array (indexing, diag, or >,<,==)
 using LinearAlgebra, SparseArrays
 
-StringOrNumArray = Union{AbstractString,Array,Number}
-
 #=
 _keymask : find indices in sorted key array Akeys that are present in selection set.
 
@@ -135,7 +133,7 @@ struct StartsWith
     inputString::AbstractString
 end
 
-function StartsWithHelper(Ar::Array{Union{AbstractString,Number}}, S::StartsWith)
+function StartsWithHelper(Ar::AbstractVector, S::StartsWith)
     str_list = if S.inputString[end] == ','
         StrUnique(S.inputString)[1]
     else

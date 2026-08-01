@@ -8,7 +8,7 @@ module D4M
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
-     import JLD2: writeas, readas
+     import JLD: writeas, readas
 
     export  Assoc,
             StartsWith,

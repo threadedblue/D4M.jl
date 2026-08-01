@@ -11,7 +11,7 @@ end
 # if not, they return copies of the col, rw, val parts of Assoc's struct
 function getcol(A::Assoc)
     if isempty(A)
-        return Union{AbstractString, Number}[]
+        return eltype(A.col)[]
     else
         if isa(A.col[1], AbstractString) || ~(size(A.A,2) == A.col[end])
             return copy(A.col)
@@ -22,7 +22,7 @@ end
 
 function getrow(A::Assoc)
     if isempty(A)
-        return Union{AbstractString, Number}[]
+        return eltype(A.row)[]
     else
         if isa(A.row[1], AbstractString) || ~(size(A.A,1) == A.row[end])
             return copy(A.row)
@@ -33,7 +33,7 @@ end
 
 function getval(A::Assoc)
     if isempty(A)
-        return Union{AbstractString, Number}[]
+        return eltype(A.val)[]
     else
         if isa(A.val[1], AbstractString)
             return copy(A.val)

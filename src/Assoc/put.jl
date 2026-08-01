@@ -1,42 +1,39 @@
-putAdj(A::Assoc,AA::AbstractSparseMatrix) =  Assoc(copy(A.row),copy(A.col),copy(A.val),AA)
-putAdj(A::Assoc,AA::Array{Int,2}) =  putAdj(A::Assoc,sparse(AA))
+# putAdj: replace the sparse matrix in an Assoc, materializing non-CSC formats.
+putAdj(A::Assoc, AA::SparseMatrixCSC)    = Assoc(copy(A.row), copy(A.col), copy(A.val), AA)
+putAdj(A::Assoc, AA::AbstractSparseMatrix) = putAdj(A, SparseMatrixCSC(AA))
+putAdj(A::Assoc, AA::AbstractMatrix)      = putAdj(A, sparse(AA))
 
-StringOrNum = Union{AbstractString,Number}
-UnionArray = Array{Union{AbstractString,Number}}
+# put for new key/value arrays — accept any AbstractVector so Vector{String} etc. dispatch correctly
+putRow(A::Assoc, ARow::AbstractVector) = Assoc(ARow,        copy(A.col), copy(A.val), copy(A.A))
+putCol(A::Assoc, ACol::AbstractVector) = Assoc(copy(A.row), ACol,        copy(A.val), copy(A.A))
+putVal(A::Assoc, AVal::AbstractVector) = Assoc(copy(A.row), copy(A.col), AVal,        copy(A.A))
 
-# put for new array
-putRow(A::Assoc,ARow::UnionArray) =  Assoc(ARow,copy(A.col),copy(A.val),copy(A.A))
-putCol(A::Assoc,ACol::UnionArray) =  Assoc(copy(A.row),ACol,copy(A.val),copy(A.A))
-putVal(A::Assoc,AVal::UnionArray) =  Assoc(copy(A.row),copy(A.col),AVal,copy(A.A))
-
-# put for new scalar 
-function putRow(A::Assoc,ARow::StringOrNum)
-    r,c,v = find(A)
-    Assoc(ARow,c,v)
+# put for scalar key/value: rebuilds triplets with the new scalar broadcast across all entries
+function putRow(A::Assoc, ARow::Union{AbstractString,Number})
+    r, c, v = find(A)
+    Assoc(ARow, c, v)
 end
 
-function putCol(A::Assoc,ACol::StringOrNum)
-    r,c,v = find(A)
-    Assoc(r,ACol,v)
+function putCol(A::Assoc, ACol::Union{AbstractString,Number})
+    r, _, v = find(A)
+    Assoc(r, ACol, v)
 end
 
-function putVal(A::Assoc,AVal::StringOrNum)
-    r,c,v = find(A)
-    Assoc(r,c,AVal)
+function putVal(A::Assoc, AVal::Union{AbstractString,Number})
+    r, c, _ = find(A)
+    Assoc(r, c, AVal)
 end
 
 #=
-nocol : remove columns mapping
+nocol : replace column keys with sequential integers (removes string mapping)
 =#
-
 function nocol(A::Assoc)
-    return condense(Assoc(A.row,promote(ones(size(A.col)),A.col)[1],A.val,A.A))
+    return condense(Assoc(A.row, Float64.(1:length(A.col)), A.val, A.A))
 end
 
 #=
-norow : remove rows mapping
+norow : replace row keys with sequential integers (removes string mapping)
 =#
-
 function norow(A::Assoc)
-    return condense(Assoc(promote(ones(size(A.row)),A.row)[1],A.col,A.val,A.A))
+    return condense(Assoc(Float64.(1:length(A.row)), A.col, A.val, A.A))
 end

@@ -63,7 +63,7 @@ function plus(A::Assoc, B::Assoc)
     V = vcat(Float64.(av), Float64.(bv))
 
     ABA = sparse(I, J, V, length(ABrow), length(ABcol), +)
-    AB = Assoc(ABrow, ABcol, Array{Union{AbstractString,Number}}([1.0]), ABA)
+    AB = Assoc(ABrow, ABcol, [1.0], ABA)
     return condense(AB)
 end
 
@@ -97,7 +97,7 @@ function minus(A::Assoc, B::Assoc)
     V = vcat(Float64.(av), -Float64.(bv))
 
     ABA = sparse(I, J, V, length(ABrow), length(ABcol), +)
-    AB = Assoc(ABrow, ABcol, Array{Union{AbstractString,Number}}([1.0]), ABA)
+    AB = Assoc(ABrow, ABcol, [1.0], ABA)
     return condense(AB)
 end
 
@@ -123,7 +123,7 @@ function *(A::Assoc, B::Assoc)
     BB = Bt.A[BintMap, :]
 
     ABA = AA * BB
-    AB = Assoc(At.row, Bt.col, Array{Union{AbstractString,Number}}([1.0]), ABA)
+    AB = Assoc(At.row, Bt.col, [1.0], ABA)
     return condense(AB)
 end
 
