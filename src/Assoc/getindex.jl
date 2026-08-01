@@ -57,15 +57,24 @@ getindex(A::Assoc, i::Array{Union{AbstractString,Number}}, j::Array{Union{Abstra
 
 PreviousTypes = Union{PreviousTypes,Array{Union{AbstractString,Number}}}
 
+# Vector{String} is not a subtype of Array{Union{AbstractString,Number}} (Julia arrays are
+# invariant), so these overloads are required as distinct dispatch cases.
+getindex(A::Assoc, i::Vector{String}, j::PreviousTypes)  = getindex(A, _keymask_set(A.row, i), j)
+getindex(A::Assoc, i::PreviousTypes,  j::Vector{String}) = getindex(A, i, _keymask_set(A.col, j))
+getindex(A::Assoc, i::Vector{String}, j::Vector{String}) = getindex(A, _keymask_set(A.row, i),
+                                                                         _keymask_set(A.col, j))
+
+PreviousTypes = Union{PreviousTypes,Vector{String}}
+
 getindex(A::Assoc, i::Int64, j::PreviousTypes) = getindex(A, [i], j)
 getindex(A::Assoc, i::PreviousTypes, j::Int64) = getindex(A, i, [j])
 getindex(A::Assoc, i::Int64, j::Int64)         = getindex(A, [i], [j])
 
 PreviousTypes = Union{PreviousTypes,Int64}
 
-getindex(A::Assoc, i::Colon, j::PreviousTypes) = getindex(A, 1:size(A.row,1), j)
-getindex(A::Assoc, i::PreviousTypes, j::Colon) = getindex(A, i, 1:size(A.col,1))
-getindex(A::Assoc, i::Colon, j::Colon)         = getindex(A, 1:size(A.row,1), 1:size(A.col,1))
+getindex(A::Assoc, ::Colon, j::PreviousTypes) = getindex(A, 1:size(A.row,1), j)
+getindex(A::Assoc, i::PreviousTypes, ::Colon) = getindex(A, i, 1:size(A.col,1))
+getindex(A::Assoc, ::Colon, ::Colon)          = getindex(A, 1:size(A.row,1), 1:size(A.col,1))
 
 PreviousTypes = Union{PreviousTypes,Colon}
 
@@ -155,7 +164,7 @@ function >(A::Assoc, E::Union{AbstractString,Number})
     tarIndex = (isa(E, Number) && A.val == [1.0]) ? E : searchsortedlast(getval(A), E)
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
-    rowkey, colkey, valkey = findnz(M)
+    _, _, valkey = findnz(M)
     mapping = findall(x -> x > tarIndex, valkey)
     rows, cols, vals = find(A)
     outA = Assoc(rows[mapping], cols[mapping], vals[mapping])
@@ -171,7 +180,7 @@ function <(A::Assoc, E::Union{AbstractString,Number})
     tarIndex = (isa(E, Number) && A.val == [1.0]) ? E : searchsortedfirst(A.val, E)
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
-    rowkey, colkey, valkey = findnz(M)
+    _, _, valkey = findnz(M)
     mapping = findall(x -> x < tarIndex, valkey)
     rows, cols, vals = find(A)
     outA = Assoc(rows[mapping], cols[mapping], vals[mapping])
@@ -195,7 +204,7 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
     end
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
-    rowkey, colkey, valkey = findnz(M)
+    _, _, valkey = findnz(M)
     mapping = findall(x -> x == tarIndex, valkey)
     rows, cols, vals = find(A)
     Aout = Assoc(rows[mapping], cols[mapping], vals[mapping])
@@ -212,7 +221,7 @@ function bounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{AbstractS
     tarIndex2 = (isa(E2, Number) && A.val == [1.0]) ? E2 : searchsortedfirst(A.val, E2)
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
-    rowkey, colkey, valkey = findnz(M)
+    _, _, valkey = findnz(M)
     mapping = findall(x -> tarIndex1 <= x <= tarIndex2, valkey)
     rows, cols, vals = find(A)
     outA = Assoc(rows[mapping], cols[mapping], vals[mapping])
@@ -227,7 +236,7 @@ function strictbounded(A::Assoc, E1::Union{AbstractString,Number}, E2::Union{Abs
     tarIndex2 = (isa(E2, Number) && A.val == [1.0]) ? E2 : searchsortedfirst(A.val, E2)
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
-    rowkey, colkey, valkey = findnz(M)
+    _, _, valkey = findnz(M)
     mapping = findall(x -> tarIndex1 < x < tarIndex2, valkey)
     rows, cols, vals = find(A)
     outA = Assoc(rows[mapping], cols[mapping], vals[mapping])

@@ -154,7 +154,7 @@ function abs(A::Assoc)
     if isa(A.val[1], AbstractString)
         error("abs requires a numeric Assoc; got string-valued Assoc")
     end
-    return Assoc(copy(A.row), copy(A.col), copy(A.val), abs.(A.A))
+    return Assoc(copy(A.row), copy(A.col), copy(A.val), Base.abs.(A.A))
 end
 
 
