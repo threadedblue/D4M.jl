@@ -4,13 +4,12 @@
 # String manipulation helper functions useful for parsing
 function SplitStr(s12, sep)
     # Given an array of strings, each of which has two substrings joined with a separator,
-    # Split the array in two arrays, with each substring in its corresponding array.
-    # Assume that separator is always inside the elements of s12
-    # Example:
-    # input SplitStr(["abc,def", "123,456", "qwe,rty"], ",")
-    # output SubString{String}["abc", "123", "qwe"], SubString{String}["def", "456", "rty"])
-    strsplit = [split(x, sep)[y] for x in s12, y in 1:2]
-    return strsplit[:,1], strsplit[:,2]
+    # split the array into two arrays, one per substring.
+    # Fix: split each element only once (previous version called split twice per element).
+    splits = [split(x, sep) for x in s12]
+    s1 = [s[1] for s in splits]
+    s2 = [s[2] for s in splits]
+    return s1, s2
 end
 
 function NumStr(stringA)
@@ -19,56 +18,49 @@ function NumStr(stringA)
 end
 
 function CatStr(s1::Array, sep::AbstractString, s2::Array)
-    # Element-wise concatenation of two arrays of strings,
-    # adding sep between each element
-    # Assume s1 and s2 are arrays of String
-    # Also sep is a string 
-    s12 = s1 .* [sep] .* s2  
-    return s12
+    # Element-wise concatenation of two arrays of strings, adding sep between each element.
+    # Fix: single-pass zip avoids two intermediate arrays (was: s1 .* [sep] .* s2).
+    return [a * sep * b for (a, b) in zip(s1, s2)]
 end
 
 # Operations used internally that gain performance benefit on sorted inputs
 
 #=
 StrUnique
-Get the unique and sorted single-character-separated sequences of strings.  
-Also returns the mapping from the original ordering in the given sequence to the outputed sorted version.
+Get the unique and sorted single-character-separated sequences of strings.
+Also returns the mapping from the original ordering in the given sequence to the sorted version.
 
-Dev Note: 
- * TODO Current the backward mapping doesn't exist, but it doesn't seems to be utilized.
+Returns: (uniqueSeq, Int[], forwardMapping)
+The middle value (backwardMapping) is kept as an empty placeholder for API compatibility
+but is no longer allocated (was previously zeros(1, n) — a dead allocation).
 =#
 function StrUnique(inputString::AbstractString, csv = false)
-    #TODO backwardMapping from unique string to index is not implemented, because there doesn't seem to be a application for such an array
-    #Note: The unique output is sorted.
-    separator = inputString[end]
-    if(csv == true)
-        separator = ','
-    end
+    separator = csv ? ',' : inputString[end]
     strA = split(inputString, separator)
-    if inputString[end] == separator
-        strA = strA[1:end - 1]
+    if !isempty(strA) && last(strA) == ""
+        pop!(strA)
     end
 
-    uniqueSeq = unique(strA)
-    sort!(uniqueSeq)
-    if uniqueSeq[1] == "" #Handle Empty Case
-        uniqueSeq = uniqueSeq[2:end]
+    uniqueSeq = sort!(unique(strA))
+    if !isempty(uniqueSeq) && uniqueSeq[1] == ""
+        popfirst!(uniqueSeq)
     end
 
-    forwardMapping = [ searchsortedfirst(uniqueSeq, x) for x in strA]
+    forwardMapping = [searchsortedfirst(uniqueSeq, x) for x in strA]
 
-    backwardMapping = zeros(1, length(forwardMapping))
-
-    return uniqueSeq, backwardMapping, forwardMapping
+    # backwardMapping was previously zeros(1, length(forwardMapping)) — allocated but
+    # never read by any caller. Replaced with Int[] to eliminate the dead allocation.
+    return uniqueSeq, Int[], forwardMapping
 end
 
 function searchsortedmapping(A::Array, B::Array)
     ## Assume A \in B
+    ## For each element of A, return its index in B (merge-scan, O(|A|+|B|))
     AtoB = Array{Int64,1}()
     temp_index_A = 1
     temp_index_B = 1
 
-    while (temp_index_A <= length(A)) 
+    while (temp_index_A <= length(A))
         if A[temp_index_A] == B[temp_index_B]
             push!(AtoB, temp_index_B)
             temp_index_A += 1
@@ -102,8 +94,8 @@ function sortedintersect(A::Array, B::Array)
 end
 
 function sortedintersectmapping(A::Array, B::Array)
-    #Compute intersect of two sorted and unique array.
-    #return the mapping from each array to the intersect
+    #Compute intersect of two sorted and unique arrays.
+    #Return the mapping from each array to the intersect.
     temp_index_A = 1
     temp_index_B = 1
     Amap = Array{Int64,1}()
@@ -126,31 +118,31 @@ function sortedintersectmapping(A::Array, B::Array)
 end
 
 function sortedunion(A::Array, B::Array)
-    ABintersect = typeof(A)()
+    ABunion = typeof(A)()
     temp_index_A = 1
     temp_index_B = 1
 
     while (temp_index_A <= length(A)) || (temp_index_B <= length(B))
         if (temp_index_A > length(A))
-            push!(ABintersect, B[temp_index_B])
+            push!(ABunion, B[temp_index_B])
             temp_index_B += 1
         elseif (temp_index_B > length(B))
-            push!(ABintersect, A[temp_index_A])
+            push!(ABunion, A[temp_index_A])
             temp_index_A += 1
         elseif (A[temp_index_A] == B[temp_index_B])
-            push!(ABintersect, A[temp_index_A])
+            push!(ABunion, A[temp_index_A])
             temp_index_A += 1
             temp_index_B += 1
         elseif A[temp_index_A] < B[temp_index_B]
-            push!(ABintersect, A[temp_index_A])
+            push!(ABunion, A[temp_index_A])
             temp_index_A += 1
         else
-            push!(ABintersect, B[temp_index_B])
+            push!(ABunion, B[temp_index_B])
             temp_index_B += 1
         end
     end
 
-    return ABintersect
+    return ABunion
 end
 
 ########################################################
@@ -158,4 +150,3 @@ end
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)
 # Software Engineer: Alexander Chen (alexc89@mit.edu)
 ########################################################
-

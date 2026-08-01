@@ -1,42 +1,46 @@
 using SparseArrays
+
 #=
-Condense : remove empty row and column within the input Assoc A and return the new condensed Assoc
+condense : remove empty rows and columns from Assoc A.
+
+Optimization: uses SparseMatrixCSC's colptr and rowval fields directly instead
+of computing full row/column sums (which allocate dense vectors).
+- Non-empty columns: colptr[j+1] > colptr[j]  → O(ncols)
+- Non-empty rows:    unique(rowval)             → O(nnz)
 =#
-function condense(A::Assoc)#performance improvement needed
-    nonZeroCol = getindex.(findall(!iszero,sum(A.A, dims = 1)),2)
-    nonZeroRow = getindex.(findall(!iszero,sum(A.A, dims = 2)),1)
+function condense(A::Assoc)
+    M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
+            SparseMatrixCSC(A.A) : A.A
+
+    nonZeroCol = findall(j -> M.colptr[j+1] > M.colptr[j], 1:M.n)
+    nonZeroRow = isempty(M.rowval) ? Int[] : sort!(unique(M.rowval))
+
     Newrow = A.row[nonZeroRow]
     Newcol = A.col[nonZeroCol]
-    NewA = A.A[nonZeroRow,nonZeroCol]
+    NewA   = M[nonZeroRow, nonZeroCol]
 
-
-    return Assoc(Newrow,Newcol,A.val,NewA)
+    return Assoc(Newrow, Newcol, A.val, NewA)
 end
 
 #=
-deepCondense : remove empty mapping of row, column, and value, and return the condensed of the input Assoc.
+deepCondense : remove empty row, column, and value mappings, return condensed Assoc.
+
+Optimization: replaced pmap (distributed parallel map — extreme overhead for a simple
+binary-search lookup) with a plain comprehension.
 =#
 function deepCondense(A::Assoc)
     Anew = condense(A)
 
-    row,col,val = findnz(dropzeros!(Anew.A))
+    M = Anew.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
+            SparseMatrixCSC(Anew.A) : Anew.A
+    row, col, val = findnz(dropzeros!(M))
+
     uniVal = sort!(unique(val))
-    val = Array{Int64,1}(pmap(x -> searchsortedfirst(uniVal,x), val))
-    #At this point val is the mapping to uniVal
-    #Anew.A = sparse(row,col,val)
-    Anew = Assoc(copy(Anew.row),copy(Anew.col),copy(Anew.val[uniVal]),sparse(row,col,val))#putAdj(Anew,sparse(row,col,val))
+    # was: pmap(x -> searchsortedfirst(uniVal, x), val) — distributed overhead for a trivial lookup
+    val = [searchsortedfirst(uniVal, x) for x in val]
 
-    #= May not need this if using putAdj?
-    if A.val == [1.0] #Checking if the A.val mapping needs to be done.
-        Anew.val = Array{Union{AbstractString,Number},1}(uniVal)
-    else
-        uniVal = pmap(x -> Anew.val[x],uniVal)
-        Anew.val = Array{Union{AbstractString,Number},1}(uniVal)
-    end
-    =#
-
+    Anew = Assoc(copy(Anew.row), copy(Anew.col), copy(Anew.val[uniVal]), sparse(row, col, val))
     return Anew
-    
 end
 
 ########################################################
@@ -44,4 +48,3 @@ end
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)
 # Software Engineer: Alexander Chen (alexc89@mit.edu)
 ########################################################
-
