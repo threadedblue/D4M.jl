@@ -7,8 +7,8 @@ _keymask : find indices in sorted key array Akeys that are present in selection 
 Both Akeys and sel are sorted, so this uses sortedintersectmapping (merge-scan, O(N+M))
 instead of the previous findall(x -> in(x, sel), Akeys) which was O(N×M).
 =#
-function _keymask(Akeys::Array, sel::Array)
-    _, Bmap = sortedintersectmapping(sel, Akeys)
+function _keymask(Akeys::AbstractVector, sel::AbstractVector)
+    _, Bmap = sortedintersectmapping(collect(sel), collect(Akeys))
     return Bmap
 end
 
@@ -17,7 +17,7 @@ _keymask_set : find indices in Akeys matching elements in an unsorted selection 
 
 Uses a Set for O(1) membership, reducing findall from O(N×M) to O(N+M).
 =#
-function _keymask_set(Akeys::Array, sel::Array)
+function _keymask_set(Akeys::AbstractVector, sel::AbstractVector)
     sset = Set(sel)
     return findall(x -> x in sset, Akeys)
 end
@@ -25,7 +25,7 @@ end
 """
 getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
 
-Base getindex — all higher-level overloads resolve to this.
+Base getindex — all higher-level dispatch resolves to this via _resolve().
 """
 function getindex(A::Assoc, i::Array{Int64}, j::Array{Int64})
     if isempty(A.A)
@@ -41,46 +41,32 @@ end
 # Singular case (one index → row selector, select all columns)
 getindex(A::Assoc, i::Any) = getindex(A, i, :)
 
-PreviousTypes = Array{Int64}
+#=
+_resolve : convert any D4M selector into a Vector{Int64} of indices into A.row / A.col.
 
-# --- Array{Union{AbstractString,Number}} selectors ---
-# Fix: was findall(x -> x in i, A.row) — O(N×M) linear scan on a sorted array.
-# Now uses Set for O(1) lookup → O(N+M) total.
-getindex(A::Assoc, i::Array{Union{AbstractString,Number}}, j::PreviousTypes) =
-    getindex(A, _keymask_set(A.row, i), j)
-getindex(A::Assoc, i::PreviousTypes, j::Array{Union{AbstractString,Number}}) =
-    getindex(A, i, _keymask_set(A.col, j))
-getindex(A::Assoc, i::Array{Union{AbstractString,Number}}, j::Array{Union{AbstractString,Number}}) =
-    getindex(A, _keymask_set(A.row, i), _keymask_set(A.col, j))
+To add a new selector type (e.g. Between, EndsWith):
+  1. Define the struct in selectors.jl
+  2. Add one _resolve method below (or at the end of selectors.jl after the struct)
+  No getindex cross-product overloads are needed.
+=#
+_resolve(::AbstractVector, i::AbstractVector{<:Integer})          = Vector{Int64}(i)
+_resolve(keys::AbstractVector, i::Array{Union{AbstractString,Number}}) = _keymask_set(keys, i)
+_resolve(keys::AbstractVector, i::Vector{String})                 = _keymask_set(keys, i)
+_resolve(::AbstractVector,    i::Integer)                         = [Int64(i)]
+_resolve(keys::AbstractVector, ::Colon)                           = collect(Int64, eachindex(keys))
+_resolve(::AbstractVector,    i::AbstractRange{<:Integer})        = collect(Int64, i)
+_resolve(keys::AbstractVector, i::AbstractString)                 =
+    _keymask(keys, StrUnique(convertrange(keys, i))[1])
+_resolve(keys::AbstractVector, i::Regex)                          =
+    findall(x -> occursin(i, x), keys)
+# StartsWith _resolve is defined after the struct below.
 
-PreviousTypes = Union{PreviousTypes,Array{Union{AbstractString,Number}}}
-
-# Vector{String} is not a subtype of Array{Union{AbstractString,Number}} (Julia arrays are
-# invariant), so these overloads are required as distinct dispatch cases.
-getindex(A::Assoc, i::Vector{String}, j::PreviousTypes)  = getindex(A, _keymask_set(A.row, i), j)
-getindex(A::Assoc, i::PreviousTypes,  j::Vector{String}) = getindex(A, i, _keymask_set(A.col, j))
-getindex(A::Assoc, i::Vector{String}, j::Vector{String}) = getindex(A, _keymask_set(A.row, i),
-                                                                         _keymask_set(A.col, j))
-
-PreviousTypes = Union{PreviousTypes,Vector{String}}
-
-getindex(A::Assoc, i::Int64, j::PreviousTypes) = getindex(A, [i], j)
-getindex(A::Assoc, i::PreviousTypes, j::Int64) = getindex(A, i, [j])
-getindex(A::Assoc, i::Int64, j::Int64)         = getindex(A, [i], [j])
-
-PreviousTypes = Union{PreviousTypes,Int64}
-
-getindex(A::Assoc, ::Colon, j::PreviousTypes) = getindex(A, 1:size(A.row,1), j)
-getindex(A::Assoc, i::PreviousTypes, ::Colon) = getindex(A, i, 1:size(A.col,1))
-getindex(A::Assoc, ::Colon, ::Colon)          = getindex(A, 1:size(A.row,1), 1:size(A.col,1))
-
-PreviousTypes = Union{PreviousTypes,Colon}
-
-getindex(A::Assoc, i::AbstractRange, j::PreviousTypes) = getindex(A, collect(i), j)
-getindex(A::Assoc, i::PreviousTypes, j::AbstractRange) = getindex(A, i, collect(j))
-getindex(A::Assoc, i::AbstractRange, j::AbstractRange) = getindex(A, collect(i), collect(j))
-
-PreviousTypes = Union{PreviousTypes,AbstractRange}
+# Universal 2D getindex: resolve both selectors to integer indices, then call the base case.
+# Julia dispatches to the more-specific (Array{Int64}, Array{Int64}) base before reaching here,
+# so there is no infinite recursion for fully-resolved integer index arrays.
+function getindex(A::Assoc, i, j)
+    getindex(A, _resolve(A.row, i), _resolve(A.col, j))
+end
 
 function convertrange(Akeys, r::AbstractString)
     sep = r[end:end]
@@ -106,29 +92,7 @@ function convertrange(Akeys, r::AbstractString)
     return r
 end
 
-# D4M delimited-string selectors.
-# Fix: was findall(x -> in(x, StrUnique(...)[1]), A.row) — O(N×M) linear in+set scan.
-# Now uses sortedintersectmapping: both sel and A.row are sorted → O(N+M) merge scan.
-getindex(A::Assoc, i::AbstractString, j::PreviousTypes) =
-    getindex(A, _keymask(A.row, StrUnique(convertrange(A.row, i))[1]), j)
-getindex(A::Assoc, i::PreviousTypes, j::AbstractString) =
-    getindex(A, i, _keymask(A.col, StrUnique(convertrange(A.col, j))[1]))
-getindex(A::Assoc, i::AbstractString, j::AbstractString) =
-    getindex(A,
-        _keymask(A.row, StrUnique(convertrange(A.row, i))[1]),
-        _keymask(A.col, StrUnique(convertrange(A.col, j))[1]))
-
-PreviousTypes = Union{PreviousTypes,AbstractString}
-
-# Regex selectors
-getindex(A::Assoc, i::Regex, j::PreviousTypes) = getindex(A, findall(x -> occursin(i, x), A.row), j)
-getindex(A::Assoc, i::PreviousTypes, j::Regex) = getindex(A, i, findall(x -> occursin(j, x), A.col))
-getindex(A::Assoc, i::Regex, j::Regex)         = getindex(A, findall(x -> occursin(i, x), A.row),
-                                                               findall(x -> occursin(j, x), A.col))
-
-PreviousTypes = Union{PreviousTypes,Regex}
-
-# StartsWith selector — already uses binary search via searchsortedfirst/last
+# StartsWith selector — uses binary search via searchsortedfirst/last
 struct StartsWith
     inputString::AbstractString
 end
@@ -150,12 +114,7 @@ function StartsWithHelper(Ar::AbstractVector, S::StartsWith)
     return result_indice
 end
 
-getindex(A::Assoc, i::PreviousTypes, j::StartsWith) = getindex(A, i, StartsWithHelper(getcol(A), j))
-getindex(A::Assoc, i::StartsWith, j::PreviousTypes) = getindex(A, StartsWithHelper(getrow(A), i), j)
-getindex(A::Assoc, i::StartsWith, j::StartsWith)    = getindex(A, StartsWithHelper(getrow(A), i),
-                                                                    StartsWithHelper(getcol(A), j))
-
-PreviousTypes = Union{PreviousTypes,StartsWith}
+_resolve(keys::AbstractVector, i::StartsWith) = StartsWithHelper(keys, i)
 
 
 function >(A::Assoc, E::Union{AbstractString,Number})

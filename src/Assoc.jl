@@ -171,6 +171,7 @@ function Assoc(rowIn::StringOrNumArray, colIn::StringOrNumArray, valIn::StringOr
 end
 
 include("./Assoc/getindex.jl")
+include("./Assoc/selectors.jl")
 include("./Assoc/condense.jl")
 include("./Assoc/operations.jl")
 include("./Assoc/print.jl")

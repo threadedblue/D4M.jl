@@ -11,7 +11,8 @@ module D4M
      import JLD: writeas, readas
 
     export  Assoc,
-            StartsWith,
+            StartsWith, Between, EndsWith, Contains, (..),
+            @sw_str, @ew_str, @has_str,
             CatKeyMul, CatValMul,
             CatStr, SplitStr, NumStr,
             col2type, val2col,
