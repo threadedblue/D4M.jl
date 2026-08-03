@@ -457,4 +457,138 @@ end
         @test all(isa.(getcol(C), Number))   # col keys replaced by numbers
     end
 
+    # ── Selectors ───────────────────────────────────────────────────────────────
+
+    @testset "Between – struct construction" begin
+        b = Between("aardvark", "zebra")
+        @test b.lo == "aardvark"
+        @test b.hi == "zebra"
+    end
+
+    @testset "Between – .. operator" begin
+        b = "aardvark".."zebra"
+        @test b isa Between
+        @test b.lo == "aardvark"
+        @test b.hi == "zebra"
+    end
+
+    @testset "Between – getindex inclusive bounds" begin
+        A = Assoc(["apple","banana","cherry","date","elderberry"],
+                  ["c1","c2","c3","c4","c5"],
+                  [1.0, 2.0, 3.0, 4.0, 5.0])
+        B = A["banana".."date", :]
+        @test sort(collect(getrow(B))) == ["banana","cherry","date"]
+        @test nnz(B) == 3
+    end
+
+    @testset "Between – getindex single-element range" begin
+        A = Assoc(["a","b","c"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
+        B = A["b".."b", :]
+        @test collect(getrow(B)) == ["b"]
+        @test nnz(B) == 1
+    end
+
+    @testset "Between – getindex empty when lo > hi" begin
+        A = Assoc(["a","b","c"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
+        B = A["z".."a", :]
+        @test isempty(B) || nnz(B) == 0
+    end
+
+    @testset "EndsWith – struct construction" begin
+        e = EndsWith("_score")
+        @test e.suffix == "_score"
+    end
+
+    @testset "EndsWith – getindex" begin
+        A = Assoc(["author_id","author_score","doc_id","doc_score"],
+                  ["c1","c2","c3","c4"],
+                  [1.0, 2.0, 3.0, 4.0])
+        B = A[EndsWith("_score"), :]
+        @test sort(collect(getrow(B))) == ["author_score","doc_score"]
+        @test nnz(B) == 2
+    end
+
+    @testset "EndsWith – no match returns empty" begin
+        A = Assoc(["alpha","beta"], ["c1","c2"], [1.0, 2.0])
+        B = A[EndsWith("_score"), :]
+        @test isempty(B) || nnz(B) == 0
+    end
+
+    @testset "Contains – struct construction" begin
+        c = Contains("chunk")
+        @test c.substr == "chunk"
+    end
+
+    @testset "Contains – getindex" begin
+        A = Assoc(["chunk:001","chunk:002","doc:001","meta:001"],
+                  ["c1","c2","c3","c4"],
+                  [1.0, 2.0, 3.0, 4.0])
+        B = A[Contains("chunk"), :]
+        @test sort(collect(getrow(B))) == ["chunk:001","chunk:002"]
+        @test nnz(B) == 2
+    end
+
+    @testset "Contains – substring anywhere in key" begin
+        A = Assoc(["prefix_abc","abc_suffix","no_match"],
+                  ["c1","c2","c3"],
+                  [1.0, 2.0, 3.0])
+        B = A[Contains("abc"), :]
+        @test sort(collect(getrow(B))) == ["abc_suffix","prefix_abc"]
+        @test nnz(B) == 2
+    end
+
+    @testset "String macro sw\"\" → StartsWith" begin
+        sel = sw"ca"
+        @test sel isa StartsWith
+        @test sel.inputString == "ca"
+    end
+
+    @testset "String macro ew\"\" → EndsWith" begin
+        sel = ew"_score"
+        @test sel isa EndsWith
+        @test sel.suffix == "_score"
+    end
+
+    @testset "String macro has\"\" → Contains" begin
+        sel = has"chunk"
+        @test sel isa Contains
+        @test sel.substr == "chunk"
+    end
+
+    @testset "sw macro via getindex" begin
+        A = Assoc(["alice","bob","carol"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
+        B = A[sw"ca", :]
+        @test collect(getrow(B)) == ["carol"]
+    end
+
+    @testset "ew macro via getindex" begin
+        A = Assoc(["author_id","author_score","doc_score"],
+                  ["c1","c2","c3"],
+                  [1.0, 2.0, 3.0])
+        B = A[ew"_score", :]
+        @test sort(collect(getrow(B))) == ["author_score","doc_score"]
+    end
+
+    @testset "has macro via getindex" begin
+        A = Assoc(["chunk:001","doc:001","chunk:002"],
+                  ["c1","c2","c3"],
+                  [1.0, 2.0, 3.0])
+        B = A[has"chunk", :]
+        @test sort(collect(getrow(B))) == ["chunk:001","chunk:002"]
+    end
+
+    @testset "Selectors – column axis (j selector)" begin
+        A = Assoc(["r1","r2","r3"],
+                  ["score_final","score_interim","label"],
+                  [1.0, 2.0, 3.0])
+        B = A[:, sw"score"]
+        @test sort(collect(getcol(B))) == ["score_final","score_interim"]
+        C = A[:, ew"_final"]
+        @test collect(getcol(C)) == ["score_final"]
+        D = A[:, has"score"]
+        @test sort(collect(getcol(D))) == ["score_final","score_interim"]
+        E = A[:, "score_final".."score_interim"]
+        @test sort(collect(getcol(E))) == ["score_final","score_interim"]
+    end
+
 end
