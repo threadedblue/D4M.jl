@@ -180,6 +180,7 @@ include("./Assoc/put.jl")
 include("./Assoc/convert.jl")
 include("./Assoc/broadcast.jl")
 include("./Assoc/io.jl")
+include("./Assoc/arrow_io.jl")
 include("./Assoc/convertvals.jl")
 include("./Assoc/bfs.jl")
 

@@ -3,6 +3,7 @@
 module D4M
 
     using LinearAlgebra, SparseArrays, DelimitedFiles
+    using Arrow, Tables
 
     import SparseArrays: nnz, diag
     import Base: &, ==, >, <, -, *, +, /
@@ -24,6 +25,7 @@ module D4M
             sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
             getadj, getrow, getcol, getval, find,
+            saveAA, loadAA,
             #saveassoc, loadassoc,
             OutDegree, InDegree, diag,
             bounded, strictbounded, adjbfs

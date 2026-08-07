@@ -46,10 +46,27 @@ end
 
 _resolve(keys::AbstractVector, c::Contains) = ContainsHelper(keys, c)
 
+# ── BetweenEndsWith ──────────────────────────────────────────────────────────────
+
+struct BetweenEndsWith
+    lo::String
+    hi::String
+end
+
+# ew"00001"..ew"00005" — rows whose key ends with a suffix in [lo, hi].
+# lo and hi must be the same character length (typical for zero-padded integers).
+..(lo::EndsWith, hi::EndsWith) = BetweenEndsWith(lo.suffix, hi.suffix)
+
+function _resolve(keys::AbstractVector, b::BetweenEndsWith)
+    n = length(b.lo)
+    return findall(k -> length(k) >= n && b.lo <= last(k, n) <= b.hi, keys)
+end
+
 # ── String literal macros ─────────────────────────────────────────────────────────
 # sw"prefix"  → StartsWith("prefix")   (StartsWith defined in getindex.jl)
 # ew"suffix"  → EndsWith("suffix")
 # has"substr" → Contains("substr")
+# ew"lo"..ew"hi" → BetweenEndsWith("lo", "hi")
 
 macro sw_str(s::String);  :(StartsWith($s));  end
 macro ew_str(s::String);  :(EndsWith($s));    end
