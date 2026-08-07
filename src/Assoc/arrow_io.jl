@@ -13,9 +13,9 @@ absent cells stored as `missing`. Files are directly compatible with
 DoubleNaught's Python `AABinaryNormalizer` pipeline.
 
 **Triplet form** (numeric Assoc, `A.val == [1.0]`):
-Columns `_row`, `_col`, `_val` store the sparse COO representation.
-The leading underscore distinguishes triplet files from wide files at load
-time.
+Columns `rowKey`, `colKey`, `val` store the sparse COO representation,
+matching the schema produced by the Python `aa_serializer` module so files
+round-trip between Julia D4M workers and the Python pipeline unchanged.
 
 # Arguments
 - `filename`: output path; parent directories are created if absent.
@@ -60,7 +60,7 @@ end
 function _saveTriplet(filename::String, A::Assoc, compress)
     rs, cs, vs = find(A)
     Arrow.write(filename,
-        (_row=string.(rs), _col=string.(cs), _val=Float64.(vs));
+        (rowKey=string.(rs), colKey=string.(cs), val=Float64.(vs));
         compress=compress)
 end
 
@@ -73,13 +73,14 @@ DoubleNaught's Python `AABinaryNormalizer`.
 - **Wide form** (any column layout): first column is the row-key source
   (typically `chunkId`); remaining scalar string columns become D4M column
   keys.  Arrow list columns (`scores`, `inputIds`, etc.) are skipped.
-- **Triplet form** (columns `_row`, `_col`, `_val`): reconstructs a
-  numeric Assoc from COO data written by `saveAA` for numeric Assocs.
+- **Triplet form** (columns `rowKey`, `colKey`, `val`): reconstructs a
+  numeric Assoc from COO data. Column names match the Python `aa_serializer`
+  schema for cross-language compatibility.
 """
 function loadAA(filename::String)
     tbl      = Arrow.Table(filename)
     colnames = collect(Tables.columnnames(tbl))
-    if colnames == [:_row, :_col, :_val]
+    if colnames == [:rowKey, :colKey, :val] || colnames == [:rowKey, :colKey, :val, :metadata]
         return _loadTriplet(tbl)
     end
     return _loadWide(tbl, colnames)
@@ -105,8 +106,8 @@ function _loadWide(tbl, colnames)
 end
 
 function _loadTriplet(tbl)
-    rs = collect(Tables.getcolumn(tbl, :_row))
-    cs = collect(Tables.getcolumn(tbl, :_col))
-    vs = collect(Tables.getcolumn(tbl, :_val))
+    rs = collect(Tables.getcolumn(tbl, :rowKey))
+    cs = collect(Tables.getcolumn(tbl, :colKey))
+    vs = collect(Tables.getcolumn(tbl, :val))
     return Assoc(rs, cs, Float64.(vs))
 end

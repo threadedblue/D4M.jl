@@ -54,7 +54,7 @@ end
 function _saveParquetTriplet(filename::String, A::Assoc, codec::Symbol)
     rs, cs, vs = find(A)
     Parquet2.writefile(filename,
-        (_row=string.(rs), _col=string.(cs), _val=Float64.(vs));
+        (rowKey=string.(rs), colKey=string.(cs), val=Float64.(vs));
         compression_codec=codec)
 end
 
@@ -65,13 +65,14 @@ Load an Assoc from a Parquet file written by `saveParquet` or by
 DoubleNaught's Python `AABinaryNormalizer`.
 
 Reads via `Parquet2.Dataset` (Tables.jl interface). Wide-form files
-reconstruct a string Assoc; triplet-form files (`_row`, `_col`, `_val`
-columns) reconstruct a numeric Assoc. Arrow list columns are skipped.
+reconstruct a string Assoc; triplet-form files (`rowKey`, `colKey`, `val`
+columns, matching the Python `aa_serializer` schema) reconstruct a numeric
+Assoc. Arrow list columns are skipped.
 """
 function loadParquet(filename::String)
     ds       = Parquet2.Dataset(filename)
     colnames = Symbol.(collect(Tables.columnnames(ds)))
-    if colnames == [:_row, :_col, :_val]
+    if colnames == [:rowKey, :colKey, :val] || colnames == [:rowKey, :colKey, :val, :metadata]
         return _loadParquetTriplet(ds)
     end
     return _loadParquetWide(ds, colnames)
@@ -97,8 +98,8 @@ function _loadParquetWide(ds, colnames)
 end
 
 function _loadParquetTriplet(ds)
-    rs = collect(Tables.getcolumn(ds, :_row))
-    cs = collect(Tables.getcolumn(ds, :_col))
-    vs = collect(Tables.getcolumn(ds, :_val))
+    rs = collect(Tables.getcolumn(ds, :rowKey))
+    cs = collect(Tables.getcolumn(ds, :colKey))
+    vs = collect(Tables.getcolumn(ds, :val))
     return Assoc(rs, cs, Float64.(vs))
 end
