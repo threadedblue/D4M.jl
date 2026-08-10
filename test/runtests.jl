@@ -394,6 +394,23 @@ end
         @test liftedResult.val == [1.0]        # numeric sentinel
     end
 
+    # ── Health check ────────────────────────────────────────────────────────
+
+    @testset "health() – success case" begin
+        result = health()
+        @test result isa String
+        @test startswith(result, "Ok")
+        @test contains(result, "Julia v")
+        @test contains(result, "D4M v")
+    end
+
+    @testset "health() – version extraction" begin
+        result = health()
+        # Verify format: "Ok - Julia vX.Y.Z, D4M vX.Y.Z"
+        @test contains(result, " - Julia v")
+        @test contains(result, ", D4M v")
+    end
+
     # ── Structural ──────────────────────────────────────────────────────────────
 
     @testset "condense – removes empty rows and cols" begin

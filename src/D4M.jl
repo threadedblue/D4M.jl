@@ -30,7 +30,8 @@ module D4M
             saveParquet, loadParquet,
             #saveassoc, loadassoc,
             OutDegree, InDegree, diag,
-            bounded, strictbounded, adjbfs
+            bounded, strictbounded, adjbfs,
+            health
 
     include("Assoc.jl") # Associative Array
 
@@ -38,6 +39,8 @@ module D4M
     include("parsinghelpers.jl")
     #Helper functions for working with strings and string arrays
     include("stringarrayhelpers.jl")
+    #Health check function
+    include("health.jl")
 end
 
 
