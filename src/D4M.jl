@@ -31,7 +31,8 @@ module D4M
             #saveassoc, loadassoc,
             OutDegree, InDegree, diag,
             bounded, strictbounded, adjbfs,
-            health
+            health,
+            toTable, toDataFrame, printDataFrame, toTriplet
 
     include("Assoc.jl") # Associative Array
 

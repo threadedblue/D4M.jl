@@ -411,6 +411,55 @@ end
         @test contains(result, ", D4M v")
     end
 
+    # ── DataFrame I/O ────────────────────────────────────────────────────────
+
+    @testset "toTable – conversion to named tuple table" begin
+        A = Assoc(["r1","r2"], ["c1","c2"], ["v1","v2"])
+        table = toTable(A)
+        @test length(table) == 2
+        @test table[1].row == "r1"
+        @test table[1].col == "c1"
+        @test table[1].val == "v1"
+        @test table[2].row == "r2"
+        @test table[2].col == "c2"
+        @test table[2].val == "v2"
+    end
+
+    @testset "toTable – empty Assoc" begin
+        A = emptyAssoc()
+        table = toTable(A)
+        @test length(table) == 0
+        @test eltype(table) <: NamedTuple
+    end
+
+    @testset "toTriplet – conversion to triplet vectors" begin
+        A = Assoc(["r1","r2"], ["c1","c2"], ["v1","v2"])
+        rows, cols, vals = toTriplet(A)
+        @test rows == ["r1","r2"]
+        @test cols == ["c1","c2"]
+        @test vals == ["v1","v2"]
+    end
+
+    @testset "toTriplet – empty Assoc" begin
+        A = emptyAssoc()
+        rows, cols, vals = toTriplet(A)
+        @test length(rows) == 0
+        @test length(cols) == 0
+        @test length(vals) == 0
+    end
+
+    @testset "printDataFrame – execution without error" begin
+        A = Assoc(["r1","r2"], ["c1","c2"], ["v1","v2"])
+        # Should not throw
+        @test_nowarn printDataFrame(A)
+    end
+
+    @testset "printDataFrame – empty Assoc" begin
+        A = emptyAssoc()
+        # Should not throw and should print "Empty Associative Array"
+        @test_nowarn printDataFrame(A)
+    end
+
     # ── Structural ──────────────────────────────────────────────────────────────
 
     @testset "condense – removes empty rows and cols" begin
@@ -664,6 +713,35 @@ end
         @test sort(collect(getcol(D))) == ["score_final","score_interim"]
         E = A[:, "score_final".."score_interim"]
         @test sort(collect(getcol(E))) == ["score_final","score_interim"]
+    end
+
+    @testset "ReadCSV – raw CSV string to Assoc" begin
+        A = ReadCSV("key,c1,c2\nr1,a,\nr2,b,c\n")
+        @test isa(A, Assoc)
+        @test getrow(A) == ["r1","r2"]
+        @test getcol(A) == ["c1","c2"]
+        @test nnz(A) == 3            # the empty cell (r1,c2) is skipped
+        @test getval(A["r2,", "c2,"]) == ["c"]
+    end
+
+    @testset "ReadCSV – quoted field containing the delimiter" begin
+        A = ReadCSV("key,c1\nr1,\"x,y\"\n")
+        @test getval(A["r1,", "c1,"]) == ["x,y"]
+    end
+
+    @testset "ReadCSV – file input" begin
+        fname = joinpath(@__DIR__, "data", "patients.csv")
+        A = ReadCSV(fname)
+        @test isa(A, Assoc)
+        @test "GENDER" in getcol(A)
+        @test !("ID" in getcol(A))   # top-left label is not a column key
+        @test size(A)[2] == 19       # 20 CSV columns, first becomes the row keys
+        @test getval(A["57e50bfa-e467-4050-b961-232cf0d85668,", "FIRST,"]) == ["Delmar187"]
+    end
+
+    @testset "ReadCSV – degenerate input" begin
+        @test isempty(ReadCSV(""))
+        @test isempty(ReadCSV("key,c1,c2\n"))   # header only
     end
 
 end

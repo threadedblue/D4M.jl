@@ -3,9 +3,6 @@ using SparseArrays
 function WriteCSV(A::Assoc, del = ',', eol = '\n')
 end
 
-function ReadCSV(iostream::IOBuffer, del = ',', eol = '\n'; quotes = true)
-end
-
 
 # Writing and Reading CSV Files
 function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\n')
@@ -45,31 +42,67 @@ function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\
     close(iostream)
 end
 
-function ReadCSV(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes = true)
-    # If input is a String, check if it points to a real file
-    if isa(input, String) && isfile(input)
-        # It's a filename! Open the file and read
-        open(input, "r") do io
-            return _readcsv(io, del, eol; quotes=quotes)
-        end
-    elseif isa(input, IOStream)
-        # It's already an open file
-        return _readcsv(input, del, eol; quotes=quotes)
-    elseif isa(input, String)
-        # It's a raw CSV string, parse it directly
-        io = IOBuffer(input)
-        return _readcsv(io, del, eol; quotes=quotes)
-    else
-        error("Unsupported input type for ReadCSV: $(typeof(input))")
-    end
+"""
+    ReadCSV(input, del = ',', eol = '\\n'; quotes = true) -> Assoc
+
+Read a CSV in D4M table form into an Associative Array.  The first row holds the
+column keys, the first column holds the row keys (the top-left cell is a label and
+is discarded), and cell (r,c) becomes the value at (row key r, column key c).
+Empty cells produce no entry.  All values are kept as strings — use `str2num` or
+`val2col` to convert.
+
+`input` may be a filename, an already-open stream, or a raw CSV string.
+
+# Examples
+```julia
+julia> A = ReadCSV("patients.csv")
+julia> A["57e50bfa-e467-4050-b961-232cf0d85668,", "GENDER,"]
+```
+"""
+function ReadCSV(input::Union{IO, AbstractString}, del = ',', eol = '\n'; quotes = true)
+    return _csv2assoc(_readcsv(input, del, eol; quotes=quotes))
 end
 
-# Internal helper function
-function _readcsv(io::IO, del::Char, eol::Char; quotes=true)
-    # Example logic to parse lines; replace with your real parser
-    lines = readlines(io)
-    parsed = [split(line, del) for line in lines]
-    return parsed
+# Parse the input into a cell matrix.  readdlm handles quoted fields containing the
+# delimiter and pads short rows, which a plain split() cannot do.
+function _readcsv(input::Union{IO, AbstractString}, del::AbstractChar, eol::AbstractChar;
+                  quotes=true)
+    source = input
+    if isa(input, AbstractString)
+        text = String(input)
+        if isfile(text)
+            filesize(text) <= 1 && return Matrix{String}(undef, 0, 0)
+            source = text
+        else
+            # Not a path: treat as raw CSV content.
+            isempty(text) && return Matrix{String}(undef, 0, 0)
+            source = IOBuffer(text)
+        end
+    end
+    return readdlm(source, del, String, eol; quotes=quotes)
+end
+
+# Build an Assoc from a cell matrix in D4M table form (row 1 = col keys,
+# column 1 = row keys).
+function _csv2assoc(cells::AbstractMatrix)
+    rowN, colN = size(cells)
+    if rowN < 2 || colN < 2
+        return emptyAssoc()
+    end
+
+    row = String[]
+    col = String[]
+    val = String[]
+    for c = 2:colN, r = 2:rowN
+        v = string(cells[r, c])
+        isempty(v) && continue
+        push!(row, string(cells[r, 1]))
+        push!(col, string(cells[1, c]))
+        push!(val, v)
+    end
+
+    isempty(val) && return emptyAssoc()
+    return Assoc(row, col, val)
 end
 
 function ReadCSV1(input::Union{IOStream, String}, del = ',', eol = '\n'; quotes = true)
