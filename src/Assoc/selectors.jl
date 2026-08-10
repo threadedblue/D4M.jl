@@ -71,3 +71,62 @@ end
 macro sw_str(s::String);  :(StartsWith($s));  end
 macro ew_str(s::String);  :(EndsWith($s));    end
 macro has_str(s::String); :(Contains($s));    end
+
+# ── Transformation macros ────────────────────────────────────────────────────────
+# @lift and @drop provide syntactic sugar for value-to-column lifting and dropping.
+
+"""
+    @lift(inputArray)
+    @lift(inputArray, delimiterVal)
+
+Macro that lifts continuous values into structural column keys.
+
+Internally calls `val2col(inputArray, delimiterVal)` with all arguments passed through.
+Default delimiter is "|" (matching D4M.py convention).
+
+# Examples
+```julia
+AA = Assoc(["r1", "r2"], ["c1", "c2"], [1.0, 2.0])
+liftedAA = @lift(AA)  # Equivalent to val2col(AA)
+liftedAA2 = @lift(AA, ",")  # Equivalent to val2col(AA, ",")
+```
+"""
+macro lift(args...)
+    if length(args) == 1
+        # @lift(inputArray) -> val2col(inputArray)
+        return :(val2col($(esc(args[1]))))
+    elseif length(args) == 2
+        # @lift(inputArray, delimiterVal) -> val2col(inputArray, delimiterVal)
+        return :(val2col($(esc(args[1])), $(esc(args[2]))))
+    else
+        error("@lift expects 1 or 2 arguments, got $(length(args))")
+    end
+end
+
+"""
+    @drop(inputArray)
+    @drop(inputArray, delimiterVal)
+
+Macro that reverts column-encoded values back into continuous matrix values.
+
+Internally calls `col2type(inputArray, delimiterVal)` with all arguments passed through.
+Default delimiter is "|" (matching D4M.py convention).
+
+# Examples
+```julia
+AA = Assoc(["r1", "r2"], ["c1|v1", "c2|v2"], 1)
+droppedAA = @drop(AA)  # Equivalent to col2type(AA)
+droppedAA2 = @drop(AA, ",")  # Equivalent to col2type(AA, ",")
+```
+"""
+macro drop(args...)
+    if length(args) == 1
+        # @drop(inputArray) -> col2type(inputArray)
+        return :(col2type($(esc(args[1]))))
+    elseif length(args) == 2
+        # @drop(inputArray, delimiterVal) -> col2type(inputArray, delimiterVal)
+        return :(col2type($(esc(args[1])), $(esc(args[2]))))
+    else
+        error("@drop expects 1 or 2 arguments, got $(length(args))")
+    end
+end

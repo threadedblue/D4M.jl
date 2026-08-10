@@ -336,6 +336,64 @@ end
         @test c1 == c2           # same result with explicit default
     end
 
+    # ── Macro utilities ─────────────────────────────────────────────────────────
+
+    @testset "@lift – default separator" begin
+        inputArray = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
+        liftedMacro = @lift(inputArray)
+        liftedDirect = val2col(inputArray)
+        r_m, c_m, v_m = find(liftedMacro)
+        r_d, c_d, v_d = find(liftedDirect)
+        @test sorted_triples(r_m, c_m, v_m) == sorted_triples(r_d, c_d, v_d)
+    end
+
+    @testset "@lift – custom separator" begin
+        inputArray = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
+        delimiterVal = ","
+        liftedMacro = @lift(inputArray, delimiterVal)
+        liftedDirect = val2col(inputArray, delimiterVal)
+        r_m, c_m, v_m = find(liftedMacro)
+        r_d, c_d, v_d = find(liftedDirect)
+        @test sorted_triples(r_m, c_m, v_m) == sorted_triples(r_d, c_d, v_d)
+    end
+
+    @testset "@drop – default separator" begin
+        inputArray = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
+        liftedArray = val2col(inputArray)
+        droppedMacro = @drop(liftedArray)
+        droppedDirect = col2type(liftedArray)
+        r_m, c_m, v_m = find(droppedMacro)
+        r_d, c_d, v_d = find(droppedDirect)
+        @test sorted_triples(r_m, c_m, v_m) == sorted_triples(r_d, c_d, v_d)
+    end
+
+    @testset "@drop – custom separator" begin
+        inputArray = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
+        delimiterVal = ","
+        liftedArray = val2col(inputArray, delimiterVal)
+        droppedMacro = @drop(liftedArray, delimiterVal)
+        droppedDirect = col2type(liftedArray, delimiterVal)
+        r_m, c_m, v_m = find(droppedMacro)
+        r_d, c_d, v_d = find(droppedDirect)
+        @test sorted_triples(r_m, c_m, v_m) == sorted_triples(r_d, c_d, v_d)
+    end
+
+    @testset "@lift and @drop roundtrip" begin
+        # Create original AA, lift it, drop it, and verify roundtrip.
+        original = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
+        lifted = @lift(original)
+        droppedBack = @drop(lifted)
+        r_o, c_o, v_o = find(original)
+        r_d, c_d, v_d = find(droppedBack)
+        @test sorted_triples(r_o, c_o, v_o) == sorted_triples(r_d, c_d, v_d)
+    end
+
+    @testset "@lift – result is numeric" begin
+        inputArray = Assoc(["r1"], ["c1"], ["v1"])
+        liftedResult = @lift(inputArray)
+        @test liftedResult.val == [1.0]        # numeric sentinel
+    end
+
     # ── Structural ──────────────────────────────────────────────────────────────
 
     @testset "condense – removes empty rows and cols" begin
