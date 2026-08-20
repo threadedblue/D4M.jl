@@ -276,3 +276,57 @@ function InDegree(A)
     ndin = sum(sparse(din_i, din_v, 1), dims=1)
     return ndin
 end
+
+
+#=
+combine : merge two Assocs using a custom binary operation at colliding (row,col) keys.
+
+Mirrors D4M.py's Assoc.combine(other, binary_op). Unlike plus(), this function:
+  - Does NOT convert string-valued inputs to logical; actual values are preserved.
+  - Resolves colliding (row,col) keys by applying binary_op to the actual values
+    (not to internal index integers), so it works correctly for string AAs.
+  - Keys present in only one input are carried through unchanged.
+
+The right-overwrite semiring (a ⊕ b = b) is available as right_overwrite(A, B).
+The left-overwrite  semiring (a ⊕ b = a) is available as left_overwrite(A, B).
+
+Note: plus() remains the optimized path for standard numeric addition; use
+combine() only when a non-standard semiring ⊕ is required.
+=#
+function combine(A::Assoc, B::Assoc, binary_op::Function)
+    if isempty(A) return B end
+    if isempty(B) return A end
+
+    Arow, Acol, Aval = find(A)
+    Brow, Bcol, Bval = find(B)
+
+    A_cells = Dict{Tuple{Any,Any}, Any}(
+        (Arow[i], Acol[i]) => Aval[i] for i in eachindex(Arow)
+    )
+    B_cells = Dict{Tuple{Any,Any}, Any}(
+        (Brow[i], Bcol[i]) => Bval[i] for i in eachindex(Brow)
+    )
+
+    all_keys = union(keys(A_cells), keys(B_cells))
+
+    rows = Any[]; cols = Any[]; vals = Any[]
+    for key in all_keys
+        r, c = key
+        push!(rows, r); push!(cols, c)
+        if haskey(A_cells, key) && haskey(B_cells, key)
+            push!(vals, binary_op(A_cells[key], B_cells[key]))
+        elseif haskey(A_cells, key)
+            push!(vals, A_cells[key])
+        else
+            push!(vals, B_cells[key])
+        end
+    end
+
+    return Assoc(rows, cols, vals)
+end
+
+# Right-overwrite semiring: a ⊕ b = b  (B's value replaces A's at colliding keys).
+right_overwrite(A::Assoc, B::Assoc) = combine(A, B, (a, b) -> b)
+
+# Left-overwrite semiring: a ⊕ b = a  (A's value is kept at colliding keys).
+left_overwrite(A::Assoc, B::Assoc) = combine(A, B, (a, b) -> a)
