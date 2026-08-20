@@ -9,7 +9,7 @@ module D4M
     import Base: &, ==, >, <, -, *, +, /
     import Base: isless, getindex, isempty, print, size, sum, transpose,
             Array, Matrix, adjoint, broadcast
-     import JLD: writeas, readas
+     import JLD2: writeas, readas
 
     export  Assoc,
             StartsWith, Between, EndsWith, Contains, (..),
@@ -30,6 +30,7 @@ module D4M
             saveParquet, loadParquet,
             #saveassoc, loadassoc,
             OutDegree, InDegree, diag,
+            combine, right_overwrite, left_overwrite,
             bounded, strictbounded, adjbfs,
             health,
             toTable, toDataFrame, printDataFrame, toTriplet
