@@ -1,5 +1,4 @@
 using Parquet2
-using Arrow
 using Tables
 using SparseArrays: findnz
 
@@ -101,5 +100,31 @@ function _loadParquetTriplet(ds)
     rs = collect(Tables.getcolumn(ds, :rowKey))
     cs = collect(Tables.getcolumn(ds, :colKey))
     vs = collect(Tables.getcolumn(ds, :val))
-    return Assoc(rs, cs, Float64.(vs))
+
+    # Preserve actual val type: if val is string-valued, keep strings;
+    # if numeric, convert to Float64 (D4M convention for numeric Assocs).
+    # This allows loading triplet-form files from Python's AABinaryNormalizer
+    # which may have string vals even though they use the triplet schema.
+    if !isempty(vs)
+        # Find first non-missing value to determine type
+        val_type = Nothing
+        for v in vs
+            if !ismissing(v)
+                val_type = typeof(v)
+                break
+            end
+        end
+        # If string type found, preserve strings; if numeric or all-missing, use Float64
+        if val_type <: AbstractString
+            vs = string.(vs)
+        elseif val_type === Nothing
+            # All values are missing; convert missing to 0.0 (Assoc-compatible default)
+            vs = [ismissing(v) ? 0.0 : Float64(v) for v in vs]
+        else
+            # Numeric type: convert to Float64
+            vs = Float64.(vs)
+        end
+    end
+
+    return Assoc(rs, cs, vs)
 end

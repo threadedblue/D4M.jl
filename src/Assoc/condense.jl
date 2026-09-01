@@ -1,7 +1,11 @@
 using SparseArrays
 
 #=
-condense : remove empty rows and columns from Assoc A.
+condense : remove explicit zeros and empty rows/columns from Assoc A.
+
+Drops explicit zeros from the sparse matrix, then identifies non-empty rows/columns.
+This preserves the AA invariant (no fully-empty rows or columns) even when operations
+like minus() accumulate values to zero.
 
 Optimization: uses SparseMatrixCSC's colptr and rowval fields directly instead
 of computing full row/column sums (which allocate dense vectors).
@@ -11,6 +15,8 @@ of computing full row/column sums (which allocate dense vectors).
 function condense(A::Assoc)
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
+
+    dropzeros!(M)
 
     nonZeroCol = findall(j -> M.colptr[j+1] > M.colptr[j], 1:M.n)
     nonZeroRow = isempty(M.rowval) ? Int[] : sort!(unique(M.rowval))

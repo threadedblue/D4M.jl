@@ -92,9 +92,20 @@ function minus(A::Assoc, B::Assoc)
     ai, aj, av = findnz(At.A)
     bi, bj, bv = findnz(Bt.A)
 
-    I = vcat(Arow[ai], Brow[bi])
-    J = vcat(Acol[aj], Bcol[bj])
-    V = vcat(Float64.(av), -Float64.(bv))
+    # Map A entries into the union grid with positive values
+    AI = Arow[ai]
+    AJ = Acol[aj]
+    AV = Float64.(av)
+
+    # Map B entries into the union grid with negative values
+    BI = Brow[bi]
+    BJ = Bcol[bj]
+    BV = -Float64.(bv)
+
+    # Combine into the full union coordinate space
+    I = vcat(AI, BI)
+    J = vcat(AJ, BJ)
+    V = vcat(AV, BV)
 
     ABA = sparse(I, J, V, length(ABrow), length(ABcol), +)
     AB = Assoc(ABrow, ABcol, [1.0], ABA)

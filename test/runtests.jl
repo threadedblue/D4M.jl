@@ -744,4 +744,162 @@ end
         @test isempty(ReadCSV("key,c1,c2\n"))   # header only
     end
 
+    # ── Parquet I/O (round-trip via Parquet2.jl) ────────────────────────────
+
+    @testset "saveParquet / loadParquet – string-valued (wide form)" begin
+        import Parquet2
+        import Parquet2: Dataset
+        using Tables
+
+        mktempdir() do tmpdir
+            fname = joinpath(tmpdir, "wide.parquet")
+
+            # Create a string-valued Assoc (wide form)
+            A = Assoc(["r1","r2","r3"], ["c1","c2","c3"], ["v1","v2","v3"])
+
+            # Save to Parquet
+            result = saveParquet(fname, A)
+            @test result == fname
+            @test isfile(fname)
+
+            # Load back from Parquet
+            B = loadParquet(fname)
+
+            # Verify structure and content
+            @test size(A) == size(B)
+            @test nnz(A) == nnz(B)
+
+            # Verify triplet data matches (order-independent)
+            r_A, c_A, v_A = find(A)
+            r_B, c_B, v_B = find(B)
+            @test sorted_triples(r_A, c_A, v_A) == sorted_triples(r_B, c_B, v_B)
+        end
+    end
+
+    @testset "saveParquet / loadParquet – numeric (triplet form)" begin
+        mktempdir() do tmpdir
+            fname = joinpath(tmpdir, "triplet.parquet")
+
+            # Create a numeric Assoc (triplet form, val sentinel is [1.0])
+            A = Assoc(["r1","r2","r3"], ["c1","c2","c3"], [10.0, 20.0, 30.0])
+
+            # Save to Parquet
+            result = saveParquet(fname, A)
+            @test result == fname
+            @test isfile(fname)
+
+            # Load back from Parquet
+            B = loadParquet(fname)
+
+            # Verify structure
+            @test size(A) == size(B)
+            @test nnz(A) == nnz(B)
+
+            # Verify triplet data matches
+            r_A, c_A, v_A = find(A)
+            r_B, c_B, v_B = find(B)
+            @test sorted_triples(r_A, c_A, v_A) == sorted_triples(r_B, c_B, v_B)
+
+            # Verify values are numeric
+            @test all(isa.(v_B, Number))
+        end
+    end
+
+    @testset "saveParquet / loadParquet – wide form with missing cells" begin
+        mktempdir() do tmpdir
+            fname = joinpath(tmpdir, "wide_sparse.parquet")
+
+            # Create a string Assoc that doesn't fill every cell
+            A = Assoc(
+                ["r1","r1","r2","r3"],
+                ["c1","c2","c1","c3"],
+                ["v1","v2","v3","v4"]
+            )
+
+            # Save and reload
+            saveParquet(fname, A)
+            B = loadParquet(fname)
+
+            # Should preserve sparsity (missing cells are skipped on reload)
+            @test nnz(A) == nnz(B)
+            r_A, c_A, v_A = find(A)
+            r_B, c_B, v_B = find(B)
+            @test sorted_triples(r_A, c_A, v_A) == sorted_triples(r_B, c_B, v_B)
+        end
+    end
+
+    @testset "saveParquet – compression codecs" begin
+        mktempdir() do tmpdir
+            A = Assoc(["r1","r2"], ["c1","c2"], ["v1","v2"])
+
+            # Test multiple compression codecs
+            for codec in [:zstd, :snappy, :gzip, nothing]
+                fname = joinpath(tmpdir, "compressed_$(codec).parquet")
+                result = saveParquet(fname, A; compress=codec)
+                @test isfile(result)
+
+                # Verify can be loaded back
+                B = loadParquet(fname)
+                r_A, c_A, v_A = find(A)
+                r_B, c_B, v_B = find(B)
+                @test sorted_triples(r_A, c_A, v_A) == sorted_triples(r_B, c_B, v_B)
+            end
+        end
+    end
+
+    @testset "loadParquet – auto-detection: triplet vs. wide form" begin
+        mktempdir() do tmpdir
+            # Triplet form (numeric)
+            A_tri = Assoc(["r1","r2"], ["c1","c2"], [10.0, 20.0])
+            fname_tri = joinpath(tmpdir, "triplet.parquet")
+            saveParquet(fname_tri, A_tri)
+            B_tri = loadParquet(fname_tri)
+            @test all(isa.(find(B_tri)[3], Number))
+
+            # Wide form (string)
+            A_wide = Assoc(["r1","r2"], ["c1","c2"], ["v1","v2"])
+            fname_wide = joinpath(tmpdir, "wide.parquet")
+            saveParquet(fname_wide, A_wide)
+            B_wide = loadParquet(fname_wide)
+            @test all(isa.(find(B_wide)[3], AbstractString))
+        end
+    end
+
+    @testset "saveParquet – error on empty Assoc" begin
+        mktempdir() do tmpdir
+            fname = joinpath(tmpdir, "empty.parquet")
+            A = emptyAssoc()
+            @test_throws ErrorException saveParquet(fname, A)
+        end
+    end
+
+    @testset "loadParquet – triplet form with string values (regression)" begin
+        # Regression test: export.parquet was a triplet-form file with STRING
+        # values (likely from Python AABinaryNormalizer), but loadParquet assumed
+        # triplet form always means numeric and tried Float64 conversion.
+        # This should preserve string values instead.
+        mktempdir() do tmpdir
+            fname = joinpath(tmpdir, "triplet_string.parquet")
+
+            # Manually create a triplet-form Parquet file with string vals
+            # (not via saveParquet, which would only do this for wide form)
+            Parquet2.writefile(fname,
+                (rowKey=["r1","r2","r3"],
+                 colKey=["c1","c2","c3"],
+                 val=["docstring text 1","docstring text 2","metadata"])
+            )
+
+            # Load it back — should not error, should preserve string values
+            A = loadParquet(fname)
+            r, c, v = find(A)
+
+            @test length(r) == 3
+            @test length(v) == 3
+            # All values should be strings (not converted to Float64)
+            @test all(isa.(v, String))
+            @test "docstring text 1" in v
+            @test "metadata" in v
+        end
+    end
+
 end
