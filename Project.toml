@@ -12,12 +12,19 @@ FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Parquet2 = "98572fba-bba0-415d-956f-fa77e587d26d"
+Parsers = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
 
 [compat]
 DataFrames = "1.8.2"
 JLD2 = "0.6.5"
+# Parquet2 (an indirect dep via this project) declares no Parsers compat
+# bound of its own and calls Parsers.typeparser, which Parsers 3.0.0 (the
+# only 3.x release, newer than every Parquet2 release on the registry as of
+# 2026-09) removed. Pins the resolver to the last 2.x line so `using D4M`
+# (which unconditionally loads Parquet2) actually precompiles.
+Parsers = "2"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

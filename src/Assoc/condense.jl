@@ -41,6 +41,8 @@ function deepCondense(A::Assoc)
             SparseMatrixCSC(Anew.A) : Anew.A
     row, col, val = findnz(dropzeros!(M))
 
+    # Convert to Int in case sparse accumulation produced Float64 indices
+    val = Int.(val)
     uniVal = sort!(unique(val))
     # was: pmap(x -> searchsortedfirst(uniVal, x), val) — distributed overhead for a trivial lookup
     val = [searchsortedfirst(uniVal, x) for x in val]

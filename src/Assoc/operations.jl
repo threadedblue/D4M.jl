@@ -71,44 +71,75 @@ end
 #=
 - / minus : matrix subtraction for Assoc.
 
+Two paths (matching D4M.py semantics):
+1. Both numerical: arithmetic difference (A + (-B))
+2. Otherwise: logical difference, preserving A's values where B has no entry
+
 Performance: same COO accumulation fix as plus.
 =#
 -(A::Assoc, B::Assoc) = minus(A, B)
 function minus(A::Assoc, B::Assoc)
-    At = A.val != [1.0] ? logical(A) : A
+    # Check if both are numerical: val is a single number, not a string or array of mixed types
+    is_A_numerical = isa(A.val[1], Number) && length(A.val) == 1
+    is_B_numerical = isa(B.val[1], Number) && length(B.val) == 1
+
+    if is_A_numerical && is_B_numerical
+        # Path 1: Arithmetic difference — negate B and add it
+        B_negated = Assoc(copy(B.row), copy(B.col), [-B.val[1]], copy(B.A))
+        return plus(A, B_negated)
+    else
+        # Path 2: Logical difference — keep A's values where B has no entry
+        return _minus_typed(A, B)
+    end
+end
+
+function _minus_typed(A::Assoc, B::Assoc)
+    # Typed subtraction: keep A's values where A has entries and B doesn't
+    # Convert B to logical for position marking
     Bt = B.val != [1.0] ? logical(B) : B
 
-    ABrow = sortedunion(At.row, Bt.row)
-    ABcol = sortedunion(At.col, Bt.col)
+    ABrow = sortedunion(A.row, Bt.row)
+    ABcol = sortedunion(A.col, Bt.col)
     if isempty(ABrow) || isempty(ABcol)
-        return Assoc([1], [1], 0, (+))
+        return Assoc([1], [1], [1], sparse([],[],[], 1, 1))
     end
 
-    Arow = searchsortedmapping(At.row, ABrow)
-    Acol = searchsortedmapping(At.col, ABcol)
+    Arow = searchsortedmapping(A.row, ABrow)
+    Acol = searchsortedmapping(A.col, ABcol)
     Brow = searchsortedmapping(Bt.row, ABrow)
     Bcol = searchsortedmapping(Bt.col, ABcol)
 
-    ai, aj, av = findnz(At.A)
+    ai, aj, av = findnz(A.A)
     bi, bj, bv = findnz(Bt.A)
 
-    # Map A entries into the union grid with positive values
+    # Map A entries with their original indices
     AI = Arow[ai]
     AJ = Acol[aj]
     AV = Float64.(av)
 
-    # Map B entries into the union grid with negative values
+    # Map B entries (negated) for the subtraction
     BI = Brow[bi]
     BJ = Bcol[bj]
     BV = -Float64.(bv)
 
-    # Combine into the full union coordinate space
+    # Combine: positive indices from A, negative from B
     I = vcat(AI, BI)
     J = vcat(AJ, BJ)
     V = vcat(AV, BV)
 
+    # Accumulate: where A and B both have entries, they cancel out (A_idx + (-B_idx) = 0)
+    # This gives us only positions where A has entries and B doesn't
     ABA = sparse(I, J, V, length(ABrow), length(ABcol), +)
-    AB = Assoc(ABrow, ABcol, [1.0], ABA)
+
+    # Apply A's value semantics to the result
+    if A.val == [1.0]
+        # A is logical: result is logical
+        AB = Assoc(ABrow, ABcol, [1.0], ABA)
+    else
+        # A is typed: preserve A's values
+        AB = Assoc(ABrow, ABcol, A.val, ABA)
+    end
+
     return condense(AB)
 end
 

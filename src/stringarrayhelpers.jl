@@ -145,6 +145,31 @@ function sortedunion(A::Array, B::Array)
     return ABunion
 end
 
+function sorteddifference(A::Array, B::Array)
+    # Set difference: elements in A but not in B (both sorted and unique)
+    # Merge-scan algorithm: O(|A| + |B|)
+    ADiff = typeof(A)()
+    temp_index_A = 1
+    temp_index_B = 1
+
+    while (temp_index_A <= length(A))
+        if (temp_index_B > length(B))
+            push!(ADiff, A[temp_index_A])
+            temp_index_A += 1
+        elseif A[temp_index_A] == B[temp_index_B]
+            temp_index_A += 1
+            temp_index_B += 1
+        elseif A[temp_index_A] < B[temp_index_B]
+            push!(ADiff, A[temp_index_A])
+            temp_index_A += 1
+        else
+            temp_index_B += 1
+        end
+    end
+
+    return ADiff
+end
+
 ########################################################
 # D4M: Dynamic Distributed Dimensional Data Model
 # Architect: Dr. Jeremy Kepner (kepner@ll.mit.edu)

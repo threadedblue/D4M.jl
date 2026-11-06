@@ -68,7 +68,14 @@ function find(A::Assoc)
         end
         
         if isa(A.val[1],AbstractString) || A.val != [1.0]
-            val = [ A.val[val[i]] for i in 1:n]
+            # An explicit-zero stored entry (val[i] == 0) means "no value
+            # assigned" here — the same sentinel parquet_io.jl/arrow_io.jl
+            # already guard against (`v > 0 && ...`) — not a real cell, so
+            # it's dropped rather than indexed as A.val[0] (a BoundsError).
+            keep = val .!= 0
+            row = row[keep]
+            col = col[keep]
+            val = [ A.val[v] for v in val[keep] ]
         end
     end
 
