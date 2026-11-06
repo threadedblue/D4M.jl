@@ -84,8 +84,11 @@ function minus(A::Assoc, B::Assoc)
     is_B_numerical = isa(B.val[1], Number) && length(B.val) == 1
 
     if is_A_numerical && is_B_numerical
-        # Path 1: Arithmetic difference — negate B and add it
-        B_negated = Assoc(copy(B.row), copy(B.col), [-B.val[1]], copy(B.A))
+        # Path 1: Arithmetic difference — negate B and add it.
+        # A numeric Assoc keeps its values in the sparse matrix; val is only the [1.0]
+        # marker. Negate the matrix and keep the marker. (Negating val[1] instead made
+        # plus() treat B as non-numeric and logicalize it, so A - B came out as A + 1.)
+        B_negated = Assoc(copy(B.row), copy(B.col), copy(B.val), -B.A)
         return plus(A, B_negated)
     else
         # Path 2: Logical difference — keep A's values where B has no entry

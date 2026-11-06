@@ -282,6 +282,15 @@ end
         @test nnz(C) == 2
         _, _, v = find(C)
         @test Set(v) == Set([2.0, 3.0])
+
+        # keys only in B come out negated; keys only in A are kept as is
+        A2 = Assoc(["r1"], ["c1"], [3.0])
+        B2 = Assoc(["r3"], ["c3"], [4.0])
+        r, c, v = find(A2 - B2)
+        @test Set(zip(string.(r), string.(c), v)) == Set([("r1","c1",3.0), ("r3","c3",-4.0)])
+
+        # equal entries cancel and disappear
+        @test isempty(A - A)
     end
 
     @testset "multiply" begin
