@@ -201,12 +201,12 @@ end
 
 
 #=
-sqIn : compute A'*A (in-degree co-occurrence).
+sqin : compute A'*A (in-degree co-occurrence).
 
 Performance: removed unnecessary deepcopy — Assoc is immutable, deepcopy just
 allocated a full copy that was immediately discarded when the type branch ran.
 =#
-function sqIn(A::Assoc)
+function sqin(A::Assoc)
     B = isa(A.val[1], Number) ? A : logical(A)
     AA = B.A
     AAtAA = AA' * AA
@@ -215,9 +215,9 @@ end
 
 
 #=
-sqOut : compute A*A' (out-degree co-occurrence).
+sqout : compute A*A' (out-degree co-occurrence).
 =#
-function sqOut(A::Assoc)
+function sqout(A::Assoc)
     B = isa(A.val[1], Number) ? A : logical(A)
     AA = B.A
     AAtAA = AA * AA'
@@ -225,6 +225,13 @@ function sqOut(A::Assoc)
 end
 
 
+#=
+sum(A, dim) : sum an Assoc along one dimension.
+dim indexing is 1-based (Julia). D4M.py uses 0-based `axis`:
+    sum(A, 1)  ==  A.sum(0)   (sums down the columns; one result row)
+    sum(A, 2)  ==  A.sum(1)   (sums across the rows; one result column)
+sum(A) with no dim sums every entry, as A.sum() does in D4M.py.
+=#
 function sum(A::Assoc, dim::Int64)
     if A.val != [1.0]
         A = logical(A)
@@ -247,22 +254,22 @@ end
 
 
 # Matrix multiply where resulting values are inner-dimension keys concatenated
-function CatKeyMul(A::Assoc, B::Assoc)
-    if isa(getcol(A)[1], AbstractString) && isa(getrow(B)[1], AbstractString)
+function catkeymul(A::Assoc, B::Assoc)
+    if isa(get_col(A)[1], AbstractString) && isa(get_row(B)[1], AbstractString)
         AB = sortedintersect(A.col, B.row)
         A = A[:, AB]
         B = B[AB, :]
-        rrr, ccc, vvv = findnz(getadj(A * B))
+        rrr, ccc, vvv = findnz(get_adj(A * B))
         ABVal = Array{Union{AbstractString,Number}}(undef, length(rrr))
         for i in 1:length(rrr)
             r = rrr[i]
             c = ccc[i]
-            ABvalList = sortedintersect(getcol(A[r, :]), getrow(B[:, c]))
+            ABvalList = sortedintersect(get_col(A[r, :]), get_row(B[:, c]))
             if length(ABvalList) > 0
                 ABVal[i] = join(ABvalList, ";") * ";"
             end
         end
-        return Assoc(getrow(A)[rrr], getcol(B)[ccc], ABVal)
+        return Assoc(get_row(A)[rrr], get_col(B)[ccc], ABVal)
     else
         return A * B
     end
@@ -270,27 +277,27 @@ end
 
 
 # Matrix multiply where resulting values are previous values concatenated
-function CatValMul(A::Assoc, B::Assoc)
-    if isa(getval(A)[1], AbstractString) && isa(getval(B)[1], AbstractString)
+function catvalmul(A::Assoc, B::Assoc)
+    if isa(get_val(A)[1], AbstractString) && isa(get_val(B)[1], AbstractString)
         AB = sortedintersect(A.col, B.row)
         A = A[:, AB]
         B = B[AB, :]
-        rrr, ccc, vvv = findnz(getadj(A * B))
+        rrr, ccc, vvv = findnz(get_adj(A * B))
         ABVal = Array{Union{AbstractString,Number},1}(undef, length(rrr))
         for i in 1:length(rrr)
             r = rrr[i]
             c = ccc[i]
-            ABIntersect = sortedintersect(getcol(A[r, :]), getrow(B[:, c]))
+            ABIntersect = sortedintersect(get_col(A[r, :]), get_row(B[:, c]))
             ABValList = Array{Union{AbstractString,Number},1}(undef, 0)
             for x in ABIntersect
-                push!(ABValList, getval(A[r, x * ","])[1])
-                push!(ABValList, getval(B[x * ",", c])[1])
+                push!(ABValList, get_val(A[r, x * ","])[1])
+                push!(ABValList, get_val(B[x * ",", c])[1])
             end
             if length(ABValList) > 0
                 ABVal[i] = join(ABValList, ";") * ";"
             end
         end
-        return Assoc(getrow(A)[rrr], getcol(B)[ccc], ABVal)
+        return Assoc(get_row(A)[rrr], get_col(B)[ccc], ABVal)
     else
         return A * B
     end

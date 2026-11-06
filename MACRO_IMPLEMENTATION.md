@@ -4,7 +4,7 @@
 
 Two new macros have been introduced to the D4M.jl module to provide syntactic sugar for common Associative Array transformations:
 - `@lift`: Lifts continuous values into structural column keys (wraps `val2col`)
-- `@drop`: Reverts column-encoded values back into matrix values (wraps `col2type`)
+- `@drop`: Reverts column-encoded values back into matrix values (wraps `col_to_type`)
 
 ## Implementation Details
 
@@ -102,19 +102,19 @@ lifted2 = @lift(AA, ",")  # Same as val2col(AA, ",")
 
 **Behavior:**
 - Reverts column-encoded values back into continuous matrix values
-- Internally expands to `col2type(inputArray, delimiterVal)`
+- Internally expands to `col_to_type(inputArray, delimiterVal)`
 - Uses `esc()` for proper hygiene
 
 **Example:**
 ```julia
 AA = Assoc(["r1", "r2"], ["c1|v1", "c2|v2"], 1)
-dropped = @drop(AA)  # Same as col2type(AA)
-dropped2 = @drop(AA, ",")  # Same as col2type(AA, ",")
+dropped = @drop(AA)  # Same as col_to_type(AA)
+dropped2 = @drop(AA, ",")  # Same as col_to_type(AA, ",")
 ```
 
 ## Backward Compatibility
 
-- **`val2col()` and `col2type()` remain fully functional** — no changes to the underlying functions
+- **`val2col()` and `col_to_type()` remain fully functional** — no changes to the underlying functions
 - **Existing code continues to work unchanged** — the macros are optional syntactic sugar
 - **New code should prefer `@lift` and `@drop`** for improved readability and semantic clarity
 
@@ -184,6 +184,6 @@ Tests use the `sorted_triples()` helper function to compare results in an order-
 
 ### When to Use Direct Functions
 
-- If you need to pass `val2col` or `col2type` as function references (e.g., to `map()`)
+- If you need to pass `val2col` or `col_to_type` as function references (e.g., to `map()`)
 - In performance-critical paths where the direct function is already optimized
 - When maintaining legacy code patterns for consistency

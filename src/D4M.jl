@@ -15,17 +15,17 @@ module D4M
             StartsWith, Between, EndsWith, Contains, (..),
             @sw_str, @ew_str, @has_str,
             @lift, @drop,
-            CatKeyMul, CatValMul,
-            CatStr, SplitStr, NumStr,
-            col2type, val2col,
-            ReadCSV, WriteCSV,
+            catkeymul, catvalmul, CatKeyMul, CatValMul,
+            CatStr, catstr, SplitStr, NumStr,
+            col_to_type, col2type, val2col,
+            readcsv, writecsv, ReadCSV, WriteCSV,
             # writeas, readas,
-            print, printFull, printTriple,
+            print, printfull, printFull, printTriple,
             norow, nocol,
             logical, str2num, convertvals,
-            sqIn, sqOut,
+            sqin, sqout, sqIn, sqOut,
             putAdj, putRow, putCol, putVal,
-            getadj, getrow, getcol, getval, find,
+            get_adj, get_row, get_col, get_val, getadj, getrow, getcol, getval, find,
             saveAA, loadAA,
             saveParquet, loadParquet,
             #saveassoc, loadassoc,
@@ -43,6 +43,8 @@ module D4M
     include("stringarrayhelpers.jl")
     #Health check function
     include("health.jl")
+    #Deprecated pre-harmonization names
+    include("aliases.jl")
 end
 
 

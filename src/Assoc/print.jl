@@ -19,9 +19,9 @@ function print(A::Assoc)
 end
 
 #=
-printFull : print Assoc in tabular form.
+printfull : print Assoc in tabular form.
 =#
-function printFull(A::Assoc)
+function printfull(A::Assoc)
     if !isempty(A)
         display(full(A))
     else

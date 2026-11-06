@@ -1,11 +1,11 @@
 using SparseArrays
 
-function WriteCSV(A::Assoc, del = ',', eol = '\n')
+function writecsv(A::Assoc, del = ',', eol = '\n')
 end
 
 
 # Writing and Reading CSV Files
-function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\n')
+function writecsv(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\n')
     #Because of potential memory issues, the Assoc will not be converted to dense matrix.
     # Instead the dense form is directly printed onto the file.
     iostream::IOStream
@@ -43,7 +43,7 @@ function WriteCSV(A::Assoc, output::Union{IOStream, String}, del = ',', eol = '\
 end
 
 """
-    ReadCSV(input, del = ',', eol = '\\n'; quotes = true) -> Assoc
+    readcsv(input, del = ',', eol = '\\n'; quotes = true) -> Assoc
 
 Read a CSV in D4M table form into an Associative Array.  The first row holds the
 column keys, the first column holds the row keys (the top-left cell is a label and
@@ -55,11 +55,11 @@ Empty cells produce no entry.  All values are kept as strings — use `str2num` 
 
 # Examples
 ```julia
-julia> A = ReadCSV("patients.csv")
+julia> A = readcsv("patients.csv")
 julia> A["57e50bfa-e467-4050-b961-232cf0d85668,", "GENDER,"]
 ```
 """
-function ReadCSV(input::Union{IO, AbstractString}, del = ',', eol = '\n'; quotes = true)
+function readcsv(input::Union{IO, AbstractString}, del = ',', eol = '\n'; quotes = true)
     return _csv2assoc(_readcsv(input, del, eol; quotes=quotes))
 end
 
@@ -161,10 +161,10 @@ end
 
 function writeas(data::Assoc)
     #Get parts from the assoc
-    row = getrow(data)
-    col = getcol(data)
-    val = getval(data)
-    A   = dropzeros!(getadj(data))
+    row = get_row(data)
+    col = get_col(data)
+    val = get_val(data)
+    A   = dropzeros!(get_adj(data))
 
     #Split the mapping array into string and number arrays for storage
     rowindex = searchsortedfirst(row,AbstractString,lt=isa)

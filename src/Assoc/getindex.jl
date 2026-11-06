@@ -118,7 +118,7 @@ _resolve(keys::AbstractVector, i::StartsWith) = StartsWithHelper(keys, i)
 
 
 function >(A::Assoc, E::Union{AbstractString,Number})
-    tarIndex = (isa(E, Number) && A.val == [1.0]) ? E : searchsortedlast(getval(A), E)
+    tarIndex = (isa(E, Number) && A.val == [1.0]) ? E : searchsortedlast(get_val(A), E)
     M = A.A isa Union{LinearAlgebra.Adjoint, LinearAlgebra.Transpose} ?
             SparseMatrixCSC(A.A) : A.A
     _, _, valkey = findnz(M)
@@ -155,7 +155,7 @@ function equal(A::Assoc, E::Union{AbstractString,Number})
         tarIndex = E
     else
         tarIndex = searchsortedfirst(A.val, E)
-        if !(E == getval(A)[tarIndex])
+        if !(E == get_val(A)[tarIndex])
             tarIndex = 0
         end
     end

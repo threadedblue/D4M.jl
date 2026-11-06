@@ -82,18 +82,18 @@ end
 
     @testset "Constructor – D4M strings" begin
         A = Assoc("r1,r2,", "c1,c2,", "v1,v2,")
-        @test collect(getrow(A)) == ["r1","r2"]
-        @test collect(getcol(A)) == ["c1","c2"]
-        @test collect(getval(A)) == ["v1","v2"]
+        @test collect(get_row(A)) == ["r1","r2"]
+        @test collect(get_col(A)) == ["c1","c2"]
+        @test collect(get_val(A)) == ["v1","v2"]
         @test size(A) == (2,2)
         @test nnz(A) == 2
     end
 
     @testset "Constructor – arrays of strings" begin
         A = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
-        @test collect(getrow(A)) == ["r1","r2"]
-        @test collect(getcol(A)) == ["c1","c2"]
-        @test Set(getval(A)) == Set(["v1","v2","v3"])
+        @test collect(get_row(A)) == ["r1","r2"]
+        @test collect(get_col(A)) == ["c1","c2"]
+        @test Set(get_val(A)) == Set(["v1","v2","v3"])
         @test nnz(A) == 3
     end
 
@@ -133,10 +133,10 @@ end
         @test all(c .∈ Ref(["c1","c2"]))
         @test all(v .∈ Ref(["va","vb","vc"]))
 
-        @test collect(getrow(A)) == ["r1","r2"]
-        @test collect(getcol(A)) == ["c1","c2"]
-        @test sort(collect(getval(A))) == ["va","vb","vc"]
-        @test getadj(A) isa SparseMatrixCSC
+        @test collect(get_row(A)) == ["r1","r2"]
+        @test collect(get_col(A)) == ["c1","c2"]
+        @test sort(collect(get_val(A))) == ["va","vb","vc"]
+        @test get_adj(A) isa SparseMatrixCSC
     end
 
     # ── Indexing ────────────────────────────────────────────────────────────────
@@ -144,7 +144,7 @@ end
     @testset "Indexing – integer" begin
         A = Assoc(["r1","r2","r3"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
         B = A[1, :]
-        @test collect(getrow(B)) == ["r1"]
+        @test collect(get_row(B)) == ["r1"]
         @test nnz(B) == 1
     end
 
@@ -152,7 +152,7 @@ end
         A = Assoc(["r1","r2","r3"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
         B = A[1:2, :]
         @test size(B)[1] == 2
-        @test collect(getrow(B)) == ["r1","r2"]
+        @test collect(get_row(B)) == ["r1","r2"]
     end
 
     @testset "Indexing – Colon" begin
@@ -170,7 +170,7 @@ end
             [1.0, 2.0, 3.0, 4.0]
         )
         B = A["r1,r3,", :]
-        @test sort(collect(getrow(B))) == ["r1","r3"]
+        @test sort(collect(get_row(B))) == ["r1","r3"]
         @test nnz(B) == 3          # r1@c1, r3@c3, r3@c1
     end
 
@@ -181,23 +181,23 @@ end
                   [25.0, 80.0, 30.0])
         sel = ["alice","carol"]     # plain Vector{String}
         B = A[sel, :]
-        @test sort(collect(getrow(B))) == ["alice","carol"]
+        @test sort(collect(get_row(B))) == ["alice","carol"]
         @test nnz(B) == 2
     end
 
     @testset "Indexing – Regex" begin
         A = Assoc(["alice","bob","carol"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
         B = A[r"^b", :]
-        @test collect(getrow(B)) == ["bob"]
+        @test collect(get_row(B)) == ["bob"]
         @test nnz(B) == 1
     end
 
     @testset "Indexing – StartsWith" begin
         A = Assoc(["alice","bob","carol"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
         B = A[StartsWith("ca"), :]
-        @test collect(getrow(B)) == ["carol"]
+        @test collect(get_row(B)) == ["carol"]
         C = A[StartsWith("al,bo,"), :]   # D4M-style multi-prefix
-        @test sort(collect(getrow(C))) == ["alice","bob"]
+        @test sort(collect(get_row(C))) == ["alice","bob"]
     end
 
     # ── Comparisons ─────────────────────────────────────────────────────────────
@@ -288,8 +288,8 @@ end
         A = Assoc(["r1","r2"], ["c1","c2"], [2.0, 3.0])
         B = Assoc(["c1","c2"], ["d1","d2"], [4.0, 5.0])
         C = A * B
-        @test sort(collect(getrow(C))) == ["r1","r2"]
-        @test sort(collect(getcol(C))) == ["d1","d2"]
+        @test sort(collect(get_row(C))) == ["r1","r2"]
+        @test sort(collect(get_col(C))) == ["d1","d2"]
         r, c, v = find(C)
         triple_set = Set(zip(string.(r), string.(c), v))
         @test ("r1","d1",8.0) ∈ triple_set
@@ -300,8 +300,8 @@ end
         A = Assoc(["r1","r2"], ["c1","c2"], [1.0, 2.0])
         B = Assoc(["r2","r3"], ["c2","c3"], [3.0, 4.0])
         C = A & B
-        @test collect(getrow(C)) == ["r2"]
-        @test collect(getcol(C)) == ["c2"]
+        @test collect(get_row(C)) == ["r2"]
+        @test collect(get_col(C)) == ["c2"]
         @test nnz(C) == 1
     end
 
@@ -311,17 +311,17 @@ end
         A = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
         B = val2col(A)
         @test B.val == [1.0]        # result is numeric
-        cols_B = sort(collect(getcol(B)))
+        cols_B = sort(collect(get_col(B)))
         # All combined keys must be present
         @test "c1|v1" ∈ cols_B || "c1|v3" ∈ cols_B   # at least one c1-origin col
         @test any(startswith(s, "c2") for s in cols_B)
         @test nnz(B) == 3
     end
 
-    @testset "col2type" begin
+    @testset "col_to_type" begin
         A = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
         B = val2col(A)
-        C = col2type(B)
+        C = col_to_type(B)
         r_A, c_A, v_A = find(A)
         r_C, c_C, v_C = find(C)
         @test sorted_triples(r_A, c_A, v_A) == sorted_triples(r_C, c_C, v_C)
@@ -361,7 +361,7 @@ end
         inputArray = Assoc(["r1","r1","r2"], ["c1","c2","c1"], ["v1","v2","v3"])
         liftedArray = val2col(inputArray)
         droppedMacro = @drop(liftedArray)
-        droppedDirect = col2type(liftedArray)
+        droppedDirect = col_to_type(liftedArray)
         r_m, c_m, v_m = find(droppedMacro)
         r_d, c_d, v_d = find(droppedDirect)
         @test sorted_triples(r_m, c_m, v_m) == sorted_triples(r_d, c_d, v_d)
@@ -372,7 +372,7 @@ end
         delimiterVal = ","
         liftedArray = val2col(inputArray, delimiterVal)
         droppedMacro = @drop(liftedArray, delimiterVal)
-        droppedDirect = col2type(liftedArray, delimiterVal)
+        droppedDirect = col_to_type(liftedArray, delimiterVal)
         r_m, c_m, v_m = find(droppedMacro)
         r_d, c_d, v_d = find(droppedDirect)
         @test sorted_triples(r_m, c_m, v_m) == sorted_triples(r_d, c_d, v_d)
@@ -472,8 +472,8 @@ end
         A    = Assoc(rows, cols, vals, M)
         B    = condense(A)
         @test size(B) == (2,2)
-        @test collect(getrow(B)) == ["r1","r3"]
-        @test collect(getcol(B)) == ["c1","c3"]
+        @test collect(get_row(B)) == ["r1","r3"]
+        @test collect(get_col(B)) == ["c1","c3"]
         @test nnz(B) == 2
     end
 
@@ -485,7 +485,7 @@ end
         M    = sparse([1,2],[1,2],[1,3],2,2)
         A    = Assoc(rows, cols, vals, M)
         B    = deepCondense(A)
-        @test sort(collect(getval(B))) == ["va","vc"]    # "vb" dropped
+        @test sort(collect(get_val(B))) == ["va","vc"]    # "vb" dropped
     end
 
     @testset "logical" begin
@@ -511,8 +511,8 @@ end
         A = Assoc(["r1","r2"], ["c1","c2"], [1.0, 2.0])
         AT = transpose(A)
         @test AT.A isa SparseMatrixCSC          # not a lazy Transpose wrapper
-        @test collect(getrow(AT)) == ["c1","c2"]
-        @test collect(getcol(AT)) == ["r1","r2"]
+        @test collect(get_row(AT)) == ["c1","c2"]
+        @test collect(get_col(AT)) == ["r1","r2"]
         @test nnz(AT) == nnz(A)
     end
 
@@ -529,32 +529,32 @@ end
         @test_throws ErrorException D4M.abs(A)
     end
 
-    @testset "sqIn – A'*A, cols become both axes" begin
+    @testset "sqin – A'*A, cols become both axes" begin
         A = Assoc(
             ["r1","r1","r2"],
             ["c1","c2","c1"],
             [1.0, 2.0, 3.0]
         )
-        B = sqIn(A)
+        B = sqin(A)
         @test B.A isa SparseMatrixCSC           # materialized
-        @test sort(collect(getrow(B))) == ["c1","c2"]
-        @test sort(collect(getcol(B))) == ["c1","c2"]
+        @test sort(collect(get_row(B))) == ["c1","c2"]
+        @test sort(collect(get_col(B))) == ["c1","c2"]
         r, c, v = find(B)
         # (c1,c1) entry: A[:,c1]'*A[:,c1] = 1²+3² = 10
         idx = findfirst(i -> r[i]=="c1" && c[i]=="c1", 1:length(r))
         @test v[idx] ≈ 10.0
     end
 
-    @testset "sqOut – A*A', rows become both axes" begin
+    @testset "sqout – A*A', rows become both axes" begin
         A = Assoc(
             ["r1","r1","r2"],
             ["c1","c2","c1"],
             [1.0, 2.0, 3.0]
         )
-        B = sqOut(A)
+        B = sqout(A)
         @test B.A isa SparseMatrixCSC
-        @test sort(collect(getrow(B))) == ["r1","r2"]
-        @test sort(collect(getcol(B))) == ["r1","r2"]
+        @test sort(collect(get_row(B))) == ["r1","r2"]
+        @test sort(collect(get_col(B))) == ["r1","r2"]
     end
 
     # ── Properties ──────────────────────────────────────────────────────────────
@@ -576,9 +576,9 @@ end
     @testset "norow / nocol" begin
         A = Assoc(["r1","r2"], ["c1","c2"], [1.0, 2.0])
         B = norow(A)
-        @test all(isa.(getrow(B), Number))   # row keys replaced by numbers
+        @test all(isa.(get_row(B), Number))   # row keys replaced by numbers
         C = nocol(A)
-        @test all(isa.(getcol(C), Number))   # col keys replaced by numbers
+        @test all(isa.(get_col(C), Number))   # col keys replaced by numbers
     end
 
     # ── Selectors ───────────────────────────────────────────────────────────────
@@ -601,14 +601,14 @@ end
                   ["c1","c2","c3","c4","c5"],
                   [1.0, 2.0, 3.0, 4.0, 5.0])
         B = A["banana".."date", :]
-        @test sort(collect(getrow(B))) == ["banana","cherry","date"]
+        @test sort(collect(get_row(B))) == ["banana","cherry","date"]
         @test nnz(B) == 3
     end
 
     @testset "Between – getindex single-element range" begin
         A = Assoc(["a","b","c"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
         B = A["b".."b", :]
-        @test collect(getrow(B)) == ["b"]
+        @test collect(get_row(B)) == ["b"]
         @test nnz(B) == 1
     end
 
@@ -628,7 +628,7 @@ end
                   ["c1","c2","c3","c4"],
                   [1.0, 2.0, 3.0, 4.0])
         B = A[EndsWith("_score"), :]
-        @test sort(collect(getrow(B))) == ["author_score","doc_score"]
+        @test sort(collect(get_row(B))) == ["author_score","doc_score"]
         @test nnz(B) == 2
     end
 
@@ -648,7 +648,7 @@ end
                   ["c1","c2","c3","c4"],
                   [1.0, 2.0, 3.0, 4.0])
         B = A[Contains("chunk"), :]
-        @test sort(collect(getrow(B))) == ["chunk:001","chunk:002"]
+        @test sort(collect(get_row(B))) == ["chunk:001","chunk:002"]
         @test nnz(B) == 2
     end
 
@@ -657,7 +657,7 @@ end
                   ["c1","c2","c3"],
                   [1.0, 2.0, 3.0])
         B = A[Contains("abc"), :]
-        @test sort(collect(getrow(B))) == ["abc_suffix","prefix_abc"]
+        @test sort(collect(get_row(B))) == ["abc_suffix","prefix_abc"]
         @test nnz(B) == 2
     end
 
@@ -682,7 +682,7 @@ end
     @testset "sw macro via getindex" begin
         A = Assoc(["alice","bob","carol"], ["c1","c2","c3"], [1.0, 2.0, 3.0])
         B = A[sw"ca", :]
-        @test collect(getrow(B)) == ["carol"]
+        @test collect(get_row(B)) == ["carol"]
     end
 
     @testset "ew macro via getindex" begin
@@ -690,7 +690,7 @@ end
                   ["c1","c2","c3"],
                   [1.0, 2.0, 3.0])
         B = A[ew"_score", :]
-        @test sort(collect(getrow(B))) == ["author_score","doc_score"]
+        @test sort(collect(get_row(B))) == ["author_score","doc_score"]
     end
 
     @testset "has macro via getindex" begin
@@ -698,7 +698,7 @@ end
                   ["c1","c2","c3"],
                   [1.0, 2.0, 3.0])
         B = A[has"chunk", :]
-        @test sort(collect(getrow(B))) == ["chunk:001","chunk:002"]
+        @test sort(collect(get_row(B))) == ["chunk:001","chunk:002"]
     end
 
     @testset "Selectors – column axis (j selector)" begin
@@ -706,42 +706,42 @@ end
                   ["score_final","score_interim","label"],
                   [1.0, 2.0, 3.0])
         B = A[:, sw"score"]
-        @test sort(collect(getcol(B))) == ["score_final","score_interim"]
+        @test sort(collect(get_col(B))) == ["score_final","score_interim"]
         C = A[:, ew"_final"]
-        @test collect(getcol(C)) == ["score_final"]
+        @test collect(get_col(C)) == ["score_final"]
         D = A[:, has"score"]
-        @test sort(collect(getcol(D))) == ["score_final","score_interim"]
+        @test sort(collect(get_col(D))) == ["score_final","score_interim"]
         E = A[:, "score_final".."score_interim"]
-        @test sort(collect(getcol(E))) == ["score_final","score_interim"]
+        @test sort(collect(get_col(E))) == ["score_final","score_interim"]
     end
 
-    @testset "ReadCSV – raw CSV string to Assoc" begin
-        A = ReadCSV("key,c1,c2\nr1,a,\nr2,b,c\n")
+    @testset "readcsv – raw CSV string to Assoc" begin
+        A = readcsv("key,c1,c2\nr1,a,\nr2,b,c\n")
         @test isa(A, Assoc)
-        @test getrow(A) == ["r1","r2"]
-        @test getcol(A) == ["c1","c2"]
+        @test get_row(A) == ["r1","r2"]
+        @test get_col(A) == ["c1","c2"]
         @test nnz(A) == 3            # the empty cell (r1,c2) is skipped
-        @test getval(A["r2,", "c2,"]) == ["c"]
+        @test get_val(A["r2,", "c2,"]) == ["c"]
     end
 
-    @testset "ReadCSV – quoted field containing the delimiter" begin
-        A = ReadCSV("key,c1\nr1,\"x,y\"\n")
-        @test getval(A["r1,", "c1,"]) == ["x,y"]
+    @testset "readcsv – quoted field containing the delimiter" begin
+        A = readcsv("key,c1\nr1,\"x,y\"\n")
+        @test get_val(A["r1,", "c1,"]) == ["x,y"]
     end
 
-    @testset "ReadCSV – file input" begin
+    @testset "readcsv – file input" begin
         fname = joinpath(@__DIR__, "data", "patients.csv")
-        A = ReadCSV(fname)
+        A = readcsv(fname)
         @test isa(A, Assoc)
-        @test "GENDER" in getcol(A)
-        @test !("ID" in getcol(A))   # top-left label is not a column key
+        @test "GENDER" in get_col(A)
+        @test !("ID" in get_col(A))   # top-left label is not a column key
         @test size(A)[2] == 19       # 20 CSV columns, first becomes the row keys
-        @test getval(A["57e50bfa-e467-4050-b961-232cf0d85668,", "FIRST,"]) == ["Delmar187"]
+        @test get_val(A["57e50bfa-e467-4050-b961-232cf0d85668,", "FIRST,"]) == ["Delmar187"]
     end
 
-    @testset "ReadCSV – degenerate input" begin
-        @test isempty(ReadCSV(""))
-        @test isempty(ReadCSV("key,c1,c2\n"))   # header only
+    @testset "readcsv – degenerate input" begin
+        @test isempty(readcsv(""))
+        @test isempty(readcsv("key,c1,c2\n"))   # header only
     end
 
     # ── Parquet I/O (round-trip via Parquet2.jl) ────────────────────────────
@@ -902,4 +902,40 @@ end
         end
     end
 
+
+    # Harmonization with D4M.py (see doc/d4m-name-map.md, section A): each new name exists,
+# and each old name is still exported and returns the same result.
+@testset "harmonized names and deprecated aliases" begin
+    renames = [(:getrow, :get_row), (:getcol, :get_col), (:getval, :get_val), (:getadj, :get_adj),
+               (:sqIn, :sqin), (:sqOut, :sqout), (:CatKeyMul, :catkeymul), (:CatValMul, :catvalmul),
+               (:col2type, :col_to_type), (:ReadCSV, :readcsv), (:WriteCSV, :writecsv),
+               (:printFull, :printfull)]
+    @testset "$old -> $new" for (old, new) in renames
+        @test isdefined(D4M, new)
+        @test isdefined(D4M, old)
+        @test old in names(D4M)
+        @test new in names(D4M)
+    end
+
+    A = Assoc("r1,r2,", "c1,c2,", "v1,v2,")
+    B = Assoc("c1,c2,", "x1,x2,", "w1,w2,")
+    @test getrow(A) == get_row(A)
+    @test getcol(A) == get_col(A)
+    @test getval(A) == get_val(A)
+    @test getadj(A) == get_adj(A)
+    @test find(sqIn(A)) == find(sqin(A))
+    @test find(sqOut(A)) == find(sqout(A))
+    @test find(CatKeyMul(A, B)) == find(catkeymul(A, B))
+    @test find(CatValMul(A, B)) == find(catvalmul(A, B))
+
+    C = Assoc("r1,r2,", "k|a,k|b,", "1,1,")
+    @test find(col2type(C)) == find(col_to_type(C))
+    csv = "key,c1,c2\nr1,a,\nr2,b,c\n"
+    @test find(ReadCSV(csv)) == find(readcsv(csv))
+
+    @testset "catstr: Python argument order, same result as CatStr" begin
+        @test catstr(["a", "b"], ["x", "y"]) == ["a|x", "b|y"]
+        @test catstr(["a", "b"], ["x", "y"], ";") == CatStr(["a", "b"], ";", ["x", "y"])
+    end
+end
 end

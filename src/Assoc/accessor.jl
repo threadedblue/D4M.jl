@@ -3,13 +3,13 @@
 Protected Accessor Function for User.
 =#
 # gets the sparse matrix
-function getadj(A::Assoc)
+function get_adj(A::Assoc)
     return copy(A.A)
 end
 
-# getcol, getrow, getval return range objects if possible
+# get_col, get_row, get_val return range objects if possible
 # if not, they return copies of the col, rw, val parts of Assoc's struct
-function getcol(A::Assoc)
+function get_col(A::Assoc)
     if isempty(A)
         return eltype(A.col)[]
     else
@@ -20,7 +20,7 @@ function getcol(A::Assoc)
     end
 end
 
-function getrow(A::Assoc)
+function get_row(A::Assoc)
     if isempty(A)
         return eltype(A.row)[]
     else
@@ -31,7 +31,7 @@ function getrow(A::Assoc)
     end
 end
 
-function getval(A::Assoc)
+function get_val(A::Assoc)
     if isempty(A)
         return eltype(A.val)[]
     else

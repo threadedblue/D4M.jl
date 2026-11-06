@@ -58,21 +58,21 @@ liftedAA2 = @lift(AA, ",")  # Equivalent to val2col(AA, ",")
 
 **Behavior:**
 - Takes an Associative Array with column-encoded values and separates them into distinct columns.
-- Internally calls `col2type(inputArray, delimiterVal)` with all arguments passed through.
+- Internally calls `col_to_type(inputArray, delimiterVal)` with all arguments passed through.
 - Default delimiter: `"|"` (matches D4M.py convention).
 
 **Example:**
 ```julia
 AA = Assoc(["r1", "r2"], ["c1|v1", "c2|v2"], 1)
-droppedAA = @drop(AA)  # Equivalent to col2type(AA)
-droppedAA2 = @drop(AA, ",")  # Equivalent to col2type(AA, ",")
+droppedAA = @drop(AA)  # Equivalent to col_to_type(AA)
+droppedAA2 = @drop(AA, ",")  # Equivalent to col_to_type(AA, ",")
 ```
 
 **Macro Hygiene:** Uses `esc()` to ensure caller-scope variables are evaluated correctly without hygiene pollution.
 
 ## Backward Compatibility
 
-- `val2col()` and `col2type()` remain as the primary, underlying implementation functions.
+- `val2col()` and `col_to_type()` remain as the primary, underlying implementation functions.
 - The `@lift` and `@drop` macros are thin wrappers providing syntactic convenience.
 - All existing code using direct function calls continues to work unchanged.
 - New code should prefer `@lift` and `@drop` for readability and symmetry.
@@ -81,7 +81,7 @@ droppedAA2 = @drop(AA, ",")  # Equivalent to col2type(AA, ",")
 
 ### Separation of Concerns
 
-- **Core Functions**: `val2col()` and `col2type()` in `parsinghelpers.jl` handle actual transformation logic.
+- **Core Functions**: `val2col()` and `col_to_type()` in `parsinghelpers.jl` handle actual transformation logic.
 - **Macros**: `@lift` and `@drop` in `macro_utilities.jl` provide high-level syntactic interface.
 - **Testing**: Comprehensive unit tests verify macro output matches direct function calls.
 

@@ -23,6 +23,12 @@ function CatStr(s1::Array, sep::AbstractString, s2::Array)
     return [a * sep * b for (a, b) in zip(s1, s2)]
 end
 
+# catstr: same operation as CatStr, with D4M.py's argument order (separator last).
+# Numbers are converted with string(); unlike D4M.py there is no int_aware ".0" stripping.
+function catstr(a::AbstractArray, b::AbstractArray, separator::AbstractString = "|")
+    return CatStr(string.(a), separator, string.(b))
+end
+
 # Operations used internally that gain performance benefit on sorted inputs
 
 #=
